@@ -1,0 +1,2 @@
+export const PERMISSIONS = ['company.read','company.write','site.read','site.write','employee.read:self','employee.read:scope','employee.write','employment.read','employment.write','rule.read','rule.write','time-event.create:self','time-event.read:self','time-event.read:scope','correction.create:self','correction.read:self','correction.read:scope','correction.decide','audit.read:scope','export.create:scope','export.read:scope','role.assign','auth.admin'] as const;
+export type Permission = typeof PERMISSIONS[number];
