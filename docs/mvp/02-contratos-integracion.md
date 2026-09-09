@@ -1,0 +1,48 @@
+# S0 — Contratos de integración: HTTP, eventos, errores y autorización
+
+## HTTP y versionado
+
+Base interna: `/api/v1`. JSON UTF-8; nombres `camelCase`; IDs UUID; instantes ISO-8601 UTC. Las mutaciones reciben `Idempotency-Key` cuando puedan duplicarse (obligatorio para fichaje). Una versión mayor incompatible crea `/api/v2`; añadir campos opcionales o nuevos valores documentados es compatible. API pública queda fuera del MVP: estos contratos son internos entre UI y monolito.
+
+Toda respuesta de recurso incluye `id`, `createdAt`, `updatedAt` si procede y no expone secretos. Las rutas definitivas son propiedad de su sesión, respetando estas familias:
+
+| Familia | Sesión | Operaciones iniciales |
+|---|---|---|
+| `/auth/*` | S1 | sesión, MFA, recuperación, revocación |
+| `/companies`, `/sites`, `/employees`, `/employments` | S2 | CRUD con baja lógica |
+| `/work-rules`, `/rule-versions`, `/calendars`, `/shifts` | S3 | configuración/versionado |
+| `/time-events` | S4 | crear y listar evento propio/ámbito autorizado |
+| `/corrections`, `/approvals` | S6 | proponer, consultar, decidir |
+| `/audit`, `/exports` | S9/S1 | lectura con ámbito y generación/descarga |
+
+## Envolvente de error
+
+```json
+{"error":{"code":"TIME_EVENT_SEQUENCE_INVALID","message":"La operación no es válida para el estado actual.","details":{"expected":"clock_in"},"correlationId":"uuid"}}
+```
+
+`message` es español apto para UI; `code` es estable para clientes y pruebas. No se revela si un recurso de otro ámbito existe. Códigos transversales: `UNAUTHENTICATED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `VALIDATION_FAILED` (422), `CONFLICT` (409), `IDEMPOTENCY_CONFLICT` (409), `RATE_LIMITED` (429), `INTERNAL_ERROR` (500). Códigos de dominio iniciales: `INVALID_DATETIME`, `TIME_EVENT_SEQUENCE_INVALID`, `RULE_VERSION_UNRESOLVABLE`, `CORRECTION_STATE_INVALID`, `APPROVAL_SCOPE_FORBIDDEN`, `EXPORT_SCOPE_TOO_BROAD`.
+
+## Autorización de ruta
+
+Cada mutación declara `permission`, `resourceType`, `scope` y el actor. Patrón obligatorio:
+
+```ts
+authorize({ actor, permission: 'time-event.create:self', resource: employee, scope: 'self' })
+```
+
+El manejador carga el recurso desde servidor, resuelve relación/centro/vigencia y autoriza antes de devolver o mutar datos. El contrato de respuesta 403/404 se decide de manera uniforme por familia para evitar enumeración.
+
+## Eventos internos de dominio
+
+Los eventos no son una API pública ni implican microservicios. Se publican tras confirmar la transacción mediante outbox/dispatcher equivalente; consumidores idempotentes por `eventId`.
+
+```ts
+interface DomainEvent<T> {
+  eventId: string; name: string; occurredAt: string; environmentId: string;
+  actor: { type: 'user' | 'system' | 'kiosk'; id?: string };
+  correlationId: string; payload: T; schemaVersion: 1;
+}
+```
+
+Nombres iniciales: `employee.created`, `employment.changed`, `rule-version.published`, `time-event.recorded`, `correction.requested`, `correction.decided`, `export.generated`, `auth.session.revoked`. Cada payload incluye IDs y referencias necesarias, nunca contraseña, token, PIN ni QR. S1 define el registro tipado; las sesiones versionan payload incompatible incrementando `schemaVersion` y mantienen consumidor compatible durante la transición.
