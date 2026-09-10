@@ -1,0 +1,8 @@
+FROM node:20-bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client && rm -rf /var/lib/apt/lists/*
+WORKDIR /ops
+COPY docker/ops/crypto-backup.mjs ./crypto-backup.mjs
+COPY docker/ops/backup.sh ./backup.sh
+COPY docker/ops/restore.sh ./restore.sh
+RUN chmod 0555 ./backup.sh ./restore.sh
+ENTRYPOINT ["/bin/sh"]
