@@ -24,6 +24,6 @@ Se adopta RBAC aplicado en servidor, con permisos atómicos y alcance explícito
 
 ## Catálogo mínimo de permisos
 
-`company.read/write`, `site.read/write`, `employee.read:self/read:scope/write`, `employment.read/write`, `rule.read/write`, `time-event.create:self/read:self/read:scope`, `correction.create:self/read:self/read:scope/decide`, `audit.read:scope`, `export.create:scope/read:scope`, `role.assign`, `auth.admin`.
+`company.read/write`, `site.read/write`, `employee.read:self/read:scope/write`, `employment.read/write`, `rule.read/write`, `time-event.create:self/read:self/read:scope/kiosk.manage`, `correction.create:self/read:self/read:scope/decide`, `audit.read:scope`, `export.create:scope/read:scope`, `role.assign`, `auth.admin`.
 
 S1 define los nombres finales como constantes tipadas. S2–S9 sólo consumen el catálogo; añadir permisos o ampliar un ámbito requiere actualizar este ADR y los contratos de autorización.

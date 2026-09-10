@@ -60,7 +60,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S1 | [01-fundaciones.md](01-fundaciones.md) | L | Secuencial |
 | S2 | [02-empresa-y-personas.md](02-empresa-y-personas.md) | M | Paralela tras S1 |
 | S3 | [03-jornada-y-reglas.md](03-jornada-y-reglas.md) | L | Paralela tras S1 |
-| S4 | [04-fichaje-y-pausas.md](04-fichaje-y-pausas.md) | L | Paralela tras S1 |
+| S4 | [04-fichaje-y-pausas.md](04-fichaje-y-pausas.md) | L | Implementada en código; pendiente integración PostgreSQL/E2E |
 | S5 | [05-motor-de-calculo.md](05-motor-de-calculo.md) | L | Tras S3/S4 |
 | S6 | [06-correcciones-y-aprobaciones.md](06-correcciones-y-aprobaciones.md) | M | Tras S4 |
 | S7 | [07-vista-empleado.md](07-vista-empleado.md) | M | Tras S4 |
