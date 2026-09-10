@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Control horario',
-  description: 'Fundaciones seguras del MVP de control horario'
+  description: 'Fichaje web seguro y no invasivo',
+  manifest: '/manifest.webmanifest'
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

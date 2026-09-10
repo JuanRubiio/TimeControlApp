@@ -1,0 +1,2 @@
+import { NextRequest } from 'next/server'; import { correlationId } from '@/shared/correlation'; import { createQrChallenge } from '@/time-events/service'; import { failure,response } from '@/time-events/http';
+export async function GET(request:NextRequest,{params}:{params:Promise<{publicId:string}>}) {const cid=correlationId();try{const qr=await createQrChallenge((await params).publicId);return response({qrUrl:new URL(`/kiosk?challenge=${encodeURIComponent(qr.token)}`,request.url).toString(),expiresAt:qr.expiresAt},cid);}catch(e){return failure(e,cid);}}
