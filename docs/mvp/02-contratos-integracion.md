@@ -54,3 +54,9 @@ Nombres iniciales: `employee.created`, `employment.changed`, `rule-version.publi
 - `POST /corrections/{id}/decision`: responsable con `correction.decide`, ámbito de centro y cabecera `Idempotency-Key`. Cuerpo `{decision:"approved"}` o `{decision:"rejected",reason}`. Una repetición idéntica devuelve la decisión ya tomada; otra decisión devuelve `CONFLICT`.
 
 Una aprobación crea `correction_effect` inmutable y publica `correction.decided` y `time-calculation.recalculation-requested`; el cálculo S5 incorpora ese efecto como fuente y conserva sus versiones. El evento S4 al que sustituye permanece sin cambios. S7 puede mostrar solicitudes propias y rechazo; S8 la cola de ámbito y la decisión; S9 puede unir solicitud, decisión, efecto, outbox y auditoría para evidencia, sin que S6 exporte archivos.
+
+## Ampliación S8 — lectura administrativa de jornada
+
+- `GET /time-events?employeeId={uuid}`: requiere `time-event.read:scope`; el servidor carga la persona, verifica que pertenece al entorno dedicado y que su centro está dentro del ámbito efectivo del actor. Sin `employeeId` mantiene el contrato de autoconsulta `time-event.read:self`.
+- `GET /time-calculations?employeeId={uuid}&laborDate=YYYY-MM-DD`: requiere `time-calculation.read:scope` para una persona ajena y aplica el mismo ámbito de centro en servidor.
+- El rol `manager` recibe ambos permisos de lectura de ámbito mediante migración aditiva S8. No recibe escritura de fichajes, reglas, estructura ni configuración de cálculo.
