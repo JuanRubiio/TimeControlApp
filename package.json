@@ -11,8 +11,11 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:critical": "vitest run tests/qa-demo.test.ts tests/qa-contracts.test.ts tests/permissions.test.ts tests/company-people.test.ts tests/work-rules.test.ts tests/time-events.test.ts",
+    "qa:smoke": "tsx scripts/smoke.ts",
     "db:migrate": "tsx scripts/migrate.ts",
-    "db:bootstrap-admin": "tsx scripts/bootstrap-admin.ts"
+    "db:bootstrap-admin": "tsx scripts/bootstrap-admin.ts",
+    "seed:demo": "tsx scripts/seed-demo.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^1.8.3",
