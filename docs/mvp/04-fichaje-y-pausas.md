@@ -62,7 +62,7 @@ No se añadió geolocalización, GPS, biometría, reconocimiento facial, foto, v
 
 - Correcto: `npm test` — 25 pruebas correctas en 8 suites, incluidas las cinco de S4.
 - Correcto: `npx tsc --noEmit`.
-- Correcto: `npm audit --omit=dev --audit-level=moderate` — 0 vulnerabilidades.
+- Correcto: `npm audit` con Node 20 — 0 vulnerabilidades (Vitest 4.1.11/Vite 7.2.6 actualizados para eliminar la cadena vulnerable de pruebas).
 - Correcto: `docker compose build app` — compilación de producción con Node 20 y todas las rutas S4.
 - Correcto: base PostgreSQL limpia en Docker — migraciones S1–S4 aplicadas y aplicación arrancada.
 - Correcto: E2E HTTP sintético — login/MFA, empresa, centro, empleado, relación, regla, entrada → pausa → fin de pausa → salida, reintento idempotente, PIN de kiosco y QR SVG dinámico.
