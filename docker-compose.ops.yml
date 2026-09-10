@@ -11,6 +11,7 @@ services:
       PGUSER: postgres
       PGPASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:?set in client env file}
       BACKUP_PASSPHRASE: ${BACKUP_PASSPHRASE:?set in client env file}
+      ENVIRONMENT_ID: ${ENVIRONMENT_ID:?set in client env file}
     volumes:
       - ${BACKUP_DIRECTORY:?set in client env file}:/backups
     depends_on:
