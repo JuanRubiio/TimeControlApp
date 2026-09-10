@@ -32,7 +32,16 @@ export async function currentCalculation(employeeId:string,laborDate:string):Pro
 
 export async function recalculateDaily(employeeId:string,laborDate:string,actorId:string,correlationId:string):Promise<{calculation:PersistedDailyCalculation;replayed:boolean}>{
   const client=await db.connect(); try{await client.query('BEGIN'); await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 505))',[`${employeeId}:${laborDate}`]);
-    const raw=(await client.query<EventRow>(`SELECT id,event_type AS "eventType",occurred_at AS "occurredAt",rule_version_id AS "ruleVersionId",labor_date::text AS "laborDate",site_id AS "siteId" FROM time_events WHERE employee_id=$1 AND labor_date >= $2::date AND labor_date < ($2::date + interval '3 days') ORDER BY occurred_at,id`,[employeeId,laborDate])).rows;
+    // S6 aporta efectos aprobados como evidencia aditiva. La fuente S4 sigue intacta;
+    // cuando un efecto sustituye un evento, éste sólo queda fuera de esta proyección.
+    const raw=(await client.query<EventRow>(`SELECT * FROM (
+      SELECT t.id,t.event_type AS "eventType",t.occurred_at AS "occurredAt",t.rule_version_id AS "ruleVersionId",t.labor_date::text AS "laborDate",t.site_id AS "siteId"
+      FROM time_events t WHERE t.employee_id=$1 AND t.labor_date >= $2::date AND t.labor_date < ($2::date + interval '3 days')
+        AND NOT EXISTS (SELECT 1 FROM correction_effects ce WHERE ce.replaces_time_event_id=t.id)
+      UNION ALL
+      SELECT ce.id,ce.event_type AS "eventType",ce.occurred_at AS "occurredAt",ce.rule_version_id AS "ruleVersionId",ce.labor_date::text AS "laborDate",ce.site_id AS "siteId"
+      FROM correction_effects ce WHERE ce.employee_id=$1 AND ce.labor_date >= $2::date AND ce.labor_date < ($2::date + interval '3 days')
+    ) sources ORDER BY "occurredAt",id`,[employeeId,laborDate])).rows;
     const selected=selectDayEvents(raw,laborDate); if(!selected.length) throw new Error('CALCULATION_SOURCE_EMPTY');
     const first=selected.find((event)=>event.eventType==='clock_in')??selected[0]; const rule=await ruleForVersion(client,first.ruleVersionId); if(!rule) throw new Error('RULE_VERSION_UNRESOLVABLE');
     await client.query(`INSERT INTO calculation_policies(rule_version_id,created_by_user_id) VALUES($1,$2) ON CONFLICT(rule_version_id) DO NOTHING`,[rule.ruleVersionId,actorId]);

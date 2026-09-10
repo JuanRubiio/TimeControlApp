@@ -1,0 +1,5 @@
+import { NextResponse } from 'next/server';
+import { AuthorizationError } from '@/permissions/authorizer';
+import { error } from '@/auth/http';
+export function response(data:unknown,cid:string,status=200){return NextResponse.json({data,correlationId:cid},{status,headers:{'x-correlation-id':cid}});}
+export function failure(actor:unknown,cid:string,value:unknown){if(value instanceof AuthorizationError)return error(actor?'FORBIDDEN':'UNAUTHENTICATED',actor?'Acceso no autorizado.':'Se requiere autenticación.',actor?403:401,cid);const code=value instanceof Error?value.message:'';if(code==='CORRECTION_NOT_OWN')return error('FORBIDDEN','Sólo puedes corregir tus propios registros.',403,cid);if(code==='CORRECTION_SOURCE_NOT_FOUND'||code==='CORRECTION_NOT_FOUND')return error('NOT_FOUND','No se encontró la evidencia o solicitud de corrección.',404,cid);if(code==='CORRECTION_ALREADY_DECIDED')return error('CONFLICT','La solicitud ya tiene una decisión distinta.',409,cid);if(code==='IDEMPOTENCY_KEY_REQUIRED')return error('VALIDATION_FAILED','Se requiere una clave de idempotencia válida.',422,cid);return error('INTERNAL_ERROR','No se pudo procesar la corrección.',500,cid);}

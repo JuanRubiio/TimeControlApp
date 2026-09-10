@@ -12,7 +12,7 @@ Toda respuesta de recurso incluye `id`, `createdAt`, `updatedAt` si procede y no
 | `/companies`, `/sites`, `/employees`, `/employments` | S2 | CRUD con baja lógica |
 | `/work-rules`, `/rule-versions`, `/calendars`, `/shifts` | S3 | configuración/versionado |
 | `/time-events` | S4 | crear y listar evento propio/ámbito autorizado |
-| `/corrections`, `/approvals` | S6 | proponer, consultar, decidir |
+| `/corrections` | S6 | proponer, listar propio/ámbito y decidir |
 | `/audit`, `/exports` | S9/S1 | lectura con ámbito y generación/descarga |
 
 ## Envolvente de error
@@ -46,3 +46,11 @@ interface DomainEvent<T> {
 ```
 
 Nombres iniciales: `employee.created`, `employment.changed`, `rule-version.published`, `time-event.recorded`, `correction.requested`, `correction.decided`, `export.generated`, `auth.session.revoked`. Cada payload incluye IDs y referencias necesarias, nunca contraseña, token, PIN ni QR. S1 define el registro tipado; las sesiones versionan payload incompatible incrementando `schemaVersion` y mantienen consumidor compatible durante la transición.
+
+## S6 — Correcciones y aprobaciones
+
+- `POST /corrections`: empleado autenticado con `correction.create:self`. Cuerpo: `{kind, timeEventId? | dailyCalculationVersionId?, proposedEffect:{eventType,occurredAt}, reason}`. Sólo acepta evidencia propia y devuelve la solicitud `pending`.
+- `GET /corrections?mine=true`: autoconsulta con `correction.read:self`. Responsable/autorizado usa `GET /corrections?employeeId={uuid}` o sin filtro con `correction.read:scope`, siempre limitado por centro servidor.
+- `POST /corrections/{id}/decision`: responsable con `correction.decide`, ámbito de centro y cabecera `Idempotency-Key`. Cuerpo `{decision:"approved"}` o `{decision:"rejected",reason}`. Una repetición idéntica devuelve la decisión ya tomada; otra decisión devuelve `CONFLICT`.
+
+Una aprobación crea `correction_effect` inmutable y publica `correction.decided` y `time-calculation.recalculation-requested`; el cálculo S5 incorpora ese efecto como fuente y conserva sus versiones. El evento S4 al que sustituye permanece sin cambios. S7 puede mostrar solicitudes propias y rechazo; S8 la cola de ámbito y la decisión; S9 puede unir solicitud, decisión, efecto, outbox y auditoría para evidencia, sin que S6 exporte archivos.
