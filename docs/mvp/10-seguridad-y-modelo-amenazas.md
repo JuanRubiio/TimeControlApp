@@ -1,6 +1,6 @@
 # S10 — Seguridad, acceso técnico y modelo de amenazas
 
-**Estado:** evaluación inicial basada en revisión estática de S1–S4, 10/09/2026. No sustituye pentest, revisión de infraestructura o análisis de impacto.
+**Estado:** evaluación de cierre basada en revisión estática de S1–S12, 10/09/2026. No sustituye pentest, revisión de infraestructura o análisis de impacto.
 
 ## Matriz de acceso
 
@@ -22,8 +22,9 @@
 | Escalada de privilegio | alto | RBAC/ámbito en servidor y denegación por defecto | recertificación y pruebas E2E de todos los roles |
 | Manipular fichaje/auditoría | alto | append-only, privilegios DB y hash encadenado | verificación periódica de cadena, exportación verificable S9 |
 | Fuerza bruta PIN/login | medio-alto | PIN bloquea tras 5 intentos 15 min; MFA | rate-limit/WAF/proxy y alertas, bloqueante piloto |
-| Fuga por logs/exportación | alto | auditoría minimizada; PIN/QR no en claro | política de logs, expiración/export storage y DLP operativo |
-| Backup perdido o acceso a copia | alto | decisión de copias aisladas | cifrado, IAM, retención, restauración real y borrado de backup |
+| Fuga por logs/exportación | alto | auditoría minimizada; PIN/QR no en claro; exportación requiere ámbito y hash | allowlist/revisión de todos los logs, eliminación física al expirar y DLP operativo |
+| Backup perdido o acceso a copia | alto | S12 cifra `pg_dump` con AES-256-GCM/scrypt, checksum y directorio dedicado | IAM/cifrado de host, agenda, restauración real y borrado de backup |
+| Restauración de copia de otro cliente | crítico | tras restaurar sólo se comprueba la existencia de `environment_context` | comparar de forma estricta el UUID restaurado con el entorno destino y probar rechazo cruzado |
 | Dependencia vulnerable | medio-alto | `npm audit` realizado por S4 | CI, SBOM/actualización y revisión continua |
 | Insider/soporte excesivo | alto | actor técnico/auditoría prevista | JIT, doble aprobación, revisión de accesos y runbook |
 | Disponibilidad/ransomware | alto | Docker/PostgreSQL locales | backups inmutables/aislados, DR probado y objetivos RTO/RPO aprobados |
