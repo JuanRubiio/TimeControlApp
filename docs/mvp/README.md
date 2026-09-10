@@ -27,6 +27,7 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 - Privacidad por defecto: sin biometría, reconocimiento facial, foto o GPS en el MVP.
 - Aislamiento estricto por empresa, mínimo privilegio, cifrado, MFA de administradores, backups probados y datos demo sintéticos.
 - No prometer cumplimiento automático ni interpretar convenios; configuración revisable por asesoría.
+- Las referencias open source externas con licencia AGPL se usarán sólo para aprendizaje hasta contar con validación jurídica explícita; no se copiará código, componentes ni dependencias al MVP.
 
 ## Decisiones que requieren aprobación
 
