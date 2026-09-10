@@ -15,6 +15,12 @@ Toda respuesta de recurso incluye `id`, `createdAt`, `updatedAt` si procede y no
 | `/corrections` | S6 | proponer, listar propio/ámbito y decidir |
 | `/audit`, `/exports` | S9/S1 | lectura con ámbito y generación/descarga |
 
+## S9 — Exportación de evidencia
+
+`POST /exports` recibe `{format:"csv"|"pdf", employeeId|siteId, from:"YYYY-MM-DD", to:"YYYY-MM-DD"}`. Debe existir exactamente uno de `employeeId` o `siteId`; un período invertido o un alcance global sin filtro devuelve `VALIDATION_FAILED` o `EXPORT_SCOPE_TOO_BROAD`. Requiere `export.create:scope`, y el servidor vuelve a comprobar la persona/centro frente a la asignación efectiva del actor. La respuesta contiene `{id, manifest}`; el manifiesto no es una URL ni una credencial.
+
+`GET /exports/{id}/download` requiere sesión y `export.read:scope`, vuelve a comprobar ámbito y vence los artefactos temporales. Devuelve bytes CSV UTF-8 con BOM o PDF y nunca una URL pública. Antes de entregar recalcula SHA-256 y lo compara con `manifest.contentHash`; una divergencia es error de integridad y se audita.
+
 ## Envolvente de error
 
 ```json
