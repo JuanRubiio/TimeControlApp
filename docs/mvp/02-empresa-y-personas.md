@@ -40,3 +40,7 @@ Estado: **implementada; validación automatizada de S2 correcta**.
 - Configuración Docker y migraciones comprobadas contra la base local: `s001`, `s002` y la migración paralela `s003` constan aplicadas.
 
 Los cambios paralelos de S3 permanecen fuera de la propiedad funcional de S2; la ejecución conjunta actual es correcta.
+
+### Integración posterior con S3
+
+S2 publica `PostgresEmploymentScopeProvider` como adaptador del contrato de S3. Para un `occurredAt` ISO-8601 UTC resuelve atómicamente la relación laboral vigente según la fecha local del centro, empresa, centro, zona IANA efectiva y los alcances `company` y `site`. La consulta valida la pertenencia al entorno dedicado y conserva la capacidad de resolver historia aunque el centro o empleado se haya desactivado después. `collective` no se devuelve: no existe todavía un modelo propietario para ese alcance y añadirlo queda fuera de S2.
