@@ -9,7 +9,7 @@ Se adopta RBAC aplicado en servidor, con permisos atómicos y alcance explícito
 | Rol | Alcance máximo | Capacidades MVP |
 |---|---|---|
 | `employee` | su propia persona/relación laboral | fichar, consultar sus registros, proponer correcciones/incidencias y descargar sus exportaciones autorizadas |
-| `manager` | empleados y centros asignados | consultar equipo, revisar y decidir correcciones/incidencias de su ámbito; no administrar roles ni configuración global |
+| `manager` | empleados y centros asignados | consultar equipo, jornadas, eventos, cálculos e incidencias; revisar y decidir correcciones/incidencias de su ámbito; no administrar roles ni configuración global |
 | `admin` | entorno de su cliente | gestionar estructura, personas, relaciones, reglas, asignaciones y exportaciones autorizadas; MFA obligatorio |
 | `auditor` | sólo lectura, ámbito concedido | consultar evidencia y solicitar/descargar exportaciones autorizadas; no ficha, configura ni aprueba |
 | `system` | sólo tarea técnica declarada | migración, jobs y despliegue con permiso mínimo y actor técnico auditado |
@@ -24,6 +24,6 @@ Se adopta RBAC aplicado en servidor, con permisos atómicos y alcance explícito
 
 ## Catálogo mínimo de permisos
 
-`company.read/write`, `site.read/write`, `employee.read:self/read:scope/write`, `employment.read/write`, `rule.read/write`, `time-event.create:self/read:self/read:scope/kiosk.manage`, `correction.create:self/read:self/read:scope/decide`, `audit.read:scope`, `export.create:scope/read:scope`, `role.assign`, `auth.admin`.
+`company.read/write`, `site.read/write`, `employee.read:self/read:scope/write`, `employment.read/write`, `rule.read/write`, `time-event.create:self/read:self/read:scope/kiosk.manage`, `time-calculation.read:self/read:scope/recalculate:scope/configure`, `correction.create:self/read:self/read:scope/decide`, `audit.read:scope`, `export.create:scope/read:scope`, `role.assign`, `auth.admin`.
 
 S1 define los nombres finales como constantes tipadas. S2–S9 sólo consumen el catálogo; añadir permisos o ampliar un ámbito requiere actualizar este ADR y los contratos de autorización.
