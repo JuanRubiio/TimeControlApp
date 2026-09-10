@@ -1,7 +1,7 @@
 # Evaluación de referencias open source — MVP de control horario
 
-**Estado:** evaluación de referencia; no autoriza reutilización de código ni dependencias.  
-**Fecha de consulta:** 10/09/2026 (Europe/Madrid).  
+**Estado:** evaluación de referencia; no autoriza reutilización de código ni dependencias.
+**Fecha de consulta:** 10/09/2026 (Europe/Madrid).
 **Alcance de la revisión:** ramas `main` descargadas para lectura, documentación pública y metadatos de GitHub. No se ejecutaron los proyectos, no se hicieron pruebas de penetración ni auditoría de dependencias con CVE. Las conclusiones de seguridad son señales de revisión, no una certificación.
 
 ## Dictamen ejecutivo
