@@ -16,7 +16,7 @@ El cliente debe entregar este aviso antes de la activación individual y conserv
 4. **Borrado seguro:** tras levantar el bloqueo, borrar de aplicación, DB, almacenamiento y backups conforme a ciclo documentado; emitir evidencia de ejecución sin exponer datos.
 5. **Litigio/inspección:** una orden de preservación suspende el borrado del alcance afectado y se audita; al finalizar, se reanuda el ciclo con aprobación.
 
-Actualmente no existe job transversal de retención, bloqueo, borrado ni catálogo final de plazos. Es un bloqueo de piloto, no un control existente.
+S9 aplica una caducidad lógica de 30 días a los archivos de exportación y deniega su descarga tras el vencimiento, pero no hay job que elimine el archivo materializado ni los artefactos de otros conjuntos. Sigue sin existir un job transversal de retención, bloqueo y borrado ni un catálogo final de plazos. Es un bloqueo de piloto, no un control existente.
 
 ## Solicitudes de derechos
 
