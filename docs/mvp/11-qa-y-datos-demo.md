@@ -32,6 +32,7 @@ Estado: **base de QA y datos demo implementada para S1–S4/S10; validación loc
 - Correcto: `next build` con `DATABASE_URL` y `ENVIRONMENT_ID` ficticios de build — compilación y 23 rutas generadas. Sin esas variables el build local se rechaza por validación de configuración, comportamiento esperado; el Dockerfile ya las inyecta sólo para build.
 - Pendiente de repetir en Docker/PostgreSQL: E2E HTTP y concurrencia reales. No se cargaron datos demo en la base existente ni se modificó código de dominio.
 - Incidencia abierta: [QA-001](../qa-incidents.md), permisos ausentes de autoconsulta/autofichaje para el rol `employee`; se documenta sin eludir mínimo privilegio.
+- Entrega Git: commit local `fe94d13` creado en `codex/s11-qa-demo`. La publicación queda bloqueada porque el token OAuth actual no dispone del permiso `workflow` para crear `.github/workflows/qa.yml`; no se ha alterado ni descartado el cambio.
 
 ### Límites y bloqueos
 
