@@ -42,5 +42,5 @@ Se ha creado el esqueleto ejecutable del monolito modular en `src/`, con límite
 
 - `docker compose --env-file .env.example build app`: correcto con Node 20.20.2, Next.js 16.3.4 y React 19.2.4.
 - `docker compose --env-file .env.example exec -T app npm test`: 6 pruebas correctas: autorización con denegación por defecto, TOTP, y propiedades de migración/auditoría/ausencia de tabla multitenant.
-- Integración PostgreSQL/HTTP: migración repetible correcta; administrador exige enrolamiento MFA; sesión sin `audit.read:scope` recibe 403 y la misma sesión revocada recibe 401; `mvp_app` no tiene `INSERT`, `UPDATE` ni `DELETE` sobre `audit_entries` y sí puede ejecutar `audit_append`.
+- Integración PostgreSQL/HTTP: migración repetible correcta; administrador completa enrolamiento y verificación TOTP MFA, obteniendo acceso administrativo; sesión sin `audit.read:scope` recibe 403 y la misma sesión revocada recibe 401; `mvp_app` no tiene `INSERT`, `UPDATE` ni `DELETE` sobre `audit_entries` y sí puede ejecutar `audit_append`.
 - `npm audit --omit=dev --audit-level=moderate`: 0 vulnerabilidades. Se actualizó Next.js 14 a 16 para resolver una vulnerabilidad crítica y PostCSS transitivo vulnerable.
