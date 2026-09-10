@@ -19,7 +19,7 @@ Se auditan creación de regla, calendario y turno, publicación/cambio de vigenc
 
 ### Riesgos de integración
 
-S2 debe proporcionar un adaptador de `EmploymentScopeProvider` que valide la pertenencia de empresa y centro al entorno, la vigencia de la relación para el instante UTC y la zona efectiva. Antes de habilitar consumo por S4/S5, añadir pruebas de contrato contra ese adaptador y pruebas PostgreSQL de exclusión/resolve con una base migrada. La edición versionada de calendarios y turnos se entrega como creación de recursos e instantánea al publicar la regla; un CRUD de edición sólo deberá añadirse creando una nueva versión, nunca alterando una versión publicada.
+S2 proporciona `PostgresEmploymentScopeProvider`, que valida la pertenencia de empresa y centro al entorno y resuelve atómicamente vigencia y zona efectiva. Los colectivos siguen pendientes de su dominio propietario. Antes de habilitar consumo por S4/S5, añadir pruebas de contrato contra el adaptador y pruebas PostgreSQL de exclusión/resolve con una base migrada. La edición versionada de calendarios y turnos se entrega como creación de recursos e instantánea al publicar la regla; un CRUD de edición sólo deberá añadirse creando una nueva versión, nunca alterando una versión publicada.
 
 ## Alcance
 

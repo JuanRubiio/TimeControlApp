@@ -40,3 +40,7 @@ Estado: **implementada; validación automatizada de S2 correcta**.
 - Configuración Docker y migraciones comprobadas contra la base local: `s001`, `s002` y la migración paralela `s003` constan aplicadas.
 
 Los cambios paralelos de S3 permanecen fuera de la propiedad funcional de S2; la ejecución conjunta actual es correcta.
+
+### Ajuste de integración S2/S3 — 10/09/2026
+
+La revisión previa a S4 reforzó dos invariantes: el centro sólo acepta identificadores IANA soportados tanto en API como en PostgreSQL, y un responsable debe tener una relación en el mismo centro vigente en la fecha de inicio de la relación que se crea o modifica. Se añadió el adaptador `PostgresEmploymentScopeProvider`: resuelve atómicamente para S3 la relación laboral activa, empresa, centro, zona efectiva y alcances `company`/`site`; los colectivos siguen reservados para su futuro dominio propietario.
