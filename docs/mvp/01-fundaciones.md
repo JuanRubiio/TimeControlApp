@@ -29,15 +29,18 @@ Se ha creado el esqueleto ejecutable del monolito modular en `src/`, con límite
 
 ### Operación local
 
-1. Copiar `.env.example` a `.env` y sustituir todos los secretos y el UUID de entorno por valores locales únicos.
+1. Copiar `.env.example` a `.env` y sustituir todos los secretos y el UUID de entorno por valores locales únicos. Requiere Docker Desktop y Node 20.19+ dentro de la imagen.
 2. Ejecutar `docker compose up --build`. La app aplica migraciones como migrador y luego arranca como servicio; PostgreSQL crea el rol de aplicación sólo en un volumen nuevo.
 3. Una vez arriba, ejecutar `docker compose exec app npm run db:bootstrap-admin` para crear la única cuenta inicial local. Su primer acceso obliga a enrolar MFA.
 4. Ejecutar `docker compose exec app npm test` para las pruebas unitarias. Para detener el entorno: `docker compose down`; añadir `-v` sólo si se desea descartar explícitamente la base local.
 
 `POSTGRES_SUPERUSER_PASSWORD`, `POSTGRES_PASSWORD`, UUID de entorno y credenciales de bootstrap son secretos operativos: `.env` está ignorado y no se versiona. S12 completará aprovisionamiento por cliente, almacenamiento aislado, backups/restauración y rollback automatizados; no se simulan en S1.
 
+`SESSION_COOKIE_SECURE` es `true` por defecto. El ejemplo local usa explícitamente `false` porque Docker publica HTTP en `localhost`; nunca debe mantenerse en `false` en un entorno HTTPS o de producción.
+
 ### Resultado de validación
 
-- `npx tsc --noEmit`: correcto.
-- `npm test`: 6 pruebas correctas: autorización con denegación por defecto, TOTP, y propiedades de migración/auditoría/ausencia de tabla multitenant.
-- Build y pruebas de integración con PostgreSQL: bloqueados en esta máquina porque Docker Desktop no tiene disponible el motor `dockerDesktopLinuxEngine`. No es un fallo de la aplicación; queda pendiente ejecutar los comandos anteriores cuando el motor esté iniciado.
+- `docker compose --env-file .env.example build app`: correcto con Node 20.20.2, Next.js 16.3.4 y React 19.2.4.
+- `docker compose --env-file .env.example exec -T app npm test`: 6 pruebas correctas: autorización con denegación por defecto, TOTP, y propiedades de migración/auditoría/ausencia de tabla multitenant.
+- Integración PostgreSQL/HTTP: migración repetible correcta; administrador exige enrolamiento MFA; sesión sin `audit.read:scope` recibe 403 y la misma sesión revocada recibe 401; `mvp_app` no tiene `INSERT`, `UPDATE` ni `DELETE` sobre `audit_entries` y sí puede ejecutar `audit_append`.
+- `npm audit --omit=dev --audit-level=moderate`: 0 vulnerabilidades. Se actualizó Next.js 14 a 16 para resolver una vulnerabilidad crítica y PostCSS transitivo vulnerable.

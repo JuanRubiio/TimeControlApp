@@ -15,6 +15,7 @@ async function userByEmail(email: string): Promise<User | null> {
 export async function passwordLogin(email:string, password:string, correlationId:string) {
   const user = await userByEmail(email); const valid = !!user?.is_active && await verifyPassword(user?.password_hash ?? '$argon2id$v=19$m=19456,t=2,p=1$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', password);
   if (!valid || !user) { await appendAudit({actorType:'system', action:'auth.login',resourceType:'session',result:'denied',correlationId, changes:{reason:'invalid_credentials'}}); return null; }
+  await appendAudit({actorType:'user',actorId:user.id,action:'auth.login',resourceType:'session',result:'success',correlationId});
   if (user.roles.includes('admin') && !user.mfa_enrolled_at) return { status: 'mfa_enrollment_required' as const, challenge: await createChallenge(user.id, 'mfa_enroll') };
   if (user.roles.includes('admin')) return { status: 'mfa_required' as const, challenge: await createChallenge(user.id, 'mfa_verify') };
   return { status:'authenticated' as const, session: await createSession(user.id, correlationId) };

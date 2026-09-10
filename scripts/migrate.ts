@@ -6,6 +6,7 @@ import pg from 'pg';
 const databaseUrl = process.env.MIGRATION_DATABASE_URL ?? process.env.DATABASE_URL;
 const environmentId = process.env.ENVIRONMENT_ID;
 if (!databaseUrl || !environmentId) throw new Error('DATABASE_URL y ENVIRONMENT_ID son obligatorios.');
+async function main() {
 const client = new pg.Client({ connectionString: databaseUrl });
 await client.connect();
 try {
@@ -28,3 +29,5 @@ try {
   else if (row.rows[0].environment_id !== environmentId) throw new Error('ENVIRONMENT_ID no coincide con el entorno dedicado de la base.');
   console.log(JSON.stringify({ migrated: true, correlationId: randomUUID() }));
 } finally { await client.end(); }
+}
+main().catch((error) => { console.error(error); process.exitCode = 1; });
