@@ -8,7 +8,7 @@ Estado: **implementado y validado localmente**. S3 es propietaria de `work_rules
 
 ### Contratos y API creados
 
-- `src/work-rules/contracts.ts` publica `RuleResolver`, `ResolvedRule`, `RuleScope` y el puerto temporal `EmploymentScopeProvider` para S2. Los alcances `company`, `site` y `collective` se persisten como UUIDs tipados sin FK a tablas de S2, hasta que aquella sesión publique su adaptador de pertenencia y zona efectiva.
+- `src/work-rules/contracts.ts` publica `RuleResolver`, `ResolvedRule`, `RuleScope` y el puerto `EmploymentScopeProvider` para S2. El puerto recibe un instante UTC y devuelve atómicamente relación laboral, empresa, centro, zona IANA efectiva y alcances `company`/`site`; no da acceso a tablas internas. `collective` sigue siendo un alcance futuro de S3: no forma parte de S2 hasta que tenga modelo y sesión propietaria.
 - `PostgresRuleResolver` elige la regla activa más específica (`site`, `collective`, `company`) para el instante UTC recibido y conserva zona IANA, versión, calendario y turno resueltos. `FixedRuleResolver` es el mock contractual para S4/S5.
 - `GET` y `POST /api/v1/work-rules`, `/api/v1/rule-versions`, `/api/v1/calendars` y `/api/v1/shifts`, más `POST /api/v1/work-rules/{id}/deactivate`, exponen la configuración. La lectura exige `rule.read` y las mutaciones `rule.write`. Las versiones capturan una instantánea de calendario y turno: modificar la configuración futura no reescribe lo ya resuelto.
 - La política de pausa sólo permite `manual_visible` con `autoDeduct: false`. Estas configuraciones son operativas y revisables; no constituyen interpretación legal automática ni promesa de cumplimiento.
@@ -19,7 +19,7 @@ Se auditan creación de regla, calendario y turno, publicación/cambio de vigenc
 
 ### Riesgos de integración
 
-S2 debe proporcionar un adaptador de `EmploymentScopeProvider` que valide que los UUID de empresa/centro/colectivo pertenecen al entorno y determine zona efectiva por relación laboral. Antes de habilitar consumo por S4/S5, añadir pruebas de contrato contra ese adaptador y pruebas PostgreSQL de exclusión/resolve con una base migrada. La edición versionada de calendarios y turnos se entrega como creación de recursos e instantánea al publicar la regla; un CRUD de edición sólo deberá añadirse creando una nueva versión, nunca alterando una versión publicada.
+S2 debe proporcionar un adaptador de `EmploymentScopeProvider` que valide la pertenencia de empresa y centro al entorno, la vigencia de la relación para el instante UTC y la zona efectiva. Antes de habilitar consumo por S4/S5, añadir pruebas de contrato contra ese adaptador y pruebas PostgreSQL de exclusión/resolve con una base migrada. La edición versionada de calendarios y turnos se entrega como creación de recursos e instantánea al publicar la regla; un CRUD de edición sólo deberá añadirse creando una nueva versión, nunca alterando una versión publicada.
 
 ## Alcance
 

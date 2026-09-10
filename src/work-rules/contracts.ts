@@ -11,5 +11,10 @@ export type ResolvedRule = {
 export type RuleResolverInput = { occurredAt: string; effectiveTimeZone: string; scopes: readonly RuleScope[] };
 export interface RuleResolver { resolve(input: RuleResolverInput): Promise<ResolvedRule | null>; }
 
-/** Contrato temporal de S2: devuelve referencias activas, no da acceso a sus tablas. */
-export interface EmploymentScopeProvider { scopesForEmployee(employeeId: string, at: string): Promise<readonly RuleScope[]>; effectiveTimeZone(employeeId: string, at: string): Promise<string>; }
+/**
+ * Puerto de S2 para resolver de forma atómica la relación laboral aplicable.
+ * `occurredAt` es un instante ISO-8601 UTC; no se aceptan fechas locales ambiguas.
+ * Los colectivos no se incluyen hasta que su modelo tenga una sesión propietaria.
+ */
+export type EmploymentContext = { employmentId: string; companyId: string; siteId: string; effectiveTimeZone: string; scopes: readonly RuleScope[] };
+export interface EmploymentScopeProvider { contextForEmployee(employeeId: string, occurredAt: string): Promise<EmploymentContext | null>; }
