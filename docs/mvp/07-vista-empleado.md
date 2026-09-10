@@ -4,7 +4,7 @@
 
 ## Registro de implementación S7 — 10/09/2026
 
-Estado: **implementada y validada localmente; pendiente de publicación Git**. Rama: `codex/s7-vista-empleado`, basada en `TimeControlApp/master` `e8a55df`.
+Estado: **implementada, validada localmente y publicada**. Rama: `codex/s7-vista-empleado`, basada en `TimeControlApp/master` `e8a55df`; commit `16ca92d`.
 
 ### Rutas y componentes
 
