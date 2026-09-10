@@ -1,0 +1,2 @@
+import { NextRequest } from 'next/server'; import * as service from '@/company-people/service'; import { authenticated, data, missing } from '@/company-people/http';
+export async function GET(request:NextRequest){const access=await authenticated(request,'employee.read:self');if('response'in access)return access.response;const item=await service.employeeForUser(access.actor.id);return item?data(item,access.cid):missing(access.cid);}
