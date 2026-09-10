@@ -36,7 +36,7 @@ El alta, actualización, migración, rollback y retirada están descritos en `do
 
 ### Backups, restore y observabilidad
 
-`Dockerfile.ops` crea una imagen operativa local con cliente PostgreSQL. `docker/ops/backup.sh` hace `pg_dump` y cifra el resultado mediante `docker/ops/crypto-backup.mjs` con AES-256-GCM, clave derivada por scrypt, sal/IV aleatorios y tag autenticado. Crea además checksum y manifiesto sin PII. `restore.sh` obliga a confirmar explícitamente, verifica checksum/GCM, restaura y comprueba el contexto del entorno. Los comandos y la política propuesta de retención/prueba están en `docs/operations/backup-and-restore.md`.
+`Dockerfile.ops` crea una imagen operativa local con cliente PostgreSQL. `docker/ops/backup.sh` hace `pg_dump` y cifra el resultado mediante `docker/ops/crypto-backup.mjs` con AES-256-GCM, clave derivada por scrypt, sal/IV aleatorios, tag autenticado y `ENVIRONMENT_ID` autenticado. Crea además checksum y manifiesto sin PII. `restore.sh` obliga a confirmar explícitamente y rechaza el UUID de origen incorrecto antes de tocar PostgreSQL; tras restaurar comprueba de nuevo el contexto del entorno. Los comandos y la política propuesta de retención/prueba están en `docs/operations/backup-and-restore.md`.
 
 Los logs de plataforma son JSON con timestamp/nivel/evento; su filtro elimina claves de email, secretos, token, cookies, contraseña, pepper y URL de conexión. No hay cuerpos HTTP ni valores de negocio en las métricas. Las alertas mínimas propuestas son disponibilidad, error técnico, DB, migración, backup y restore; su configuración final depende del proxy/observador que se apruebe sin coste externo.
 
@@ -66,3 +66,9 @@ Los logs de plataforma son JSON con timestamp/nivel/evento; su filtro elimina cl
 - Correcto: `docker compose --env-file .env config --quiet` y la combinación de `docker-compose.yml` + `docker-compose.ops.yml` con la plantilla de cliente pasan validación sintáctica.
 - No ejecutable aún: build fresco de Dockerfile/Dockerfile.ops y smoke HTTP contra la nueva imagen. Docker Desktop no consiguió descargar dependencias durante `npm ci` (timeout de registry); el host usa Node 18.12, insuficiente para la versión de Vitest. Repetir con conectividad de registry antes del piloto.
 - No ejecutable aún: backup/restore completo, porque exige la imagen operativa recién construida y un directorio de backup dedicado. La automatización, el cifrado autenticado y la comprobación de restore están revisados estáticamente; la simulación real sigue siendo un bloqueo antes de datos reales.
+
+### Revisión de cierre tras S1–S12 (10/09/2026)
+
+La revisión integrada en `master` detectó que un restore previo sólo verificaba `environment_context` tras sobrescribir el destino. S12 se ha actualizado para que cada backup `TCBKUP02` incorpore el `ENVIRONMENT_ID` de origen como dato autenticado AES-GCM y para que `restore.sh` lo compare **antes** de invocar `pg_restore`. Tras la carga se conserva una segunda comprobación del contexto de base. Un backup de otro entorno o un formato anterior se rechaza; la nueva prueba negativa de criptografía cubre ese caso sin necesitar PostgreSQL.
+
+Resultado real de esta revisión: cifrado/descifrado con el UUID correcto y rechazo de UUID cruzado correctos mediante `node docker/ops/crypto-backup.mjs`. La ejecución completa de Vitest y del restore PostgreSQL queda pendiente de que Docker Desktop vuelva a estar disponible; el host continúa con Node 18.12, inferior al mínimo del proyecto.
