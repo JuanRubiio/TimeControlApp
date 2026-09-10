@@ -21,6 +21,7 @@ COPY --from=build /app/migrations ./migrations
 COPY --from=build /app/scripts ./scripts
 COPY --from=build /app/src ./src
 COPY --from=build /app/tests ./tests
+COPY --from=build /app/docker/ops ./docker/ops
 COPY --from=build /app/tsconfig.json ./tsconfig.json
 COPY --from=build /app/vitest.config.ts ./vitest.config.ts
 COPY --from=build /app/package.json ./package.json

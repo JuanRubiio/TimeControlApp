@@ -22,4 +22,9 @@ describe('S11 contratos de seguridad y privacidad', () => {
     expect(audit).toContain('REVOKE INSERT, UPDATE, DELETE ON audit_entries FROM PUBLIC, mvp_app');
     expect(events).not.toMatch(/GRANT[^\n]*(UPDATE|DELETE) ON time_events/i);
   });
+  it('serializa migraciones concurrentes antes de consultar o registrar checksums', () => {
+    const migrator=readFileSync('scripts/migrate.ts','utf8');
+    expect(migrator).toContain("SELECT pg_advisory_lock($1)");
+    expect(migrator).toContain("SELECT pg_advisory_unlock($1)");
+  });
 });

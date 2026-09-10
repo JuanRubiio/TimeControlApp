@@ -1,6 +1,14 @@
 # S13 — Validación E2E, experiencia de usuario y preparación de piloto
 
-**Estado:** cerrada con bloqueos. **Base:** `9f29232` (`master`, 10/09/2026). **Rama:** `codex/s13-validacion-e2e-piloto`. **Propiedad:** validación transversal; no modifica contratos de dominio.
+**Estado:** validación reanudada; correcciones P1 parciales verificadas. **Base:** `9f29232` (`master`, 10/09/2026). **Rama:** `codex/s13-validacion-e2e-piloto`.
+
+## Revalidación 10/09/2026
+
+Docker Desktop activo permitió construir un entorno aislado `time-control-s13`, migrarlo y cargar datos sintéticos. Con Node 20 del contenedor y Node 24 empaquetado se verificaron 64/64 pruebas, compilación y health `{"status":"ok","database":"ok"}`. El E2E HTTP de un empleado obtuvo: login 200, autoconsulta 200, fichaje 201, repetición idempotente 200, exportación denegada 403, administración denegada 403 y sesión revocada 401.
+
+Se corrigieron: permisos propios de empleado con migración aditiva; pantalla `/login` con MFA y logout; consulta propia que fallaba por columna SQL ambigua; inclusión del cifrado de backup en la imagen de pruebas; y serialización de migraciones concurrentes. Se revocaron exportaciones de ámbito al rol employee: el permiso existente permitía acceso a datos de terceros con ámbito de entorno.
+
+Siguen bloqueando el Go: validación completa de correcciones/exportaciones/DST/aislamiento multicentro, dataset de decisiones aprobada/rechazada, y controles externos TLS/WAF/retención/DPO.
 
 ## Alcance y dependencias
 

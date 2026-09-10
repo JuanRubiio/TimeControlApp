@@ -1,6 +1,8 @@
 # Informe de preparación de piloto
 
-**Recomendación:** **no listo (NO-GO)**. **Fecha:** 10/09/2026. **Versión evaluada:** `9f29232` — `harden S12 restore environment identity`; rama de informe `codex/s13-validacion-e2e-piloto`.
+**Recomendación:** **no listo (NO-GO)**. **Fecha:** 10/09/2026. **Versión evaluada:** `9f29232` más correcciones S13 no integradas; rama de informe `codex/s13-validacion-e2e-piloto`.
+
+Actualización: Docker y Node ya son ejecutables en el entorno sintético. Build Docker, health, migración, seed office, 64/64 pruebas y E2E de empleado/RBAC/logout se han completado. Permanecen los bloqueos de operación y los recorridos E2E no ejecutados.
 
 ## Entorno y evidencia
 

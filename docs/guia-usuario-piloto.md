@@ -6,11 +6,11 @@ Time Control registra entradas, salidas y pausas manuales, muestra incidencias y
 
 No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La aplicación se ejecuta en un entorno dedicado por empresa; el acceso se limita por rol y ámbito autorizado.
 
-> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. El acceso web de login/MFA/logout y la configuración inicial por UI todavía no están disponibles; no se debe invitar a usuarios no técnicos hasta que S14 los cierre.
+> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos de S14.
 
 ## Requisitos de acceso
 
-Use un navegador actualizado, conexión al entorno asignado y una cuenta creada por la empresa. La interfaz actual tiene vistas de fichaje (`/employee`), historial y correcciones; administración (`/admin`); y kiosco (`/kiosk`). No comparta sesiones ni PIN. Un administrador debe completar MFA cuando el flujo de acceso esté habilitado.
+Use un navegador actualizado, conexión al entorno asignado y una cuenta creada por la empresa. Abra `/login`, indique correo y contraseña, y complete MFA si se le solicita. La interfaz tiene vistas de fichaje (`/employee`), historial y correcciones; administración (`/admin`); y kiosco (`/kiosk`). No comparta sesiones ni PIN. Use **Cerrar sesión** al terminar.
 
 ## Administrador y RR. HH.
 
