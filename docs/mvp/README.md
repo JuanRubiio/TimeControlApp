@@ -1,6 +1,6 @@
 # Fuente de verdad — MVP de control horario
 
-Estado: **S0 documentada; no se ha iniciado implementación de producto. Pendiente revisión de sus contratos por S1–S4 y S12 antes de integrar código**. Fecha: 09/09/2026.
+Estado: **S1–S12 integradas en `master`; S13 cerrada con bloqueos de piloto documentados.** Fecha de revisión: 10/09/2026.
 
 Este directorio es el contrato inicial de delivery. No se implementará una sesión hasta que sus decisiones previas estén aprobadas y se use su fichero como contrato de trabajo.
 
@@ -69,6 +69,8 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S10 | [10-privacidad-y-cumplimiento.md](10-privacidad-y-cumplimiento.md) | M | Continua tras S1 |
 | S11 | [11-qa-y-datos-demo.md](11-qa-y-datos-demo.md) | M | Continua |
 | S12 | [12-despliegue-y-observabilidad.md](12-despliegue-y-observabilidad.md) | M | Paralela tras S1 |
+| S13 | [13-validacion-e2e-y-preparacion-piloto.md](13-validacion-e2e-y-preparacion-piloto.md) | M | Cerrada con bloqueos; NO-GO |
+| S14 | [14-cierre-bloqueos-piloto.md](14-cierre-bloqueos-piloto.md) | L | Propuesta; requiere decisión de producto |
 
 ## Base transversal publicada por S0
 

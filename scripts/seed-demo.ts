@@ -49,6 +49,30 @@ async function main() {
         VALUES($1,$2,'2026-01-01',$3,$4,$5,$6,$7,$8,$9,$10)
         ON CONFLICT(id) DO UPDATE SET time_zone=EXCLUDED.time_zone,expected_minutes=EXCLUDED.expected_minutes,pause_policy=EXCLUDED.pause_policy,calendar_id=EXCLUDED.calendar_id,shift_id=EXCLUDED.shift_id,calendar_snapshot=EXCLUDED.calendar_snapshot,shift_snapshot=EXCLUDED.shift_snapshot`,[versionId,ruleId,site.timeZone,employee.schedule==='split'?480:480,JSON.stringify({mode:'manual_visible',autoDeduct:false}),fixture.calendar.id,shift.id,JSON.stringify(fixture.calendar),JSON.stringify({id:shift.id,name:shift.name,segments:shift.segments}),employee.userId]);
     }
+    // Historia reproducible para recorridos E2E: jornadas completas, pausa,
+    // jornada incompleta y un turno que cruza medianoche. Los eventos son sólo
+    // inserts; nunca se actualiza la evidencia original.
+    const fixtureEventId=(employeeId:string, order:number)=>`${employeeId.slice(0,8)}-d${String(order).padStart(3,'0')}-4000-8000-${employeeId.slice(-12)}`;
+    for (const employee of demoEmployees(profile)) {
+      const site=siteFor(sites,employee.siteKey); const employmentId=`${employee.id.slice(0,8)}-9999-4999-8999-${employee.id.slice(-12)}`; const versionId=`${employee.id.slice(0,8)}-8888-4888-8888-${employee.id.slice(-12)}`;
+      const day=employee.schedule==='overnight'?'2026-01-10':'2026-01-12';
+      const moments=employee.schedule==='overnight'
+        ? [['clock_in','2026-01-10T21:00:00.000Z'],['break_start','2026-01-11T01:00:00.000Z'],['break_end','2026-01-11T01:20:00.000Z'],['clock_out','2026-01-11T05:00:00.000Z']]
+        : [['clock_in','2026-01-12T08:00:00.000Z'],['break_start','2026-01-12T12:00:00.000Z'],['break_end','2026-01-12T12:20:00.000Z'],['clock_out','2026-01-12T16:20:00.000Z']];
+      for (const [index, [eventType, occurredAt]] of moments.entries()) await client.query(`INSERT INTO time_events(id,employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,recorded_at,effective_time_zone,labor_date,created_by_user_id)
+        VALUES($1,$2,$3,$4,$5,$6,'web',$7,$7,$8,$9,$10) ON CONFLICT(id) DO NOTHING`,[fixtureEventId(employee.id,index+1),employee.id,employmentId,site.id,versionId,eventType,occurredAt,site.timeZone,day,employee.userId]);
+      await client.query(`INSERT INTO time_events(id,employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,recorded_at,effective_time_zone,labor_date,created_by_user_id)
+        VALUES($1,$2,$3,$4,$5,'clock_in','web',$6,$6,$7,'2026-01-13',$8) ON CONFLICT(id) DO NOTHING`,[fixtureEventId(employee.id,5),employee.id,employmentId,site.id,versionId,'2026-01-13T08:00:00.000Z',site.timeZone,employee.userId]);
+    }
+    const admin=demoEmployees(profile)[0]; const adminSite=siteFor(sites,admin.siteKey); const adminVersionId=`${admin.id.slice(0,8)}-8888-4888-8888-${admin.id.slice(-12)}`;
+    const correctionId=(order:number)=>`${admin.id.slice(0,8)}-e${String(order).padStart(3,'0')}-4000-8000-${admin.id.slice(-12)}`;
+    const correctionRows=[
+      {order:1,event:3,reason:'Pausa pendiente de revisión demo'},
+      {order:2,event:1,reason:'Entrada propuesta para aprobación demo'},
+      {order:3,event:2,reason:'Pausa propuesta para rechazo demo'}
+    ] as const;
+    for (const row of correctionRows) await client.query(`INSERT INTO correction_requests(id,employee_id,site_id,labor_date,kind,time_event_id,proposed_effect,reason,status,requested_by_user_id)
+      VALUES($1,$2,$3,'2026-01-12','time_event',$4,$5,$6,'pending',$7) ON CONFLICT(id) DO NOTHING`,[correctionId(row.order),admin.id,adminSite.id,fixtureEventId(admin.id,row.event),JSON.stringify({eventType:row.event===2?'clock_in':'clock_out',occurredAt:'2026-01-12T08:05:00.000Z'}),row.reason,admin.userId]);
     await client.query('SELECT audit_append($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[environmentId,'system',null,'demo.seeded','demo-profile',profile,'success',randomUUID(),JSON.stringify({}),JSON.stringify({profile,synthetic:true})]);
     await client.query('COMMIT');
     console.log(JSON.stringify({seeded:true,profile,employees:demoEmployees(profile).length,synthetic:true}));

@@ -8,8 +8,12 @@ const environmentId = process.env.ENVIRONMENT_ID;
 if (!databaseUrl || !environmentId) throw new Error('DATABASE_URL y ENVIRONMENT_ID son obligatorios.');
 async function main() {
 const client = new pg.Client({ connectionString: databaseUrl });
-await client.connect();
+  await client.connect();
 try {
+  // Compose puede ejecutar una migración manual mientras el arranque del servicio
+  // aplica la misma versión. Serializar todo el ciclo evita registrar dos veces
+  // la misma migración y conserva la idempotencia entre procesos.
+  await client.query('SELECT pg_advisory_lock($1)', [71209002]);
   await client.query('CREATE TABLE IF NOT EXISTS schema_migrations (name text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT clock_timestamp(), checksum text NOT NULL)');
   const files = (await readdir('migrations')).filter((name) => name.endsWith('.sql')).sort();
   for (const name of files) {
@@ -28,6 +32,6 @@ try {
   if (!row.rowCount) await client.query('INSERT INTO environment_context(singleton, environment_id) VALUES (true, $1)', [environmentId]);
   else if (row.rows[0].environment_id !== environmentId) throw new Error('ENVIRONMENT_ID no coincide con el entorno dedicado de la base.');
   console.log(JSON.stringify({ migrated: true, correlationId: randomUUID() }));
-} finally { await client.end(); }
+} finally { await client.query('SELECT pg_advisory_unlock($1)', [71209002]).catch(()=>undefined); await client.end(); }
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });
