@@ -22,3 +22,7 @@ jobs:
       - run: npm test
       - run: npm run qa:smoke
       - run: npm run build
+        env:
+          # Valores sintéticos: Next evalúa rutas durante el build, sin conectar a PostgreSQL.
+          DATABASE_URL: postgresql://build:build@localhost:5432/build
+          ENVIRONMENT_ID: 00000000-0000-4000-8000-000000000001
