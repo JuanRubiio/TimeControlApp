@@ -1,0 +1,18 @@
+services:
+  backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.ops
+    profiles: ["ops"]
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: time_control
+      PGUSER: postgres
+      PGPASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:?set in client env file}
+      BACKUP_PASSPHRASE: ${BACKUP_PASSPHRASE:?set in client env file}
+    volumes:
+      - ${BACKUP_DIRECTORY:?set in client env file}:/backups
+    depends_on:
+      db:
+        condition: service_healthy

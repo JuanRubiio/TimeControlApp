@@ -4,5 +4,9 @@ coverage/
 .env
 .env.*
 !.env.example
+# Los parámetros reales por cliente incluyen secretos. Sólo se versiona la plantilla.
+ops/clients/*.env
+!ops/clients/client.example.env
+ops/backups/
 *.log
 *.tsbuildinfo
