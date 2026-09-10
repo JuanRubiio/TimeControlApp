@@ -59,10 +59,10 @@ async function main() {
       const moments=employee.schedule==='overnight'
         ? [['clock_in','2026-01-10T21:00:00.000Z'],['break_start','2026-01-11T01:00:00.000Z'],['break_end','2026-01-11T01:20:00.000Z'],['clock_out','2026-01-11T05:00:00.000Z']]
         : [['clock_in','2026-01-12T08:00:00.000Z'],['break_start','2026-01-12T12:00:00.000Z'],['break_end','2026-01-12T12:20:00.000Z'],['clock_out','2026-01-12T16:20:00.000Z']];
-      for (const [index, [eventType, occurredAt]] of moments.entries()) await client.query(`INSERT INTO time_events(id,employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,effective_time_zone,labor_date,created_by_user_id)
-        VALUES($1,$2,$3,$4,$5,$6,'web',$7,$8,$9,$10) ON CONFLICT(id) DO NOTHING`,[fixtureEventId(employee.id,index+1),employee.id,employmentId,site.id,versionId,eventType,occurredAt,site.timeZone,day,employee.userId]);
-      await client.query(`INSERT INTO time_events(id,employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,effective_time_zone,labor_date,created_by_user_id)
-        VALUES($1,$2,$3,$4,$5,'clock_in','web',$6,$7,'2026-01-13',$8) ON CONFLICT(id) DO NOTHING`,[fixtureEventId(employee.id,5),employee.id,employmentId,site.id,versionId,'2026-01-13T08:00:00.000Z',site.timeZone,employee.userId]);
+      for (const [index, [eventType, occurredAt]] of moments.entries()) await client.query(`INSERT INTO time_events(id,employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,recorded_at,effective_time_zone,labor_date,created_by_user_id)
+        VALUES($1,$2,$3,$4,$5,$6,'web',$7,$7,$8,$9,$10) ON CONFLICT(id) DO NOTHING`,[fixtureEventId(employee.id,index+1),employee.id,employmentId,site.id,versionId,eventType,occurredAt,site.timeZone,day,employee.userId]);
+      await client.query(`INSERT INTO time_events(id,employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,recorded_at,effective_time_zone,labor_date,created_by_user_id)
+        VALUES($1,$2,$3,$4,$5,'clock_in','web',$6,$6,$7,'2026-01-13',$8) ON CONFLICT(id) DO NOTHING`,[fixtureEventId(employee.id,5),employee.id,employmentId,site.id,versionId,'2026-01-13T08:00:00.000Z',site.timeZone,employee.userId]);
     }
     const admin=demoEmployees(profile)[0]; const adminSite=siteFor(sites,admin.siteKey); const adminVersionId=`${admin.id.slice(0,8)}-8888-4888-8888-${admin.id.slice(-12)}`;
     const correctionId=(order:number)=>`${admin.id.slice(0,8)}-e${String(order).padStart(3,'0')}-4000-8000-${admin.id.slice(-12)}`;
