@@ -107,3 +107,24 @@ Se aplicó el sistema mínimo en `src/app/globals.css` y `src/ui/feedback.tsx`, 
 1. Aceptar tamaño M y el cambio visual transversal antes de abrir S16.
 2. Confirmar si la UI debe sustituir por completo las etiquetas técnicas o mostrar un enlace de detalle técnico para responsables.
 3. Confirmar que S14 no añade reglas de negocio aunque revele fricciones que deban derivarse a una sesión posterior.
+
+## Iteración visual y E2E de cierre — 11/09/2026
+
+Se aplicó una segunda capa visual, inspirada en paneles de operaciones contemporáneos sin replicar contenido, gráficos ni funcionalidades ajenas: panel centrado, navegación lateral en escritorio, navegación compacta en móvil, tarjetas suaves, jerarquía tipográfica, botones con estados de interacción y transiciones breves que respetan la reducción natural de movimiento del sistema.
+
+- Se eliminaron los textos técnicos sobre cámara, ubicación y biometría de las pantallas de acceso, jornada y QR. La privacidad se conserva como decisión de producto y documentación, sin distraer el flujo de la persona usuaria.
+- La guía de piloto incorpora cuentas `office` sintéticas de empleado, responsable y administración, con su propósito y el requisito MFA administrativo; las credenciales se declaran exclusivamente para revisión local.
+- El acceso de responsable a la ruta inicial de empleado muestra una orientación clara hacia Administración y no ofrece acciones de fichaje no autorizadas.
+- Se corrigió el espaciado de los indicadores operativos de Administración observado en la primera inspección visual.
+- No se han añadido métricas ficticias, búsqueda, filtros nuevos, telemetría, geolocalización, integraciones ni reglas de negocio.
+
+### Evidencia posterior
+
+- Entorno Docker efímero reconstruido con `--pull always`, PostgreSQL 16.6 y Node 20 Bookworm; health checks correctos y seed `office` exclusivamente sintético.
+- `docker compose --project-name time-control-s14-e2e … run --rm --no-deps app npm test`: **69/69**, 24 archivos correctos.
+- Build de producción y TypeScript correctos. Persisten cuatro avisos conocidos de Turbopack relativos al acceso dinámico de ficheros de exportación, fuera del alcance visual.
+- Navegador integrado: login de empleado, jornada y acción disponible; historial; formulario de correcciones y ayudas asociadas; navegación por teclado y foco visible; vista móvil de 320 px; login y resumen de responsable; bandeja de correcciones y tarjetas de Administración tras la corrección.
+
+### Riesgo restante
+
+La verificación visual se ha realizado en navegador y árbol accesible, pero no sustituye una auditoría con lector de pantalla, medición instrumental de contraste ni aceptación con usuarios de piloto. Corresponden a S15 y no se declaran como cumplidos automáticamente.

@@ -12,6 +12,18 @@ No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La apl
 
 Use un navegador actualizado, conexión al entorno asignado y una cuenta creada por la empresa. Abra `/login`, indique correo y contraseña, y complete MFA si se le solicita. La interfaz tiene vistas de fichaje (`/employee`), historial y correcciones; administración (`/admin`); y kiosco (`/kiosk`). No comparta sesiones ni PIN. Use **Cerrar sesión** al terminar.
 
+## Acceso de demostración local
+
+Estas cuentas existen sólo después de cargar el perfil sintético `office` con `DEMO_PASSWORD=UiE2eSyntheticPassword-2026`. Son públicas únicamente para revisión local del MVP: no deben reutilizarse, desplegarse ni usarse en un entorno con datos reales.
+
+| Rol | Correo | Contraseña | Qué revisar |
+|---|---|---|---|
+| Empleado | `night.office@demo.test` | `UiE2eSyntheticPassword-2026` | Jornada, fichaje, pausas, historial y solicitud de corrección. |
+| Responsable | `manager.office@demo.test` | `UiE2eSyntheticPassword-2026` | Resumen y correcciones del centro autorizado. Tras acceder, abra **Administración**. |
+| Administración | `admin.office@demo.test` | `UiE2eSyntheticPassword-2026` | Panel completo de administración y revisión. En el primer acceso debe completar el enrolamiento MFA con una aplicación autenticadora. |
+
+Las tres cuentas y todos sus registros son sintéticos. Si se reinicia la base, vuelva a ejecutar el seed con la misma contraseña para recrearlas.
+
 ## Administrador y RR. HH.
 
 La pantalla **Administración y RR. HH. > Resumen** presenta personas, centros, solicitudes pendientes e incidencias de la semana dentro del ámbito autorizado.
@@ -39,7 +51,7 @@ Para corregir un dato, desde el detalle use **Solicitar corrección** o abra **C
 - **Olvido o jornada incompleta:** solicite una corrección con la hora propuesta y el motivo.
 - **Secuencia inválida:** siga el botón disponible; si ya hay una pausa iniciada, finalícela antes de salir.
 - **Error de acceso:** no comparta credenciales; contacte al administrador de la empresa. La recuperación segura no está entregada todavía.
-- **Kiosco/QR/PIN:** use sólo el kiosco autorizado. No se solicitan permisos de cámara ni ubicación. Un fallo repetido debe escalarse al soporte, sin revelar el PIN.
+- **Kiosco/QR/PIN:** use sólo el kiosco autorizado y registre únicamente la acción que está realizando. Un fallo repetido debe escalarse al soporte, sin revelar el PIN.
 
 ## Privacidad, límites legales y soporte
 

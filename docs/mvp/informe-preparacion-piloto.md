@@ -49,6 +49,6 @@ Se corrigieron además dos defectos observados en vivo: consulta SQL ambigua de 
 - [ ] Aprobación DPO, abogado laboralista, DPA, retención/derechos/incidentes y operación.
 - [ ] Revisión humana final de lector de pantalla, kiosco/QR físico y aceptación de usuarios.
 
-S14 incorporó un sistema visual reutilizable, foco visible, estados anunciables, ayuda de formulario y etiquetas humanas con referencias técnicas secundarias. No modifica el NO-GO ni sustituye la revisión humana pendiente de S15.
+S14 incorporó un sistema visual reutilizable, foco visible, estados anunciables, ayuda de formulario y etiquetas humanas con referencias técnicas secundarias. La iteración de cierre comprobó en navegador los recorridos de empleado y responsable, foco de teclado, móvil 320 px y tarjetas de administración, en un contenedor Docker efímero reconstruido desde imágenes actualizadas; no modifica el NO-GO ni sustituye la revisión humana pendiente de S15.
 
 La aplicación no debe recibir datos reales hasta cerrar el P1 abierto y las aprobaciones indicadas. Véanse [S13](13-validacion-e2e-y-preparacion-piloto.md), la [guía de usuario](../guia-usuario-piloto.md) y [S14](14-cierre-bloqueos-piloto.md).
