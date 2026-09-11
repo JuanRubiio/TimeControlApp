@@ -1,6 +1,6 @@
 # Fuente de verdad — MVP de control horario
 
-Estado: **S1–S12 integradas en `master`; S13 cerrada con bloqueos de piloto documentados.** Fecha de revisión: 10/09/2026.
+Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; ampliación prepiloto planificada, no implementada.** Fecha de revisión: 11/09/2026.
 
 Este directorio es el contrato inicial de delivery. No se implementará una sesión hasta que sus decisiones previas estén aprobadas y se use su fichero como contrato de trabajo.
 
@@ -48,9 +48,9 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 
 ## Dependencias y orden
 
-`S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → piloto`.
+`S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → S13 → S15 → {S14,S16} → piloto asistido`.
 
-S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles continuos; S12 empieza tras S1.
+S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles continuos; S12 empieza tras S1. S15 es puerta obligatoria para datos reales. S14 puede auditar/preparar UI en paralelo con S15; S16 consume el sistema visual S14 y no activa exportación visible hasta cerrar almacenamiento/retención S15.
 
 ## Sesiones y contratos
 
@@ -70,7 +70,9 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S11 | [11-qa-y-datos-demo.md](11-qa-y-datos-demo.md) | M | Continua |
 | S12 | [12-despliegue-y-observabilidad.md](12-despliegue-y-observabilidad.md) | M | Paralela tras S1 |
 | S13 | [13-validacion-e2e-y-preparacion-piloto.md](13-validacion-e2e-y-preparacion-piloto.md) | M | Automatización y recorrido visual completados; NO-GO por operación/compliance |
-| S14 | [14-cierre-bloqueos-piloto.md](14-cierre-bloqueos-piloto.md) | L | Propuesta; requiere decisión de producto |
+| S14 | [14-ui-ux-y-experiencia-piloto.md](14-ui-ux-y-experiencia-piloto.md) | M | Muy recomendable; UX/accesibilidad sin nuevas reglas |
+| S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Obligatoria; puerta de datos reales |
+| S16 | [16-configuracion-y-exportacion-guiadas.md](16-configuracion-y-exportacion-guiadas.md) | M | Muy recomendable; requiere decisión sobre autoservicio mínimo |
 
 ## Base transversal publicada por S0
 
@@ -92,3 +94,9 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 ## Puertas de calidad antes del piloto
 
 Revisión de abogado laboralista y DPO; pruebas de aislamiento entre tenants; correcciones inmutables; exportaciones completas y reproducibles; casos de zona horaria/jornada partida; restauración de backup real; sin datos reales en demo; validación de convenio, calendario y reglas por cada piloto.
+
+## Estado posterior a S13 y decisiones pendientes
+
+S13 confirmó los flujos funcionales con datos sintéticos y no encontró P0. El P1 S13-005 mantiene el **NO-GO**: faltan TLS/proxy/WAF/rate limit reales, restauración operativa, retención/borrado de exportaciones y cierres DPO/laboral/operación. Véase la [evaluación prepiloto](evaluacion-ampliacion-prepiloto.md).
+
+Decisiones pendientes del propietario: proveedor/región/coste y RPO/RTO; política de retención/bloqueo y responsables de soporte; aprobaciones DPO, DPA y asesoría laboral; condición Go; límite de rediseño S14; y si S16 es obligatorio o se acepta un piloto asistido con configuración/exportación técnica. Importación CSV/Excel, notificaciones, cierre de período y vacaciones/ausencias permanecen fuera del ciclo hasta obtener evidencia durante piloto.
