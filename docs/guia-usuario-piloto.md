@@ -33,7 +33,6 @@ En **Historial**, abra una fecha para consultar eventos, pausas, tiempo efectivo
 
 Para corregir un dato, desde el detalle use **Corregir** o abra **Correcciones**. Seleccione el registro, acción y fecha/hora propuesta, y escriba un motivo. La solicitud queda Pendiente; una aprobación genera un efecto aditivo y un rechazo muestra su motivo. El fichaje original nunca se borra.
 
-La cuenta con sólo rol `employee` está bloqueada actualmente por S13-001. No otorgue privilegios de administrador como solución temporal: comuníquelo al soporte del piloto.
 
 ## Ante incidencias
 
