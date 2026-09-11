@@ -1,4 +1,6 @@
-# S14 — Operación segura y cierre externo de piloto
+# Propuesta sustituida — Operación segura y cierre externo de piloto
+
+Este borrador queda sustituido por el contrato completo de [S15 — Cierre operativo y cumplimiento prepiloto](15-cierre-operativo-y-cumplimiento-prepiloto.md). Se conserva como antecedente de S13; no debe usarse para abrir una sesión nueva.
 
 **Estado:** propuesta; requiere decisión del propietario del producto. **Estimación:** M de ingeniería/operación (2–4 días, sin incluir plazos de DPO, asesoría laboral o proveedor). **Dependencias:** S10, S12 y responsables de infraestructura.
 
