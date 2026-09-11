@@ -74,7 +74,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Obligatoria; puerta de datos reales |
 | S16 | [16-configuracion-y-exportacion-guiadas.md](16-configuracion-y-exportacion-guiadas.md) | M | Muy recomendable; requiere decisión sobre autoservicio mínimo |
 | S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Evaluación y prioridad de S18 aprobadas; conserva límites y NO-GO de S15 |
-| S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Contrato aprobado; proyección informativa de jornada y ayuda contextual, antes de S15/S16 |
+| S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Bloqueada: S5 debe publicar y aprobar una fuente efectiva read-only con correcciones antes de la proyección informativa y ayuda contextual; continúa antes de S15/S16 |
 
 ## Base transversal publicada por S0
 
@@ -101,4 +101,4 @@ Revisión de abogado laboralista y DPO; pruebas de aislamiento entre tenants; co
 
 S13 confirmó los flujos funcionales con datos sintéticos y no encontró P0. El P1 S13-005 mantiene el **NO-GO**: faltan TLS/proxy/WAF/rate limit reales, restauración operativa, retención/borrado de exportaciones y cierres DPO/laboral/operación. Véase la [evaluación prepiloto](evaluacion-ampliacion-prepiloto.md).
 
-Decisiones pendientes del propietario: proveedor/región/coste y RPO/RTO; política de retención/bloqueo y responsables de soporte; aprobaciones DPO, DPA y asesoría laboral; condición Go; límite de rediseño S14; si S16 es obligatorio o se acepta un piloto asistido con configuración/exportación técnica; y protocolo de feedback minimizado de S15. S18 exige confirmar que S5 puede exponer una fuente efectiva con correcciones sin reimplementar su algoritmo. Importación CSV/Excel, notificaciones, cierre de período y vacaciones/ausencias permanecen fuera del ciclo hasta obtener evidencia durante piloto.
+Decisiones pendientes del propietario: proveedor/región/coste y RPO/RTO; política de retención/bloqueo y responsables de soporte; aprobaciones DPO, DPA y asesoría laboral; condición Go; límite de rediseño S14; si S16 es obligatorio o se acepta un piloto asistido con configuración/exportación técnica; y protocolo de feedback minimizado de S15. S18 está bloqueada hasta que la sesión propietaria S5 apruebe e integre una fuente efectiva read-only con correcciones; S18 no reimplementará su algoritmo ni leerá internals ajenos. Importación CSV/Excel, notificaciones, cierre de período y vacaciones/ausencias permanecen fuera del ciclo hasta obtener evidencia durante piloto.

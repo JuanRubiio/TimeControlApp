@@ -1,6 +1,6 @@
 # S18 — Experiencia diaria y jornada en curso informativa
 
-**Estado:** contrato aprobado; pendiente de implementación. **Tamaño:** M. **Propietaria:** S18 para la proyección read-only, su ruta, presentación acotada y pruebas. **Dependencias:** S4, S5, S7, S11, S14 y la decisión S17 `ef1e8c3` (hasta que se integre en `master`). **Relación con piloto:** se ejecuta antes de S15 y S16, pero no elimina el NO-GO de S15 ni habilita datos reales.
+**Estado:** bloqueada antes de implementación por contrato público insuficiente de S5; requiere enmienda aprobada de S5. **Tamaño:** M. **Propietaria:** S18 para la proyección read-only, su ruta, presentación acotada y pruebas. **Dependencias:** S4, S5, S7, S11, S14 y la decisión S17 `ef1e8c3` (integrada en `master` mediante `dc338f2`). **Relación con piloto:** se ejecuta antes de S15 y S16, pero no elimina el NO-GO de S15 ni habilita datos reales.
 
 ## Objetivo
 
@@ -94,3 +94,28 @@ No autoriza cambios en `src/time-events/*`, `src/time-calculation/*`, `src/corre
 - **Aprobado:** priorizar S18 antes de S15/S16 con el alcance y exclusiones anteriores.
 - **Sin cambiar:** S15 es obligatorio antes de datos reales; S16 continúa como trabajo prepiloto posterior a S15; no hay piloto con datos reales ni promesa de cumplimiento automático.
 - **Pendiente antes de editar código:** confirmar que el adaptador público de S5 puede ofrecer la secuencia efectiva con correcciones sin modificar su contrato. Si no, se requiere una enmienda explícita de S5 antes de implementar S18.
+
+## Registro de apertura y bloqueo — 11/09/2026
+
+### Comprobaciones realizadas
+
+- Se confirmó un único contrato S18 y se revisaron S4, S5, S7, S11, S13, S14, S17, la evaluación prepiloto, el informe de piloto y el workflow Git.
+- `master` remoto contiene la aprobación equivalente a la decisión S17 `ef1e8c3` mediante `dc338f2` y el contrato S18 mediante `0ee5e53`. La rama `codex/s18-experiencia-jornada` se alineó con esa base. Los ficheros sin seguimiento `.s13.synthetic.env` y `.s13.multisite.env` se preservaron sin incluirlos en el trabajo.
+- La regresión base se ejecutó con fixtures sintéticos: `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npm test` terminó con código 0.
+
+### Bloqueo contractual
+
+S5 publica en `src/time-calculation/contracts.ts` únicamente resultados materializados (`PersistedDailyCalculation`) y tipos de cálculo. La secuencia efectiva que excluye eventos sustituidos e incorpora `correction_effects` se construye internamente en `recalculateDaily` de `src/time-calculation/service.ts`; no existe un contrato público read-only que S18 pueda consumir para obtener esa evidencia, ni para proyectar el tramo `working` con el `asOf` emitido por el servidor.
+
+Usar directamente esas consultas internas, leer `correction_effects` desde S18 o reproducir la selección/cálculo infringiría las exclusiones de esta sesión y podría divergir de S5. Por ello no se han creado la ruta, módulo, presentación, pruebas, tablas ni migraciones de S18; tampoco se ha modificado el fichaje, cálculo, correcciones, permisos o auditoría existentes.
+
+### Enmienda propuesta a S5 — aprobación requerida
+
+La sesión propietaria S5 debe aprobar un contrato público read-only, por ejemplo un adaptador `EffectiveWorkdaySource`, que para un empleo y fecha laboral ya autorizados devuelva la secuencia efectiva ordenada y mínima: eventos confirmados originales no sustituidos, efectos de corrección aprobados, zona IANA, fecha laboral y el estado de evidencia incompleta. El adaptador debe:
+
+- conservar la selección de fuentes y la semántica de S5, incluidos correcciones aprobadas, medianoche y DST;
+- no materializar ni mutar cálculos, eventos, correcciones, auditoría o idempotencias;
+- no exponer motivos de corrección, PIN, secretos, datos de dispositivo ni datos de terceros; y
+- tener pruebas de contrato con las secuencias S11 antes de que S18 la consuma.
+
+Tras una enmienda aprobada e integrada en `master`, S18 podrá retomar su API propia, autorización servidor, presentación y pruebas requeridas. Hasta entonces mantiene el NO-GO de S15 y no declara criterios funcionales completados.
