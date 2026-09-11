@@ -8,6 +8,15 @@ Aplicación web de control horario para pruebas locales. Permite registrar entra
 
 Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) iniciado y el puerto `3000` disponible. No hace falta instalar Node ni PostgreSQL en el equipo.
 
+En todos los comandos se debe usar el mismo nombre de proyecto y el mismo fichero de entorno. Defínalos una vez en la terminal que va a utilizar:
+
+```powershell
+$Project='time-control'
+$EnvFile='.env'
+```
+
+> Si utiliza otro fichero, por ejemplo `.s13.synthetic.env`, asigne ese nombre a `$EnvFile` y no mezcle sus comandos con `.env`. El perfil S13 expone la aplicación en el puerto `3013`.
+
 1. Cree su configuración local. No añada este archivo al repositorio.
 
    ```powershell
@@ -19,7 +28,7 @@ Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) inici
 3. Construya e inicie una instancia nueva:
 
    ```powershell
-   docker compose --env-file .env up -d --build --pull always
+   docker compose --project-name $Project --env-file $EnvFile up -d --build --pull always
    ```
 
 4. Compruebe que está lista:
@@ -28,11 +37,13 @@ Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) inici
    Invoke-WebRequest http://localhost:3000/api/health
    ```
 
-5. Cargue los datos demo y abra [http://localhost:3000/login](http://localhost:3000/login):
+   Este ejemplo corresponde a `.env`. Si su fichero define `APP_PORT`, sustituya `3000` por ese valor (por ejemplo, `.s13.synthetic.env` usa `3013`).
+
+5. Cargue los datos demo y abra `http://localhost:<APP_PORT>/login` (`http://localhost:3000/login` con `.env`):
 
    ```powershell
    $env:DEMO_PASSWORD='UiE2eSyntheticPassword-2026'
-   docker compose --env-file .env exec -e DEMO_PASSWORD=$env:DEMO_PASSWORD app npm run seed:demo
+   docker compose --project-name $Project --env-file $EnvFile exec -e DEMO_PASSWORD=$env:DEMO_PASSWORD app npm run seed:demo
    ```
 
 La carga es idempotente: puede repetirla sin duplicar el conjunto demo. Las cuentas de empleado, responsable y administración, junto con qué revisar en cada una, están en la [guía de usuario del piloto](docs/guia-usuario-piloto.md#acceso-de-demostración-local).
@@ -52,13 +63,13 @@ Las correcciones añaden una propuesta: nunca cambian ni eliminan el fichaje ori
 Con la aplicación iniciada, ejecute la suite dentro del mismo entorno Docker:
 
 ```powershell
-docker compose --env-file .env run --rm --no-deps app npm test
+docker compose --project-name $Project --env-file $EnvFile run --rm --no-deps app npm test
 ```
 
 Para comprobar el build de producción, reconstruya la aplicación:
 
 ```powershell
-docker compose --env-file .env up -d --build --pull always
+docker compose --project-name $Project --env-file $EnvFile up -d --build --pull always
 ```
 
 ## Cerrar la prueba
@@ -66,11 +77,11 @@ docker compose --env-file .env up -d --build --pull always
 Al terminar, cierre y elimine los contenedores de esta instancia:
 
 ```powershell
-docker compose --env-file .env down
+docker compose --project-name $Project --env-file $EnvFile down
 docker ps -a
 ```
 
-`down` conserva el volumen local para poder retomar la demo. Si quiere borrar también sus datos demo, use `docker compose --env-file .env down -v`; esta acción elimina la base local y no se puede deshacer.
+`down` conserva el volumen local para poder retomar la demo. Si quiere borrar también sus datos demo, use `docker compose --project-name $Project --env-file $EnvFile down -v`; esta acción elimina la base local y no se puede deshacer.
 
 ## Límites del MVP
 
