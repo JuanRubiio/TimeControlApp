@@ -48,7 +48,7 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 
 ## Dependencias y orden
 
-`S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → S13 → S15 → {S14,S16} → piloto asistido`.
+`S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → S13 → S15 → {S14,S16,S17} → piloto asistido`.
 
 S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles continuos; S12 empieza tras S1. S15 es puerta obligatoria para datos reales. S14 puede auditar/preparar UI en paralelo con S15; S16 consume el sistema visual S14 y no activa exportación visible hasta cerrar almacenamiento/retención S15.
 
@@ -73,6 +73,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S14 | [14-ui-ux-y-experiencia-piloto.md](14-ui-ux-y-experiencia-piloto.md) | M | Muy recomendable; UX/accesibilidad sin nuevas reglas |
 | S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Obligatoria; puerta de datos reales |
 | S16 | [16-configuracion-y-exportacion-guiadas.md](16-configuracion-y-exportacion-guiadas.md) | M | Muy recomendable; requiere decisión sobre autoservicio mínimo |
+| S17 | [17-jornada-en-curso-y-confianza-operativa.md](17-jornada-en-curso-y-confianza-operativa.md) | M | Propuesta: temporizador informativo y estado de jornada; pendiente de aprobación |
 
 ## Base transversal publicada por S0
 
