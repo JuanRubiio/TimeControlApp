@@ -1,6 +1,6 @@
 # S13 — Validación E2E, experiencia de usuario y preparación de piloto
 
-**Estado:** validación automatizada y recorrido visual completados; pendiente de controles externos y aprobaciones. **Base:** `9f29232` (`master`, 10/09/2026), más correcciones S13 en la rama `codex/s13-validacion-e2e-piloto`.
+**Estado:** validación automatizada y recorrido visual completados; pendiente de controles externos y aprobaciones. **Base:** `9f29232` (`master`, 10/09/2026). **Revisión de código validada:** `835ce96` en `codex/s13-validacion-e2e-piloto`.
 
 ## Revalidación 10/09/2026
 

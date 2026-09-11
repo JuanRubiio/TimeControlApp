@@ -1,6 +1,6 @@
 # Informe de preparación de piloto
 
-**Recomendación:** **no listo (NO-GO) para datos reales**. **Fecha:** 11/09/2026. **Versión evaluada:** `9f29232` más los commits S13 de `codex/s13-validacion-e2e-piloto`; última validación visual posterior a las correcciones locales.
+**Recomendación:** **no listo (NO-GO) para datos reales**. **Fecha:** 11/09/2026. **Versión evaluada:** `835ce96` de `codex/s13-validacion-e2e-piloto` (base `9f29232`); última validación visual posterior a las correcciones locales.
 
 ## Entorno y evidencia
 
