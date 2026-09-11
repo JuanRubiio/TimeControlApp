@@ -6,7 +6,7 @@ Time Control registra entradas, salidas y pausas manuales, muestra incidencias y
 
 No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La aplicación se ejecuta en un entorno dedicado por empresa; el acceso se limita por rol y ámbito autorizado.
 
-> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos de S14.
+> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos operativos y de cumplimiento de S15.
 
 ## Requisitos de acceso
 
@@ -27,11 +27,11 @@ El responsable ve exclusivamente sus centros, personas, jornadas y correcciones 
 
 ## Empleado
 
-En **Mi jornada**, pulse sólo la acción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. La pantalla muestra únicamente las acciones válidas y confirma la hora registrada. Si hay error, use **Reintentar** después de comprobar la conexión; no repita pulsaciones rápidamente.
+En **Mi jornada**, consulte primero **Siguiente acción** y pulse sólo la opción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. El botón se bloquea mientras se confirma el registro y la pantalla anuncia la hora confirmada. Si hay error, use **Reintentar la consulta** después de comprobar la conexión; no repita pulsaciones rápidamente.
 
 En **Historial**, abra una fecha para consultar eventos, pausas, tiempo efectivo, jornada esperada, diferencia, incidencias, regla/versionado y zona horaria. El saldo no es nómina ni sanción.
 
-Para corregir un dato, desde el detalle use **Corregir** o abra **Correcciones**. Seleccione el registro, acción y fecha/hora propuesta, y escriba un motivo. La solicitud queda Pendiente; una aprobación genera un efecto aditivo y un rechazo muestra su motivo. El fichaje original nunca se borra.
+Para corregir un dato, desde el detalle use **Solicitar corrección** o abra **Correcciones**. Seleccione el registro, acción y fecha/hora propuesta, y escriba un motivo. La solicitud queda **Pendiente de revisión**; una aprobación genera un efecto aditivo y un rechazo muestra su motivo. El fichaje original nunca se borra. Los identificadores técnicos quedan en el detalle secundario de auditoría y no cambian el registro.
 
 
 ## Ante incidencias

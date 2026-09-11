@@ -1,6 +1,6 @@
 # S14 — UI/UX y experiencia de piloto
 
-**Estado:** propuesta; no autoriza cambios de reglas de negocio. **Tamaño:** M. **Dependencias:** contratos S4–S9 y resultados operativos de S15 para exportaciones. **Decisión previa requerida:** aprobar que sea una mejora transversal de rutas existentes y su límite visual.
+**Estado:** implementación completada; validación humana final pendiente de S15. No autoriza cambios de reglas de negocio. **Tamaño:** M. **Dependencias:** contratos S4–S9 y resultados operativos de S15 para exportaciones. **Base de trabajo:** `7bdcb41` de `master`; rama `codex/s14-uiux-piloto`.
 
 ## Nombre y objetivo
 
@@ -47,6 +47,24 @@ Riesgo de presentar saldos/excesos como decisión salarial, esconder trazabilida
 
 Primero inventario de componentes y estados; después tokens/componentes atómicos; luego rutas de empleado; después rutas de responsable; por último exportación S16. Cada ruta conserva sus adaptadores/API actuales. Introducir componentes por sustitución acotada, sin reescribir flujos de dominio, y validar cada ruta antes de extender el sistema visual.
 
+## Auditoría UX inicial — 11/09/2026
+
+| Clasificación | Hallazgo | Impacto | Tratamiento S14 |
+|---|---|---|---|
+| Bloqueante de validación | El Compose sintético compila correctamente, pero el contenedor `app` quedó en estado `Created` y no llegó a estar disponible para el recorrido visual. | Impide repetir el recorrido manual pre-cambio en este equipo; no es evidencia de un defecto de dominio ni se modifica en S14. | Registrar, reintentar tras el cambio y derivar a S12/S15 si persiste. |
+| Confuso | Regla, algoritmo y actor de decisión se enseñan como UUID o texto técnico dentro del flujo principal. | El usuario no puede distinguir fácilmente dato de auditoría y decisión humana. | Etiquetas humanas como contenido principal; identificadores sólo en un bloque técnico secundario. |
+| Confuso | Carga, vacío, éxito y error se resuelven de forma distinta en cada ruta; algunos errores no quedan vinculados al contexto de acción. | Favorece reintentos innecesarios de fichaje y hace difícil recuperar un formulario. | Avisos semánticos reutilizables, estados de carga visibles y reintento contextual. |
+| Mejora importante | La página de jornada no separa con claridad «estado actual», «siguiente acción» y confirmación. | Riesgo operativo de doble interacción o de no entender una pausa abierta. | Jerarquía de estado, explicación breve de la acción disponible y bloqueo visible durante la petición idempotente. |
+| Mejora importante | La corrección y su revisión explican de manera insuficiente la inmutabilidad del original y el carácter humano/irreversible de la decisión. | Puede inducir a esperar una edición directa o a decidir sin contexto. | Copy explícito, estado textual además de color, ayuda de campo y controles bloqueados durante el envío. |
+| Mejora menor | Escala tipográfica, espaciado, foco, estados de botones, badges, tarjetas y listas no pertenecen a un sistema visual único. | Baja consistencia, especialmente a 200 % de zoom y en móvil. | Tokens CSS y componentes de presentación compartidos; sin cambiar semántica de datos. |
+
+### Plan de cambio aprobado por el contrato
+
+- Crear `src/ui/feedback.tsx` y el sistema visual de `src/app/globals.css`: avisos, badges, carga, botones, formularios, listas, tarjetas y foco accesible.
+- Modificar sólo la presentación de `/login`, `/employee`, `/employee/history`, `/employee/corrections`, `/admin`, `/admin/people` y `/admin/corrections`; no se incorpora la exportación visible, que pertenece a S16 tras S15.
+- Validar fichaje, corrección, aprobación/rechazo, historial y navegación por teclado con pruebas de presentación más la regresión existente. Los viewports objetivo son 320, 390, 768 y 1280 px.
+- Riesgo de regresión: componentes cliente compartidos y CSS global. Mitigación: no se cambian peticiones, endpoints, permisos, modelos ni claves de idempotencia; se verificará por pruebas y build. Cualquier problema persistente de arranque Compose se deriva a S12/S15.
+
 ## Criterios de aceptación
 
 - Fichaje, historial, corrección, decisión y exportación conservan la misma petición autorizada, semántica e idempotencia que antes.
@@ -59,6 +77,28 @@ Primero inventario de componentes y estados; después tokens/componentes atómic
 ## Pruebas necesarias
 
 Pruebas de regresión de S4–S9, pruebas de render/navegación de componentes, inspección de árbol accesible, teclado, lector de pantalla, contraste, zoom y capturas comparativas móvil/escritorio. Datos exclusivamente sintéticos; QR físico corresponde a S15.
+
+## Resultado de implementación — 11/09/2026
+
+Se aplicó el sistema mínimo en `src/app/globals.css` y `src/ui/feedback.tsx`, y se sustituyeron las presentaciones de empleado y revisión de correcciones para consumirlo. Los componentes reutilizables son `StatusNotice`, `StatusBadge` y `LoadingBlock`. Las rutas consumen las mismas APIs, clave de idempotencia y autorizaciones de S4–S8: no hay migraciones, cambios de modelos, RBAC, cálculos, auditoría ni exportación visible.
+
+- **Fichaje:** la acción siguiente se separa del historial, explica el bloqueo durante la petición y anuncia confirmación o error. El doble clic sigue protegido por el mismo bloqueo de cliente y la misma clave/semántica idempotente de S4.
+- **Historial y cálculo:** la diferencia se denomina «registrada» e informativa; regla, algoritmo e IDs quedan en un desplegable técnico secundario para no ocultar trazabilidad.
+- **Correcciones:** el formulario explica que crea una propuesta aditiva, asocia la ayuda al campo y muestra estados textuales además de color. La revisión advierte de la decisión humana y no editable, bloquea ambos botones durante el envío y conserva referencias técnicas en detalle.
+- **Responsive y accesibilidad:** foco visible de alto contraste, controles de al menos 44 px, aviso `alert/status`, carga anunciable, etiquetas asociadas y punto de ruptura para 320 px. La CSS cubre además 540/700 px y escritorio fluido; la validación humana con lector de pantalla y zoom 200 % permanece en S15.
+
+### Validación posterior
+
+- `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npm test`: **69/69**, 24 ficheros correctos, incluidos tres casos nuevos S14.
+- `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npx tsc --noEmit`: correcto.
+- `docker compose --env-file .s13.synthetic.env up -d --build`: build de producción correcto. Conserva los cuatro avisos conocidos S9 de acceso dinámico a ficheros de exportación.
+- No fue posible repetir el recorrido visual HTTP: Docker informó que el puerto `3013` ya estaba ocupado por un proceso ajeno y no se detuvo ni alteró ese proceso. Es un bloqueo local de evidencia, no un cambio funcional de S14.
+
+### Riesgos y bloqueos restantes
+
+- Pendiente S15: lector de pantalla humano, contraste auditado con herramienta, zoom 200 %, QR físico y aceptación de usuarios. S14 no debe presentarlos como verificados automáticamente.
+- Pendiente S16: configuración y exportación guiadas. No se añadió un botón de exportación porque depende de su contrato y del cierre de retención/almacenamiento de S15.
+- Mantiene NO-GO para datos reales de S13-005/S15; el cambio visual no modifica ese dictamen.
 
 ## Decisiones que requieren aprobación
 

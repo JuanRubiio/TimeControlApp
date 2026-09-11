@@ -35,6 +35,7 @@
 | P2 | S13-007: detalles muestran UUID técnicos (regla/actor) en vez de etiquetas legibles. | Mejora UX S14. |
 | P2 | S13-008: el selector de una segunda corrección no ofreció registros tras aprobar una primera en el dataset nocturno. | Reproducir y aclarar comportamiento esperado en S14. |
 | P2 | Turbopack advierte de acceso dinámico a ficheros en exportaciones. | Evaluar empaquetado y tamaño antes del despliegue gestionado. |
+| P2 | S14: experiencia visual y estados de fichaje/correcciones insuficientemente consistentes. | Corregido en presentación; quedan revisión humana de lector de pantalla, zoom, contraste instrumental y recorrido HTTP bloqueado localmente por puerto 3013 ocupado. |
 
 Se corrigieron además dos defectos observados en vivo: consulta SQL ambigua de centros que impedía cargar el área de responsable, y detalle de corrección que no refrescaba tras decidir. Regresiones: `tests/company-people.test.ts` y `tests/admin-ui.test.ts`.
 
@@ -47,5 +48,7 @@ Se corrigieron además dos defectos observados en vivo: consulta SQL ambigua de 
 - [ ] Restore aislado en destino, TLS/proxy/rate limit/WAF y retención/borrado automatizado.
 - [ ] Aprobación DPO, abogado laboralista, DPA, retención/derechos/incidentes y operación.
 - [ ] Revisión humana final de lector de pantalla, kiosco/QR físico y aceptación de usuarios.
+
+S14 incorporó un sistema visual reutilizable, foco visible, estados anunciables, ayuda de formulario y etiquetas humanas con referencias técnicas secundarias. No modifica el NO-GO ni sustituye la revisión humana pendiente de S15.
 
 La aplicación no debe recibir datos reales hasta cerrar el P1 abierto y las aprobaciones indicadas. Véanse [S13](13-validacion-e2e-y-preparacion-piloto.md), la [guía de usuario](../guia-usuario-piloto.md) y [S14](14-cierre-bloqueos-piloto.md).
