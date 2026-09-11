@@ -51,4 +51,8 @@ Se corrigieron además dos defectos observados en vivo: consulta SQL ambigua de 
 
 S14 incorporó un sistema visual reutilizable, foco visible, estados anunciables, ayuda de formulario y etiquetas humanas con referencias técnicas secundarias. La iteración de cierre comprobó en navegador los recorridos de empleado y responsable, foco de teclado, móvil 320 px y tarjetas de administración, en un contenedor Docker efímero reconstruido desde imágenes actualizadas; no modifica el NO-GO ni sustituye la revisión humana pendiente de S15.
 
-La aplicación no debe recibir datos reales hasta cerrar el P1 abierto y las aprobaciones indicadas. Véanse [S13](13-validacion-e2e-y-preparacion-piloto.md), la [guía de usuario](../guia-usuario-piloto.md) y [S14](14-cierre-bloqueos-piloto.md).
+La aplicación no debe recibir datos reales hasta cerrar el P1 abierto y las aprobaciones indicadas. Véanse [S13](13-validacion-e2e-y-preparacion-piloto.md), la [guía de usuario](../guia-usuario-piloto.md) y [S14](14-ui-ux-y-experiencia-piloto.md).
+
+## Evolución de producto posterior a S14
+
+S17 ha evaluado los recorridos sintéticos y la documentación disponible sin introducir cambios de producto. Mantiene como prioridad el cierre de S15 y deja pendiente decidir si S16 es condición de piloto. Las candidatas posteriores —estado temporal informativo de jornada, ayuda contextual, contexto de revisión y calendario visible— no están entregadas, no modifican este dictamen y requieren evidencia de piloto, contrato propio y aprobación independiente. No se han recogido datos reales, telemetría de productividad ni feedback no autorizado.

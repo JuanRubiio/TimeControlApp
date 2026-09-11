@@ -73,7 +73,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S14 | [14-ui-ux-y-experiencia-piloto.md](14-ui-ux-y-experiencia-piloto.md) | M | Muy recomendable; UX/accesibilidad sin nuevas reglas |
 | S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Obligatoria; puerta de datos reales |
 | S16 | [16-configuracion-y-exportacion-guiadas.md](16-configuracion-y-exportacion-guiadas.md) | M | Muy recomendable; requiere decisión sobre autoservicio mínimo |
-| S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Propuesta: evaluación integral, backlog y contratos posteriores; pendiente de aprobación |
+| S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Evaluación sintética y backlog documentados; prioridad final, foco posterior y protocolo de feedback pendientes de aprobación |
 
 ## Base transversal publicada por S0
 
@@ -100,4 +100,4 @@ Revisión de abogado laboralista y DPO; pruebas de aislamiento entre tenants; co
 
 S13 confirmó los flujos funcionales con datos sintéticos y no encontró P0. El P1 S13-005 mantiene el **NO-GO**: faltan TLS/proxy/WAF/rate limit reales, restauración operativa, retención/borrado de exportaciones y cierres DPO/laboral/operación. Véase la [evaluación prepiloto](evaluacion-ampliacion-prepiloto.md).
 
-Decisiones pendientes del propietario: proveedor/región/coste y RPO/RTO; política de retención/bloqueo y responsables de soporte; aprobaciones DPO, DPA y asesoría laboral; condición Go; límite de rediseño S14; y si S16 es obligatorio o se acepta un piloto asistido con configuración/exportación técnica. Importación CSV/Excel, notificaciones, cierre de período y vacaciones/ausencias permanecen fuera del ciclo hasta obtener evidencia durante piloto.
+Decisiones pendientes del propietario: proveedor/región/coste y RPO/RTO; política de retención/bloqueo y responsables de soporte; aprobaciones DPO, DPA y asesoría laboral; condición Go; límite de rediseño S14; si S16 es obligatorio o se acepta un piloto asistido con configuración/exportación técnica; y la prioridad final, foco posterior y protocolo de feedback minimizado de S17. Importación CSV/Excel, notificaciones, cierre de período y vacaciones/ausencias permanecen fuera del ciclo hasta obtener evidencia durante piloto.

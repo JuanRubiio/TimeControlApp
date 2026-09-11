@@ -6,7 +6,7 @@ Time Control registra entradas, salidas y pausas manuales, muestra incidencias y
 
 No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La aplicación se ejecuta en un entorno dedicado por empresa; el acceso se limita por rol y ámbito autorizado.
 
-> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos operativos y de cumplimiento de S15.
+> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos operativos y de cumplimiento de S15. S17 ha documentado propuestas posteriores, pero no entrega temporizador, recordatorios, calendario, chatbot ni nuevas capacidades de seguimiento.
 
 ## Requisitos de acceso
 
