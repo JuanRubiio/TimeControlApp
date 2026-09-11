@@ -1,32 +1,89 @@
 # Time Control MVP
 
-Monolito modular TypeScript/Next.js/PostgreSQL para control horario. La aplicación se ejecuta en un **entorno Docker dedicado por cliente**; no hay multitenancy compartido por filas, microservicios, app nativa, GPS ni biometría.
+Aplicación web de control horario para pruebas locales. Permite registrar entradas, salidas y pausas, consultar historial, solicitar correcciones y revisarlas según el rol.
 
-## Inicio local
+> Todo el recorrido descrito aquí usa datos sintéticos. No cargue datos reales: el piloto sigue sujeto a las validaciones operativas y de cumplimiento indicadas en la [documentación del MVP](docs/mvp/README.md).
 
-Requiere Docker Desktop y Node 20.19+ si se ejecutan herramientas fuera del contenedor.
+## Probar la aplicación en local
+
+Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) iniciado y el puerto `3000` disponible. No hace falta instalar Node ni PostgreSQL en el equipo.
+
+1. Cree su configuración local. No añada este archivo al repositorio.
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+2. Abra `.env` y sustituya cada valor `replace-...` por un secreto local. Mantenga `SESSION_COOKIE_SECURE=false` únicamente para esta prueba HTTP local.
+
+3. Construya e inicie una instancia nueva:
+
+   ```powershell
+   docker compose --env-file .env up -d --build --pull always
+   ```
+
+4. Compruebe que está lista:
+
+   ```powershell
+   Invoke-WebRequest http://localhost:3000/api/health
+   ```
+
+5. Cargue los datos demo y abra [http://localhost:3000/login](http://localhost:3000/login):
+
+   ```powershell
+   $env:DEMO_PASSWORD='UiE2eSyntheticPassword-2026'
+   docker compose --env-file .env exec -e DEMO_PASSWORD=$env:DEMO_PASSWORD app npm run seed:demo
+   ```
+
+La carga es idempotente: puede repetirla sin duplicar el conjunto demo. Las cuentas de empleado, responsable y administración, junto con qué revisar en cada una, están en la [guía de usuario del piloto](docs/guia-usuario-piloto.md#acceso-de-demostración-local).
+
+## Recorrido recomendado
+
+| Rol | Qué comprobar |
+|---|---|
+| Empleado | En **Mi jornada**, identifique la siguiente acción; pruebe historial, pausas y solicitud de corrección. |
+| Responsable | Abra **Administración** tras iniciar sesión; revise la bandeja y una propuesta dentro de su ámbito. |
+| Administración | Revise el resumen, plantilla y jornadas, y la trazabilidad de una corrección. El primer acceso requiere configurar MFA. |
+
+Las correcciones añaden una propuesta: nunca cambian ni eliminan el fichaje original. Los saldos y diferencias son informativos; no son nómina, sanción ni una decisión económica definitiva.
+
+## Ejecutar las comprobaciones
+
+Con la aplicación iniciada, ejecute la suite dentro del mismo entorno Docker:
 
 ```powershell
-Copy-Item .env.example .env
-# Sustituya todos los valores `replace-...` por secretos locales únicos.
-docker compose --env-file .env up --build -d
-docker compose --env-file .env exec app npm run db:bootstrap-admin
-Invoke-WebRequest http://localhost:3000/api/health
-docker compose --env-file .env exec app npm test
+docker compose --env-file .env run --rm --no-deps app npm test
+```
+
+Para comprobar el build de producción, reconstruya la aplicación:
+
+```powershell
+docker compose --env-file .env up -d --build --pull always
+```
+
+## Cerrar la prueba
+
+Al terminar, cierre y elimine los contenedores de esta instancia:
+
+```powershell
 docker compose --env-file .env down
+docker ps -a
 ```
 
-No versionar `.env`, `ops/clients/*.env` ni backups. El único ejemplo seguro de parámetros de piloto está en [`ops/clients/client.example.env`](ops/clients/client.example.env). Para la guía completa, recuperación y operación, consultar [`docs/operations/`](docs/operations/).
+`down` conserva el volumen local para poder retomar la demo. Si quiere borrar también sus datos demo, use `docker compose --env-file .env down -v`; esta acción elimina la base local y no se puede deshacer.
 
-## Verificación
+## Límites del MVP
 
-```powershell
-npm test
-npx tsc --noEmit
-npm run qa:smoke
-docker compose --env-file .env config
-```
+- Web responsive; no hay app nativa.
+- Fichaje por web, QR y PIN; pausas manuales y visibles.
+- Sin geolocalización, cámara, biometría, foto, vídeo ni vigilancia.
+- No promete cumplimiento legal automático ni sustituye asesoramiento laboral.
+- El acceso se limita por rol y ámbito autorizado en el servidor.
 
-`GET /api/health` comprueba aplicación y su PostgreSQL dedicado. `GET /api/metrics` expone sólo métricas técnicas agregadas y exige `Authorization: Bearer <METRICS_BEARER_TOKEN>` cuando el secreto está configurado.
+## Más información
 
-El alcance, evidencias y riesgos de plataforma se mantienen en [`docs/mvp/12-despliegue-y-observabilidad.md`](docs/mvp/12-despliegue-y-observabilidad.md).
+- [Guía para personas usuarias del piloto](docs/guia-usuario-piloto.md)
+- [Estado, riesgos y pruebas de preparación](docs/mvp/informe-preparacion-piloto.md)
+- [Contrato de experiencia de usuario S14](docs/mvp/14-ui-ux-y-experiencia-piloto.md)
+- [Contratos y decisiones del MVP](docs/mvp/README.md)
+- [Operación y despliegue](docs/operations/)
