@@ -1,6 +1,6 @@
 # S17 — Evolución integral de producto y ampliación controlada del MVP
 
-**Estado:** evaluación documental completada con evidencia sintética; pendiente de aprobación final del propietario. No autoriza implementación. **Tamaño:** M de producto, diseño, evidencia y contratos posteriores. **Dependencias:** S13, S14, S15, S16 y feedback sintético/validado de usuarios. **Relación con piloto:** no habilita datos reales ni sustituye el Go/No-Go de S15.
+**Estado:** evaluación documental completada y prioridad posterior aprobada; no autoriza implementación. **Tamaño:** M de producto, diseño, evidencia y contratos posteriores. **Dependencias:** S13, S14, S15, S16 y feedback sintético/validado de usuarios. **Relación con piloto:** no habilita datos reales ni sustituye el Go/No-Go de S15.
 
 ## Objetivo
 
@@ -127,10 +127,18 @@ No se han modificado código, UI, APIs, permisos, auditoría, cálculos, modelos
 
 La priorización es una recomendación basada en la evidencia arriba indicada. El propietario del producto debe aprobar la prioridad final, el foco posterior y el protocolo de participantes/feedback de S15 antes de cerrar S17 como aprobada o abrir contratos de implementación.
 
+### Decisión de prioridad aprobada — 11/09/2026
+
+El propietario del producto rechaza la prioridad anterior de ejecutar S15 antes de cualquier incremento funcional. Se aprueba abrir una sesión posterior, separada y acotada, para mejorar la experiencia diaria de la persona empleada antes de S15 y S16.
+
+La nueva sesión sólo podrá cubrir estado inequívoco de jornada/pausa, tiempo efectivo en curso **informativo** mediante proyección read-only del servidor y ayuda contextual/recuperación mínima. Quedan excluidos calendario/planificación, recordatorios, notificaciones, chatbot, telemetría, cambios de reglas, cálculos en cliente, nómina, vigilancia y datos adicionales. S15 continúa siendo condición obligatoria y el NO-GO para datos reales no cambia; S16 sigue siendo prepiloto y se reordenará después de S15.
+
+Esta decisión satisface la aprobación de prioridad de S17. La sesión posterior debe tener contrato, rama, pruebas y aprobación propios antes de cualquier implementación.
+
 ### Estado final, archivos y validación
 
 - **Alcance completado:** journey sintético por rol, mapa de fricciones, backlog trazable, clasificación ahora/después/rechazado y registro explícito de límites y aprobaciones pendientes.
 - **Archivos y contratos afectados:** este contrato, `README.md`, guía de usuario del piloto e informe de preparación. Se consumen S13, S14, S15 y S16; no se modifican sus contratos ni módulos.
-- **Decisiones tomadas:** ninguna decisión de producto, arquitectura, privacidad, seguridad, legal o modelo de datos se ha asumido. Se conserva el NO-GO de S15 y la exclusión de datos reales.
+- **Decisiones tomadas:** se aprueba priorizar una sesión posterior acotada de experiencia diaria del empleado antes de S15/S16; no se aprueba todavía su implementación. Se conserva el NO-GO de S15 y la exclusión de datos reales.
 - **Pruebas ejecutadas:** `git diff --check`, revisión de enlaces/estado y, con fixtures sintéticos, `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npm test` y `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npx tsc --noEmit`; ambos comandos finalizaron correctamente (código 0). No se añaden pruebas nuevas porque no hay modificación de código, datos, API ni UI.
-- **Riesgos y bloqueos restantes:** aprobación final del propietario; elección de foco posterior; protocolo S15 para participantes, feedback, soporte y retención; todos los bloqueos operativos/compliance S15; y apertura de PR pendiente de autenticar GitHub CLI (`gh auth login` o `GH_TOKEN`). La rama y el commit de S17 sí se publicaron correctamente.
+- **Riesgos y bloqueos restantes:** el contrato, la aprobación de implementación y las pruebas de la sesión posterior; protocolo S15 para participantes, feedback, soporte y retención; todos los bloqueos operativos/compliance S15; y apertura de PR pendiente de autenticar GitHub CLI (`gh auth login` o `GH_TOKEN`). La rama y el commit de S17 sí se publicaron correctamente.
