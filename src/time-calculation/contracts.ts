@@ -13,3 +13,11 @@ export type DailyCalculation = {
 };
 export type CalculationInput = { employeeId:string; laborDate:string; siteId:string; events:readonly CalculationEvent[]; rule:ResolvedRule; excessThresholdMinutes:number };
 export type PersistedDailyCalculation = DailyCalculation & { id:string; revision:number; inputHash:string; calculatedAt:string };
+
+/**
+ * Fuente pública y sólo de lectura para consumidores de presentación.
+ * Contiene únicamente la evidencia efectiva que S5 ya emplea: nunca el
+ * evento sustituido, ni motivos de corrección, ni datos de dispositivo.
+ */
+export type EffectiveWorkdayEvent = Pick<CalculationEvent,'id'|'eventType'|'occurredAt'|'ruleVersionId'> & { siteId:string; laborDate:string; effectiveTimeZone:string };
+export type EffectiveWorkday = { employeeId:string; laborDate:string; siteId:string; effectiveTimeZone:string; events:readonly EffectiveWorkdayEvent[] };
