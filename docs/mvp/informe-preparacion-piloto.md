@@ -33,6 +33,7 @@
 | P1 | `S13-005`: TLS/WAF/rate limit, restore real y retención/borrado de exportaciones no comprobados. | Abierto; bloqueo de piloto con datos reales. |
 | P2 | S13-006: configuración inicial y exportación no tienen flujo UI guiado. | Propuesta S14 / decisión de producto. |
 | P2 | S13-007: detalles muestran UUID técnicos (regla/actor) en vez de etiquetas legibles. | Mejora UX S14. |
+| P2 | S13-008: el selector de una segunda corrección no ofreció registros tras aprobar una primera en el dataset nocturno. | Reproducir y aclarar comportamiento esperado en S14. |
 | P2 | Turbopack advierte de acceso dinámico a ficheros en exportaciones. | Evaluar empaquetado y tamaño antes del despliegue gestionado. |
 
 Se corrigieron además dos defectos observados en vivo: consulta SQL ambigua de centros que impedía cargar el área de responsable, y detalle de corrección que no refrescaba tras decidir. Regresiones: `tests/company-people.test.ts` y `tests/admin-ui.test.ts`.

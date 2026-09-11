@@ -25,7 +25,7 @@ Por tanto, los pendientes ya no son recorridos HTTP que puedan ejecutarse autón
 
 En el navegador integrado se recorrieron en vivo `/login`, `/employee`, historial de jornada nocturna, solicitud de corrección y `/admin`. El empleado creó una corrección sintética sobre la entrada del turno nocturno; el responsable, limitado a su centro, la vio, aprobó y comprobó el mensaje de recálculo. La vista final mostró la decisión aprobada y no presentó acciones repetibles. El dashboard del responsable mostró tres personas, un centro y las solicitudes pendientes autorizadas.
 
-La ejecución encontró dos P1 acotados y se corrigieron: `listSites` seleccionaba una columna `id` ambigua al unir con `companies`, impidiendo cargar la administración; y el detalle de corrección no actualizaba su estado tras decidir. Sus regresiones están en `tests/company-people.test.ts` y `tests/admin-ui.test.ts`. Quedan como P2 la exposición de UUID técnico en el historial de decisión, la ausencia de UI de configuración/exportación y una revisión manual con lector de pantalla.
+La ejecución encontró dos P1 acotados y se corrigieron: `listSites` seleccionaba una columna `id` ambigua al unir con `companies`, impidiendo cargar la administración; y el detalle de corrección no actualizaba su estado tras decidir. Sus regresiones están en `tests/company-people.test.ts` y `tests/admin-ui.test.ts`. Quedan como P2 la exposición de UUID técnico en el historial de decisión, la ausencia de UI de configuración/exportación, una revisión manual con lector de pantalla y la repetición de una solicitud tras aprobar otra.
 
 ## Alcance y dependencias
 
@@ -66,6 +66,7 @@ La base S11 es sintética, determinista e idempotente: `office` contiene una emp
 | S13-005 | P1 abierto | No se han probado TLS/proxy/rate limit, restore real ni borrado de exportaciones vencidas. | Bloqueo operacional de S10/S12; no apto para datos reales hasta cerrarlo. |
 | S13-006 | P2 | La UI administrativa entregada es de consulta/revisión; altas y configuración se ofrecen por API, no como flujo guiado. | La guía no inventa pantallas; decidir si se habilita UI o se documenta una operación técnica asistida. |
 | S13-007 | P2 | La interfaz muestra UUID de regla/actor en detalles, poco comprensible para usuarios. | Mejora UX para S14 tras preservar trazabilidad. |
+| S13-008 | P2 | Tras aprobar una corrección nocturna, una nueva carga del formulario de corrección no ofreció registros seleccionables en este dataset. | Reproducir con un segundo evento y decidir si es una restricción intencionada contra duplicados o un defecto del selector. |
 
 No se detectó P0. S13-005 permanece como P1 bloqueante para un piloto con datos reales.
 
