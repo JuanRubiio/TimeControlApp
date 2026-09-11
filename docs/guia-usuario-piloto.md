@@ -6,11 +6,25 @@ Time Control registra entradas, salidas y pausas manuales, muestra incidencias y
 
 No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La aplicación se ejecuta en un entorno dedicado por empresa; el acceso se limita por rol y ámbito autorizado.
 
-> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos de S14.
+> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos operativos y de cumplimiento de S15.
 
 ## Requisitos de acceso
 
 Use un navegador actualizado, conexión al entorno asignado y una cuenta creada por la empresa. Abra `/login`, indique correo y contraseña, y complete MFA si se le solicita. La interfaz tiene vistas de fichaje (`/employee`), historial y correcciones; administración (`/admin`); y kiosco (`/kiosk`). No comparta sesiones ni PIN. Use **Cerrar sesión** al terminar.
+
+## Acceso de demostración local
+
+Estas cuentas existen sólo después de cargar el perfil sintético `office` con `DEMO_PASSWORD=UiE2eSyntheticPassword-2026`. Son públicas únicamente para revisión local del MVP: no deben reutilizarse, desplegarse ni usarse en un entorno con datos reales.
+
+| Rol | Correo | Contraseña | Qué revisar |
+|---|---|---|---|
+| Empleado | `night.office@demo.test` | `UiE2eSyntheticPassword-2026` | Jornada, fichaje, pausas, historial y solicitud de corrección. |
+| Responsable | `manager.office@demo.test` | `UiE2eSyntheticPassword-2026` | Resumen y correcciones del centro autorizado. Tras acceder, abra **Administración**. |
+| Administración | `admin.office@demo.test` | `UiE2eSyntheticPassword-2026` | Panel completo de administración y revisión. En el primer acceso completa MFA, salvo que el entorno local sintético haya activado expresamente `LOCAL_SYNTHETIC_DEMO_MFA_BYPASS=true`. |
+
+Las tres cuentas y todos sus registros son sintéticos. Si se reinicia la base, vuelva a ejecutar el seed con la misma contraseña para recrearlas.
+
+El bypass MFA es exclusivo de HTTP local, sólo permite cuentas administrativas `@demo.test` y añade una entrada de auditoría. No debe configurarse en ningún despliegue ni con datos reales.
 
 ## Administrador y RR. HH.
 
@@ -27,11 +41,11 @@ El responsable ve exclusivamente sus centros, personas, jornadas y correcciones 
 
 ## Empleado
 
-En **Mi jornada**, pulse sólo la acción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. La pantalla muestra únicamente las acciones válidas y confirma la hora registrada. Si hay error, use **Reintentar** después de comprobar la conexión; no repita pulsaciones rápidamente.
+En **Mi jornada**, consulte primero **Siguiente acción** y pulse sólo la opción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. El botón se bloquea mientras se confirma el registro y la pantalla anuncia la hora confirmada. Si hay error, use **Reintentar la consulta** después de comprobar la conexión; no repita pulsaciones rápidamente.
 
 En **Historial**, abra una fecha para consultar eventos, pausas, tiempo efectivo, jornada esperada, diferencia, incidencias, regla/versionado y zona horaria. El saldo no es nómina ni sanción.
 
-Para corregir un dato, desde el detalle use **Corregir** o abra **Correcciones**. Seleccione el registro, acción y fecha/hora propuesta, y escriba un motivo. La solicitud queda Pendiente; una aprobación genera un efecto aditivo y un rechazo muestra su motivo. El fichaje original nunca se borra.
+Para corregir un dato, desde el detalle use **Solicitar corrección** o abra **Correcciones**. Seleccione el registro, acción y fecha/hora propuesta, y escriba un motivo. La solicitud queda **Pendiente de revisión**; una aprobación genera un efecto aditivo y un rechazo muestra su motivo. El fichaje original nunca se borra. Los identificadores técnicos quedan en el detalle secundario de auditoría y no cambian el registro.
 
 
 ## Ante incidencias
@@ -39,7 +53,7 @@ Para corregir un dato, desde el detalle use **Corregir** o abra **Correcciones**
 - **Olvido o jornada incompleta:** solicite una corrección con la hora propuesta y el motivo.
 - **Secuencia inválida:** siga el botón disponible; si ya hay una pausa iniciada, finalícela antes de salir.
 - **Error de acceso:** no comparta credenciales; contacte al administrador de la empresa. La recuperación segura no está entregada todavía.
-- **Kiosco/QR/PIN:** use sólo el kiosco autorizado. No se solicitan permisos de cámara ni ubicación. Un fallo repetido debe escalarse al soporte, sin revelar el PIN.
+- **Kiosco/QR/PIN:** use sólo el kiosco autorizado y registre únicamente la acción que está realizando. Un fallo repetido debe escalarse al soporte, sin revelar el PIN.
 
 ## Privacidad, límites legales y soporte
 
