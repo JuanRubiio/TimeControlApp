@@ -4,6 +4,8 @@
 
 Actualización: Docker y Node ya son ejecutables en el entorno sintético. Build Docker, health, migración, seed office, 64/64 pruebas y E2E de empleado/RBAC/logout se han completado. Permanecen los bloqueos de operación y los recorridos E2E no ejecutados.
 
+Actualización 11/09/2026: se ejecutaron dos entornos dedicados office/multisite y se rechazó una cookie office en multicentro (401). Se verificaron empleado nocturno, MFA administrativa TOTP, decisión de correcciones y generación/descarga autorizada de CSV/PDF. Los casos temporales siguen cubiertos por las suites deterministas. Quedan pendientes sólo controles de infraestructura/operación y revisión humana de UX, accesibilidad, legal y privacidad.
+
 ## Entorno y evidencia
 
 - Windows local, PowerShell; Node `v18.12.1`, npm `8.19.2`.

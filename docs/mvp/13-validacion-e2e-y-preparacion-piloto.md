@@ -10,6 +10,17 @@ Se corrigieron: permisos propios de empleado con migración aditiva; pantalla `/
 
 Siguen bloqueando el Go: validación completa de correcciones/exportaciones/DST/aislamiento multicentro, dataset de decisiones aprobada/rechazada, y controles externos TLS/WAF/retención/DPO.
 
+## Automatización ampliada 11/09/2026
+
+- Dos proyectos Compose y dos PostgreSQL dedicados (`office` y `multisite`) arrancaron desde cero, migraron y superaron health checks. Una cookie de sesión válida de office recibió `401` en multicentro.
+- El perfil multicentro se cargó con Madrid, Canarias y Levante; el empleado nocturno inició sesión (`200`), recibió cinco registros sintéticos y fue denegado en administración (`403`).
+- El empleado office completó login (`200`), autoconsulta (`200`), fichaje (`201`), reintento idempotente (`200`), denegación de exportación/administración (`403`) y logout (`401` posterior).
+- El responsable aprobó y rechazó solicitudes sintéticas y generó/descargó CSV y PDF autorizados. El contenido CSV se inspeccionó en la respuesta; la aserción binaria de BOM/cabecera PDF sigue cubierta por la suite S9 y queda pendiente convertirla en script HTTP versionado.
+- MFA administrativa: contraseña, setup de secreto temporal y verificación TOTP finalizaron con `200`, sin registrar el secreto.
+- `npm test` en Node 20 Docker: **64/64**. Las suites S3/S5 cubren fecha de jornada, medianoche y los dos cambios DST; no se ha usado un reloj del navegador ni datos reales.
+
+Por tanto, los pendientes ya no son recorridos HTTP que puedan ejecutarse autónomamente con el entorno local actual: TLS/WAF/rate limit reales, backup/restore operativo en destino, retención/borrado programado, QR físico, revisión de lector de pantalla/UX visual y aprobaciones DPO, laboralista y operación.
+
 ## Alcance y dependencias
 
 S13 valida el MVP integrado S1–S12 como producto, con datos exclusivamente sintéticos de S11. Incluye arranque reproducible, seguridad/RBAC/aislamiento, flujos de administración, empleado, fichaje, cálculo, correcciones, exportación y revisión UX/accesibilidad. No crea funciones de negocio, integraciones, datos reales, GPS, cámara, biometría ni servicios de pago.
