@@ -73,7 +73,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S14 | [14-ui-ux-y-experiencia-piloto.md](14-ui-ux-y-experiencia-piloto.md) | M | Muy recomendable; UX/accesibilidad sin nuevas reglas |
 | S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Obligatoria; puerta de datos reales |
 | S16 | [16-configuracion-y-exportacion-guiadas.md](16-configuracion-y-exportacion-guiadas.md) | M | Muy recomendable; requiere decisión sobre autoservicio mínimo |
-| S17 | [17-jornada-en-curso-y-confianza-operativa.md](17-jornada-en-curso-y-confianza-operativa.md) | M | Propuesta: temporizador informativo y estado de jornada; pendiente de aprobación |
+| S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Propuesta: evaluación integral, backlog y contratos posteriores; pendiente de aprobación |
 
 ## Base transversal publicada por S0
 
