@@ -1,6 +1,6 @@
 # S18 — Experiencia diaria y jornada en curso informativa
 
-**Estado:** bloqueada antes de implementación por contrato público insuficiente de S5; requiere enmienda aprobada de S5. **Tamaño:** M. **Propietaria:** S18 para la proyección read-only, su ruta, presentación acotada y pruebas. **Dependencias:** S4, S5, S7, S11, S14 y la decisión S17 `ef1e8c3` (integrada en `master` mediante `dc338f2`). **Relación con piloto:** se ejecuta antes de S15 y S16, pero no elimina el NO-GO de S15 ni habilita datos reales.
+**Estado:** implementación parcial; fundación S5 consumida y ruta/UI entregadas, pendientes pruebas HTTP/E2E visuales requeridas. **Tamaño:** M. **Propietaria:** S18 para la proyección read-only, su ruta, presentación acotada y pruebas. **Dependencias:** S4, S5, S7, S11, S14 y la decisión S17 `ef1e8c3` (integrada en `master` mediante `dc338f2`). **Relación con piloto:** se ejecuta antes de S15 y S16, pero no elimina el NO-GO de S15 ni habilita datos reales.
 
 ## Objetivo
 
@@ -119,3 +119,17 @@ La sesión propietaria S5 debe aprobar un contrato público read-only, por ejemp
 - tener pruebas de contrato con las secuencias S11 antes de que S18 la consuma.
 
 Tras una enmienda aprobada e integrada en `master`, S18 podrá retomar su API propia, autorización servidor, presentación y pruebas requeridas. Hasta entonces mantiene el NO-GO de S15 y no declara criterios funcionales completados.
+
+## Implementación tras enmienda S5 — 11/09/2026
+
+La enmienda S5 se publicó separadamente en `f28707f` (`codex/s5-effective-workday-source`) y se consumió mediante merge verificable en esta rama. Publica `EffectiveWorkday` y `effectiveWorkday(employeeId, asOf)` como fuente read-only: selecciona la misma evidencia efectiva usada por S5, excluye eventos sustituidos y añade efectos aprobados, sin exponer motivos, PIN, dispositivo ni terceros.
+
+S18 añade `src/workday-status/{contracts,service,http}.ts` y `GET /api/v1/workday-status/me`. La ruta no recibe empleado, empresa, centro, zona ni instante del cliente; resuelve la sesión, aplica `time-event.read:self`, identifica el empleo propio y obtiene `asOf` de `clock_timestamp()` en PostgreSQL. No inserta, actualiza ni borra evidencia, cálculo, correcciones, auditoría o idempotencias.
+
+La presentación de `/employee` consume sólo esa respuesta: estado textual, última confirmación, acumulado de registro y límites no salariales/no disciplinarios. La cifra se proyecta con el `asOf` del servidor, avanza únicamente con `working` y se congela en pausa/salida. Se vuelve a consultar tras el fichaje confirmado, foco y cada minuto mientras trabaja; no se persiste ni deriva del reloj del navegador.
+
+### Pruebas y pendientes reales
+
+- Correctas en Docker con `.s13.synthetic.env`: `npx tsc --noEmit`, `npm test` y `npm run build` (código 0).
+- `tests/workday-status.test.ts` cubre trabajo en curso, pausa, salida, ausencia de evidencia y una duración UTC que atraviesa DST.
+- Pendientes antes de declarar S18 completa: integración HTTP autenticada/negativa directa para la nueva ruta (sesión, RBAC, aislamiento y parámetros de ámbito), ejercicio con los perfiles `office` y `multisite`, inspección de logs sintéticos, y recorrido visual/manual S14 de teclado, árbol accesible, contraste y viewports 320/390/768/1280. No se han presentado estos puntos como verificados.
