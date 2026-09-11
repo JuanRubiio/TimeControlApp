@@ -25,6 +25,12 @@ $EnvFile='.env'
 
 2. Abra `.env` y sustituya cada valor `replace-...` por un secreto local. Mantenga `SESSION_COOKIE_SECURE=false` únicamente para esta prueba HTTP local.
 
+   Para revisar la cuenta administrativa sintética sin configurar una aplicación TOTP, añada también esta línea. Sólo funciona para cuentas `@demo.test` con cookie HTTP local y nunca debe activarse en un despliegue:
+
+   ```text
+   LOCAL_SYNTHETIC_DEMO_MFA_BYPASS=true
+   ```
+
 3. Construya e inicie una instancia nueva:
 
    ```powershell

@@ -128,3 +128,7 @@ Se aplicó una segunda capa visual, inspirada en paneles de operaciones contempo
 ### Riesgo restante
 
 La verificación visual se ha realizado en navegador y árbol accesible, pero no sustituye una auditoría con lector de pantalla, medición instrumental de contraste ni aceptación con usuarios de piloto. Corresponden a S15 y no se declaran como cumplidos automáticamente.
+
+## Excepción local de MFA para demo sintética — 11/09/2026
+
+Autorizada únicamente para facilitar la revisión local: `LOCAL_SYNTHETIC_DEMO_MFA_BYPASS=true` omite TOTP sólo cuando la cookie de sesión es HTTP no segura, la cuenta termina en `@demo.test` y tiene el rol `admin`. La condición se valida en servidor y cada uso deja la auditoría `auth.mfa.bypassed_synthetic_demo`. No modifica MFA normal, no se activa por defecto y está prohibida para despliegues o datos reales. Validación: build Docker correcto, **74/74** pruebas y login HTTP local de `admin.office@demo.test` con `mfaRequired:false`.

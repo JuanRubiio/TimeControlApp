@@ -7,6 +7,7 @@ const schema = z.object({
   SESSION_COOKIE_NAME: z.string().regex(/^[A-Za-z0-9_-]+$/).default('tc_session'),
   SESSION_TTL_HOURS: z.coerce.number().int().min(1).max(24).default(8),
   SESSION_COOKIE_SECURE: z.enum(['true', 'false']).default('true').transform((value) => value === 'true'),
+  LOCAL_SYNTHETIC_DEMO_MFA_BYPASS: z.enum(['true', 'false']).default('false').transform((value) => value === 'true'),
   EXPORT_STORAGE_DIR: z.string().min(1).optional()
 });
-export const config = schema.parse({ DATABASE_URL: process.env.DATABASE_URL, ENVIRONMENT_ID: process.env.ENVIRONMENT_ID, KIOSK_PIN_PEPPER: process.env.KIOSK_PIN_PEPPER, SESSION_COOKIE_NAME: process.env.SESSION_COOKIE_NAME, SESSION_TTL_HOURS: process.env.SESSION_TTL_HOURS, SESSION_COOKIE_SECURE: process.env.SESSION_COOKIE_SECURE, EXPORT_STORAGE_DIR: process.env.EXPORT_STORAGE_DIR });
+export const config = schema.parse({ DATABASE_URL: process.env.DATABASE_URL, ENVIRONMENT_ID: process.env.ENVIRONMENT_ID, KIOSK_PIN_PEPPER: process.env.KIOSK_PIN_PEPPER, SESSION_COOKIE_NAME: process.env.SESSION_COOKIE_NAME, SESSION_TTL_HOURS: process.env.SESSION_TTL_HOURS, SESSION_COOKIE_SECURE: process.env.SESSION_COOKIE_SECURE, LOCAL_SYNTHETIC_DEMO_MFA_BYPASS: process.env.LOCAL_SYNTHETIC_DEMO_MFA_BYPASS, EXPORT_STORAGE_DIR: process.env.EXPORT_STORAGE_DIR });

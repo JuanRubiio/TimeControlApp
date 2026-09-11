@@ -9,6 +9,7 @@ import type { ScopedActor } from '@/permissions/authorizer';
 const tokenHash = (token: string) => createHash('sha256').update(token).digest('hex');
 export const newSessionToken = () => randomBytes(32).toString('base64url');
 type User = { id:string; email:string; display_name:string; password_hash:string; is_active:boolean; mfa_secret:string|null; mfa_enrolled_at:Date|null; roles:string[]; permissions:string[] };
+export function isLocalSyntheticDemoMfaBypassEnabled(input:{enabled:boolean;sessionCookieSecure:boolean;email:string;roles:string[]}) { return input.enabled && !input.sessionCookieSecure && input.email.endsWith('@demo.test') && input.roles.includes('admin'); }
 async function userByEmail(email: string): Promise<User | null> {
   const result = await db.query<User>(`SELECT u.*, coalesce(array_agg(DISTINCT r.code) FILTER (WHERE r.code IS NOT NULL), '{}') roles, coalesce(array_agg(DISTINCT rp.permission_code) FILTER (WHERE rp.permission_code IS NOT NULL), '{}') permissions FROM users u LEFT JOIN user_role_assignments ura ON ura.user_id=u.id AND ura.valid_from<=clock_timestamp() AND (ura.valid_to IS NULL OR ura.valid_to>clock_timestamp()) LEFT JOIN roles r ON r.id=ura.role_id LEFT JOIN role_permissions rp ON rp.role_id=r.id WHERE u.email=$1 GROUP BY u.id`, [email.toLowerCase()]); return result.rows[0] ?? null;
 }
@@ -16,6 +17,7 @@ export async function passwordLogin(email:string, password:string, correlationId
   const user = await userByEmail(email); const valid = !!user?.is_active && await verifyPassword(user?.password_hash ?? '$argon2id$v=19$m=19456,t=2,p=1$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', password);
   if (!valid || !user) { await appendAudit({actorType:'system', action:'auth.login',resourceType:'session',result:'denied',correlationId, changes:{reason:'invalid_credentials'}}); return null; }
   await appendAudit({actorType:'user',actorId:user.id,action:'auth.login',resourceType:'session',result:'success',correlationId});
+  if (isLocalSyntheticDemoMfaBypassEnabled({enabled:config.LOCAL_SYNTHETIC_DEMO_MFA_BYPASS,sessionCookieSecure:config.SESSION_COOKIE_SECURE,email:user.email,roles:user.roles})) { await appendAudit({actorType:'user',actorId:user.id,action:'auth.mfa.bypassed_synthetic_demo',resourceType:'session',result:'success',correlationId,changes:{localSyntheticDemo:true}}); return { status:'authenticated' as const, session: await createSession(user.id, correlationId) }; }
   if (user.roles.includes('admin') && !user.mfa_enrolled_at) return { status: 'mfa_enrollment_required' as const, challenge: await createChallenge(user.id, 'mfa_enroll') };
   if (user.roles.includes('admin')) return { status: 'mfa_required' as const, challenge: await createChallenge(user.id, 'mfa_verify') };
   return { status:'authenticated' as const, session: await createSession(user.id, correlationId) };
