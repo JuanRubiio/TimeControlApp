@@ -96,6 +96,8 @@ Se aplicó el sistema mínimo en `src/app/globals.css` y `src/ui/feedback.tsx`, 
 
 ### Riesgos y bloqueos restantes
 
+- Recorrido E2E visual adicional sobre una instancia S14 aislada (puerto 3015, dataset office sintético): se verificaron login/MFA, jornada, historial, correcciones, validación nativa, foco y vistas móvil 320 px. Se corrigieron scroll horizontal, navegación móvil y orientación de responsable sin ficha; la ruta de administración sigue autorizada exclusivamente en servidor.
+
 - Pendiente S15: lector de pantalla humano, contraste auditado con herramienta, zoom 200 %, QR físico y aceptación de usuarios. S14 no debe presentarlos como verificados automáticamente.
 - Pendiente S16: configuración y exportación guiadas. No se añadió un botón de exportación porque depende de su contrato y del cierre de retención/almacenamiento de S15.
 - Mantiene NO-GO para datos reales de S13-005/S15; el cambio visual no modifica ese dictamen.
