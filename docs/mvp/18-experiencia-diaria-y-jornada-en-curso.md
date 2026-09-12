@@ -158,3 +158,13 @@ Pendiente antes del cierre: prueba negativa entre `office` y `multisite` y recor
 - `npm exec tsc -- --noEmit` finalizó correctamente con los cambios de cierre. El runner Vitest del host no puede ejecutarse porque usa Node `18.12.1` y esta versión de Vitest requiere `node:fs.statfsSync`; el runner correcto es el contenedor con Node soportado. Desde esta sesión, el acceso al socket de Docker fue denegado por el entorno de ejecución, por lo que no fue posible repetir la nueva prueba HTTP ni la suite completa dentro del contenedor.
 
 **Estado al cierre local:** la implementación y las validaciones HTTP/E2E previas están completadas; queda bloqueada únicamente la repetición de Vitest en Docker para la prueba nueva de sobre HTTP y la regresión completa. No hay P0 confirmado; el bloqueo de infraestructura se registra como P2 de validación. S15 mantiene sin cambios el NO-GO para datos reales.
+
+### Cierre final — 12/09/2026
+
+- Docker Desktop se recuperó y se reconstruyó el entorno dedicado sintético `time-control-s18-retest`. La aplicación quedó saludable en `127.0.0.1:3013` y PostgreSQL en `127.0.0.1:5432`; se conserva levantado para la conexión local con DBeaver. Se limpió únicamente la caché de construcción y las imágenes colgantes antes de la reconstrucción; no se eliminaron volúmenes.
+- La compilación Docker completó correctamente. Conserva cuatro advertencias conocidas de Turbopack sobre acceso dinámico a archivos en `src/exports/service.ts`, fuera del alcance de S18 y ya registradas como riesgo previo de empaquetado; no son un defecto introducido por esta sesión.
+- `npm test` dentro del contenedor finalizó con **83 pruebas correctas en 27 ficheros**, incluidas `workday-status.test.ts`, `workday-status-http.test.ts`, `employee-presentation.test.ts`, la corrección nocturna de S5 y las regresiones transversales S4–S7/S11.
+- E2E HTTP con datos exclusivamente sintéticos: sin sesión `401`; login de empleado `200`; consulta propia `200`; `employeeId` y `asOf` enviados por cliente no alteran el ámbito del servidor. La respuesta contiene solamente `asOf`, `laborDate`, `effectiveTimeZone`, `status`, `effectiveMinutes`, `lastConfirmedAt` y `nextAction`.
+- E2E de entorno dedicado: la misma sesión sintética obtuvo `200` en `office` y `401` en el entorno aislado `multisite`. El entorno temporal multisite se desmontó con `down --remove-orphans`, preservando los volúmenes. La revisión de los últimos 100 logs sintéticos no encontró coincidencias de contraseña, secreto, token, cookie, pepper ni URL de base de datos.
+
+**S18 finalizada.** No hay defectos P0–P3 introducidos o confirmados por S18. S15 continúa siendo la puerta obligatoria y el NO-GO para datos reales no cambia.
