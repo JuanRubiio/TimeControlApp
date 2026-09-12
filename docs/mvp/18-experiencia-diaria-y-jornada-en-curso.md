@@ -133,3 +133,9 @@ La presentación de `/employee` consume sólo esa respuesta: estado textual, úl
 - Correctas en Docker con `.s13.synthetic.env`: `npx tsc --noEmit`, `npm test` y `npm run build` (código 0).
 - `tests/workday-status.test.ts` cubre trabajo en curso, pausa, salida, ausencia de evidencia y una duración UTC que atraviesa DST.
 - Pendientes antes de declarar S18 completa: integración HTTP autenticada/negativa directa para la nueva ruta (sesión, RBAC, aislamiento y parámetros de ámbito), ejercicio con los perfiles `office` y `multisite`, inspección de logs sintéticos, y recorrido visual/manual S14 de teclado, árbol accesible, contraste y viewports 320/390/768/1280. No se han presentado estos puntos como verificados.
+
+### Repetición E2E local — 12/09/2026
+
+En el proyecto Docker aislado `time-control-s18-retest`, con perfil `office` exclusivamente sintético, se verificó health de aplicación y PostgreSQL, migración, seed y los siguientes asertos HTTP: `GET /api/v1/workday-status/me` sin sesión devuelve `401`; tras login de empleado demo devuelve `200`; y los parámetros de cliente `employeeId` y `asOf` no cambian el ámbito resuelto en servidor ni impiden la respuesta propia. La suite del contenedor finalizó con **79 pruebas en 26 ficheros correctos**. PostgreSQL se comprobó accesible en el puerto host configurado para la inspección local con DBeaver.
+
+No se ha marcado todavía como completada la prueba negativa entre `office` y `multisite`, la revisión de logs ni el recorrido visual accesible. La corrección de una jornada nocturna abierta tras medianoche requiere además que la fuente S5 consulte la jornada laboral iniciada el día anterior; se mantiene como riesgo funcional antes del cierre de S18.
