@@ -1,6 +1,6 @@
 # S18 — Experiencia diaria y jornada en curso informativa
 
-**Estado:** contrato aprobado; pendiente de implementación. **Tamaño:** M. **Propietaria:** S18 para la proyección read-only, su ruta, presentación acotada y pruebas. **Dependencias:** S4, S5, S7, S11, S14 y la decisión S17 `ef1e8c3` (hasta que se integre en `master`). **Relación con piloto:** se ejecuta antes de S15 y S16, pero no elimina el NO-GO de S15 ni habilita datos reales.
+**Estado:** implementación parcial; fundación S5 consumida y ruta/UI entregadas, pendientes pruebas HTTP/E2E visuales requeridas. **Tamaño:** M. **Propietaria:** S18 para la proyección read-only, su ruta, presentación acotada y pruebas. **Dependencias:** S4, S5, S7, S11, S14 y la decisión S17 `ef1e8c3` (integrada en `master` mediante `dc338f2`). **Relación con piloto:** se ejecuta antes de S15 y S16, pero no elimina el NO-GO de S15 ni habilita datos reales.
 
 ## Objetivo
 
@@ -94,3 +94,77 @@ No autoriza cambios en `src/time-events/*`, `src/time-calculation/*`, `src/corre
 - **Aprobado:** priorizar S18 antes de S15/S16 con el alcance y exclusiones anteriores.
 - **Sin cambiar:** S15 es obligatorio antes de datos reales; S16 continúa como trabajo prepiloto posterior a S15; no hay piloto con datos reales ni promesa de cumplimiento automático.
 - **Pendiente antes de editar código:** confirmar que el adaptador público de S5 puede ofrecer la secuencia efectiva con correcciones sin modificar su contrato. Si no, se requiere una enmienda explícita de S5 antes de implementar S18.
+
+## Registro de apertura y bloqueo — 11/09/2026
+
+### Comprobaciones realizadas
+
+- Se confirmó un único contrato S18 y se revisaron S4, S5, S7, S11, S13, S14, S17, la evaluación prepiloto, el informe de piloto y el workflow Git.
+- `master` remoto contiene la aprobación equivalente a la decisión S17 `ef1e8c3` mediante `dc338f2` y el contrato S18 mediante `0ee5e53`. La rama `codex/s18-experiencia-jornada` se alineó con esa base. Los ficheros sin seguimiento `.s13.synthetic.env` y `.s13.multisite.env` se preservaron sin incluirlos en el trabajo.
+- La regresión base se ejecutó con fixtures sintéticos: `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npm test` terminó con código 0.
+
+### Bloqueo contractual
+
+S5 publica en `src/time-calculation/contracts.ts` únicamente resultados materializados (`PersistedDailyCalculation`) y tipos de cálculo. La secuencia efectiva que excluye eventos sustituidos e incorpora `correction_effects` se construye internamente en `recalculateDaily` de `src/time-calculation/service.ts`; no existe un contrato público read-only que S18 pueda consumir para obtener esa evidencia, ni para proyectar el tramo `working` con el `asOf` emitido por el servidor.
+
+Usar directamente esas consultas internas, leer `correction_effects` desde S18 o reproducir la selección/cálculo infringiría las exclusiones de esta sesión y podría divergir de S5. Por ello no se han creado la ruta, módulo, presentación, pruebas, tablas ni migraciones de S18; tampoco se ha modificado el fichaje, cálculo, correcciones, permisos o auditoría existentes.
+
+### Enmienda propuesta a S5 — aprobación requerida
+
+La sesión propietaria S5 debe aprobar un contrato público read-only, por ejemplo un adaptador `EffectiveWorkdaySource`, que para un empleo y fecha laboral ya autorizados devuelva la secuencia efectiva ordenada y mínima: eventos confirmados originales no sustituidos, efectos de corrección aprobados, zona IANA, fecha laboral y el estado de evidencia incompleta. El adaptador debe:
+
+- conservar la selección de fuentes y la semántica de S5, incluidos correcciones aprobadas, medianoche y DST;
+- no materializar ni mutar cálculos, eventos, correcciones, auditoría o idempotencias;
+- no exponer motivos de corrección, PIN, secretos, datos de dispositivo ni datos de terceros; y
+- tener pruebas de contrato con las secuencias S11 antes de que S18 la consuma.
+
+Tras una enmienda aprobada e integrada en `master`, S18 podrá retomar su API propia, autorización servidor, presentación y pruebas requeridas. Hasta entonces mantiene el NO-GO de S15 y no declara criterios funcionales completados.
+
+## Implementación tras enmienda S5 — 11/09/2026
+
+La enmienda S5 se publicó separadamente en `f28707f` (`codex/s5-effective-workday-source`) y se consumió mediante merge verificable en esta rama. Publica `EffectiveWorkday` y `effectiveWorkday(employeeId, asOf)` como fuente read-only: selecciona la misma evidencia efectiva usada por S5, excluye eventos sustituidos y añade efectos aprobados, sin exponer motivos, PIN, dispositivo ni terceros.
+
+S18 añade `src/workday-status/{contracts,service,http}.ts` y `GET /api/v1/workday-status/me`. La ruta no recibe empleado, empresa, centro, zona ni instante del cliente; resuelve la sesión, aplica `time-event.read:self`, identifica el empleo propio y obtiene `asOf` de `clock_timestamp()` en PostgreSQL. No inserta, actualiza ni borra evidencia, cálculo, correcciones, auditoría o idempotencias.
+
+La presentación de `/employee` consume sólo esa respuesta: estado textual, última confirmación, acumulado de registro y límites no salariales/no disciplinarios. La cifra se proyecta con el `asOf` del servidor, avanza únicamente con `working` y se congela en pausa/salida. Se vuelve a consultar tras el fichaje confirmado, foco y cada minuto mientras trabaja; no se persiste ni deriva del reloj del navegador.
+
+### Pruebas y pendientes reales
+
+- Correctas en Docker con `.s13.synthetic.env`: `npx tsc --noEmit`, `npm test` y `npm run build` (código 0).
+- `tests/workday-status.test.ts` cubre trabajo en curso, pausa, salida, ausencia de evidencia y una duración UTC que atraviesa DST.
+- Pendientes antes de declarar S18 completa: integración HTTP autenticada/negativa directa para la nueva ruta (sesión, RBAC, aislamiento y parámetros de ámbito), ejercicio con los perfiles `office` y `multisite`, inspección de logs sintéticos, y recorrido visual/manual S14 de teclado, árbol accesible, contraste y viewports 320/390/768/1280. No se han presentado estos puntos como verificados.
+
+### Repetición E2E local — 12/09/2026
+
+En el proyecto Docker aislado `time-control-s18-retest`, con perfil `office` exclusivamente sintético, se verificó health de aplicación y PostgreSQL, migración, seed y los siguientes asertos HTTP: `GET /api/v1/workday-status/me` sin sesión devuelve `401`; tras login de empleado demo devuelve `200`; y los parámetros de cliente `employeeId` y `asOf` no cambian el ámbito resuelto en servidor ni impiden la respuesta propia. La suite del contenedor finalizó con **79 pruebas en 26 ficheros correctos**. PostgreSQL se comprobó accesible en el puerto host configurado para la inspección local con DBeaver.
+
+La fuente S5 ya corrige una jornada nocturna abierta tras medianoche: consulta la fecha laboral anterior sólo cuando sigue abierta y no reabre una jornada ya terminada. La prueba unitaria de S5 lo cubre. También se revisaron los últimos 100 logs del contenedor sintético sin coincidencias de contraseña, secreto, token, cookie, pepper o URL de base de datos.
+
+Pendiente antes del cierre: prueba negativa entre `office` y `multisite` y recorrido visual accesible de teclado, árbol, contraste y viewports 320/390/768/1280.
+
+### Cierre parcial de validación — 12/09/2026
+
+- Se repitió la comprobación aislada con dos entornos sintéticos en contenedores distintos: la cookie de `office` obtuvo `200` sólo en su aplicación (`http://127.0.0.1:3017`) y recibió `401` al intentar consumir el recurso en `multisite` (`http://127.0.0.1:3018`). Se confirma que una sesión no cruza el entorno dedicado por cliente.
+- Se añadió `tests/workday-status-http.test.ts`, que comprueba el sobre mínimo de éxito, correlación y que los errores `401`, `403` y `500` no reflejan detalles internos. La cobertura de presentación incluye también la advertencia para una secuencia histórica abierta que no corresponde a la jornada de hoy.
+- En un navegador local se verificaron árbol accesible, carga y estado cargado, etiqueta textual independiente de color, aviso contextual visible y refresco tras un fichaje sintético. La acción `Registrar salida` confirmó el resultado, actualizó el estado a `Finalizada`, la última confirmación y dejó una única siguiente acción (`Registrar entrada`). El recorrido conserva texto de ayuda y controles nativos enfocables.
+- No se pudieron ejecutar de nuevo las pruebas recién añadidas ni realizar la comprobación instrumental de los cuatro anchos (`320`, `390`, `768`, `1280`) porque el host devolvió `Espacio en disco insuficiente (os error 112)` al crear incluso el proceso de prueba. Se intentó liberar sólo imágenes colgantes, caché de construcción y contenedores detenidos de Docker, preservando los dos contenedores en ejecución y sus volúmenes para la conexión de DBeaver; el error persistió. No se ha eliminado ningún volumen ni datos sintéticos activos.
+
+**Bloqueo de cierre:** recuperar espacio en el host y repetir `npm test -- --run tests/workday-status.test.ts tests/workday-status-http.test.ts tests/employee-presentation.test.ts`, la suite Docker completa y la revisión visual en los cuatro viewports. Hasta entonces S18 permanece **parcialmente completada** y no se afirma la ausencia total de defectos.
+
+### Actualización de cierre — 12/09/2026
+
+- La comprobación responsive pendiente se completó en navegador con `320`, `390`, `768` y `1280` px. En los cuatro anchos el contenido no desbordó horizontalmente, los controles permanecieron visibles y el foco del enlace de navegación se expuso con contorno sólido. El árbol accesible conserva encabezados, lista de definiciones para el resumen y controles nativos enfocables.
+- El recorrido sintético de empleado terminó en `Finalizada` tras confirmar una salida: muestra estado textual, última confirmación y solamente `Registrar entrada` como siguiente acción. La consola del navegador no registró advertencias ni errores. Para el caso de una entrada histórica aún abierta, la presentación añade un aviso que separa explícitamente esa evidencia de la jornada actual, cubierto por prueba unitaria.
+- `npm exec tsc -- --noEmit` finalizó correctamente con los cambios de cierre. El runner Vitest del host no puede ejecutarse porque usa Node `18.12.1` y esta versión de Vitest requiere `node:fs.statfsSync`; el runner correcto es el contenedor con Node soportado. Desde esta sesión, el acceso al socket de Docker fue denegado por el entorno de ejecución, por lo que no fue posible repetir la nueva prueba HTTP ni la suite completa dentro del contenedor.
+
+**Estado al cierre local:** la implementación y las validaciones HTTP/E2E previas están completadas; queda bloqueada únicamente la repetición de Vitest en Docker para la prueba nueva de sobre HTTP y la regresión completa. No hay P0 confirmado; el bloqueo de infraestructura se registra como P2 de validación. S15 mantiene sin cambios el NO-GO para datos reales.
+
+### Cierre final — 12/09/2026
+
+- Docker Desktop se recuperó y se reconstruyó el entorno dedicado sintético `time-control-s18-retest`. La aplicación quedó saludable en `127.0.0.1:3013` y PostgreSQL en `127.0.0.1:5432`; se conserva levantado para la conexión local con DBeaver. Se limpió únicamente la caché de construcción y las imágenes colgantes antes de la reconstrucción; no se eliminaron volúmenes.
+- La compilación Docker completó correctamente. Conserva cuatro advertencias conocidas de Turbopack sobre acceso dinámico a archivos en `src/exports/service.ts`, fuera del alcance de S18 y ya registradas como riesgo previo de empaquetado; no son un defecto introducido por esta sesión.
+- `npm test` dentro del contenedor finalizó con **83 pruebas correctas en 27 ficheros**, incluidas `workday-status.test.ts`, `workday-status-http.test.ts`, `employee-presentation.test.ts`, la corrección nocturna de S5 y las regresiones transversales S4–S7/S11.
+- E2E HTTP con datos exclusivamente sintéticos: sin sesión `401`; login de empleado `200`; consulta propia `200`; `employeeId` y `asOf` enviados por cliente no alteran el ámbito del servidor. La respuesta contiene solamente `asOf`, `laborDate`, `effectiveTimeZone`, `status`, `effectiveMinutes`, `lastConfirmedAt` y `nextAction`.
+- E2E de entorno dedicado: la misma sesión sintética obtuvo `200` en `office` y `401` en el entorno aislado `multisite`. El entorno temporal multisite se desmontó con `down --remove-orphans`, preservando los volúmenes. La revisión de los últimos 100 logs sintéticos no encontró coincidencias de contraseña, secreto, token, cookie, pepper ni URL de base de datos.
+
+**S18 finalizada.** No hay defectos P0–P3 introducidos o confirmados por S18. S15 continúa siendo la puerta obligatoria y el NO-GO para datos reales no cambia.
