@@ -145,3 +145,15 @@ No autoriza cambios en S2/S3/S6/S8/S9/S10/S15/S16 ni rutas de administración no
 
 - Sigue obligatoria la enmienda conjunta S4/S5 antes de modificar `time-events`, `time-calculation`, `domain_event_outbox`, migraciones o implementar consumidor, reintento y reparación histórica. Debe definir carga mínima, deduplicación, reintento, actor/auditoría y reproceso. **Aprobación requerida del propietario S4/S5.**
 - No se añadieron migraciones, cambios de evidencia, recálculo por `GET`, reparación libre para empleado, telemetría, datos reales ni capacidades excluidas. S15 y el NO-GO para datos reales permanecen sin cambios.
+
+## Enmienda S4/S5 aprobada e implementación en curso — 12/09/2026
+
+El propietario aprobó que S4 publique la carga mínima de `time-event.recorded` y que S5/S19 sea propietario del consumidor, reintentos, materialización y reparación histórica interna. La migración aditiva `s019_202609121100_outbox_recalculation.sql` crea sólo el cursor de consumo: no cambia evidencia original. `src/time-calculation/outbox.ts` consume los eventos con el `id` de outbox como deduplicación, reintenta con espera y registra una reparación de sistema auditable. Los POST de fichaje solicitan el trabajo no esperado tras confirmar la respuesta; un fallo del consumidor no revierte el fichaje.
+
+### Cierre de consumidor — 12/09/2026
+
+La prueba PostgreSQL aislada con perfil `office` sintético confirmó dos fichajes (`201`), dos eventos `time-event.recorded` consumidos y una única proyección diaria en revisión `1`. La repetición sin trabajos pendientes procesó `0`; al reabrir de forma controlada un cursor sintético, el consumidor procesó `1`, elevó su contador de intentos a `2` y conservó la revisión `1`. La reparación limitada de la misma jornada devolvió `replayed:true`, dejó una entrada `time-calculation.history.repaired` en auditoría y no creó nueva versión ni evento.
+
+Durante esta prueba se detectó y corrigió una falta de permiso de bloqueo del consumidor: `s019_202609121115_outbox_consumer_permission.sql` concede únicamente `UPDATE` sobre `domain_event_outbox` a `mvp_app`, necesario para `FOR UPDATE SKIP LOCKED`. No concede mutación sobre `time_events`.
+
+**Estado:** S19 finalizada funcionalmente. El consumidor queda limitado al monolito/entorno dedicado y no expone una operación a empleado. S15 y el NO-GO de datos reales no cambian.

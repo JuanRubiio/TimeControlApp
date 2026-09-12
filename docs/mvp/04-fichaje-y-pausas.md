@@ -76,3 +76,7 @@ No se añadió geolocalización, GPS, biometría, reconocimiento facial, foto, v
 - **S7:** puede reutilizar `GET /time-events`, la misma máquina de estados y la presentación con `effectiveTimeZone`.
 - **S9:** debe extraer `time_events`, `domain_event_outbox` y auditoría con los IDs/versiones fijados; no exportar PIN, QR ni `deviceOccurredAt` salvo finalidad justificada.
 - Antes de piloto debe probarse el QR SVG desde un lector real, junto con E2E de kiosco y prueba real de rate-limit para PIN.
+
+### Enmienda S19 aprobada — 12/09/2026
+
+S4 amplía aditivamente `time-event.recorded` en `domain_event_outbox` con `eventId`, `employeeId`, `laborDate`, tipo, centro, regla, método e instante. La clave de deduplicación es el `id` inmutable del outbox; el evento se inserta en la misma transacción que el fichaje, pero su consumo no bloquea ni revierte una confirmación. S4 no interpreta ni recalcula: S5/S19 es propietario de consumidor, reintento y materialización.
