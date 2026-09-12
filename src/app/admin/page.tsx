@@ -1,1 +1,1 @@
-import { AdminDashboard } from '@/admin/components'; export default function AdminPage(){return <AdminDashboard/>;}
+import { AdminDashboard } from '@/admin/components'; import { requirePageSession } from '@/auth/page-guard'; export default async function AdminPage(){await requirePageSession('/admin');return <AdminDashboard/>;}

@@ -79,3 +79,7 @@ Depende de S3/S4. API consumida por S8/S9. Pruebas deterministas por tabla de ca
 Se publica el contrato `EffectiveWorkday`/`EffectiveWorkdayEvent` y el adaptador `effectiveWorkday(employeeId, asOf)` de S5. Resuelve en servidor la relación laboral vigente, zona IANA y fecha laboral; devuelve únicamente la secuencia efectiva ordenada que S5 usa para cálculo, excluyendo eventos sustituidos e incorporando efectos de correcciones aprobadas. No muta evidencia, cálculos, auditoría ni idempotencias, y no expone motivos de corrección, PIN, datos de dispositivo ni datos de terceros. S18 lo consumirá después de autorizar y resolver el empleado propio; no recibe ámbito ni instante desde el navegador.
 
 La fuente contempla además medianoche: si la fecha local actual no tiene evidencia, conserva sólo la jornada laboral anterior que continúa abierta; una salida previa no reaparece como estado actual.
+
+## Enmienda de outbox S19 aprobada — 12/09/2026
+
+S5 acepta `time-event.recorded` y `time-calculation.recalculation-requested` como comandos internos idempotentes. S19 añade un cursor aditivo de consumo y reintento; cada consumo llama exclusivamente a `recalculateDaily`, cuyo hash y versiones inmutables conservan la deduplicación. El consumidor se registra como sistema cuando no hay actor humano, sin inventar evidencia. La reparación histórica es interna, auditada y limitada a un empleado/fecha ya autorizados; no se expone a empleado ni modifica eventos, correcciones, reglas o calendarios.

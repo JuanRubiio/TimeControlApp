@@ -10,7 +10,7 @@ No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La apl
 
 ## Requisitos de acceso
 
-Use un navegador actualizado, conexión al entorno asignado y una cuenta creada por la empresa. Abra `/login`, indique correo y contraseña, y complete MFA si se le solicita. La interfaz tiene vistas de fichaje (`/employee`), historial y correcciones; administración (`/admin`); y kiosco (`/kiosk`). No comparta sesiones ni PIN. Use **Cerrar sesión** al terminar.
+Use un navegador actualizado, conexión al entorno asignado y una cuenta creada por la empresa. Abra `/login`, indique correo y contraseña, y complete MFA si se le solicita. Las páginas de jornada, historial, correcciones y administración requieren una sesión válida; al acceder a un enlace interno permitido, volverá a él tras iniciar sesión. La interfaz tiene vistas de fichaje (`/employee`), historial y correcciones; administración (`/admin`); y kiosco. No comparta sesiones ni PIN. Use **Cerrar sesión** al terminar.
 
 ## Acceso de demostración local
 
@@ -43,7 +43,7 @@ El responsable ve exclusivamente sus centros, personas, jornadas y correcciones 
 
 En **Mi jornada**, consulte primero el estado de la jornada y **Siguiente acción**; el tiempo efectivo mostrado es exclusivamente informativo y no es nómina, sanción ni decisión disciplinaria. Pulse sólo la opción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. El botón se bloquea mientras se confirma el registro y la pantalla anuncia la hora confirmada. Si aparece un aviso de fichaje histórico pendiente, el estado corresponde a hoy: solicite una corrección para el registro anterior y siga únicamente la acción que confirme el servidor. Si hay error, use **Reintentar la consulta** después de comprobar la conexión; no repita pulsaciones rápidamente.
 
-En **Historial**, abra una fecha para consultar eventos, pausas, tiempo efectivo, jornada esperada, diferencia, incidencias, regla/versionado y zona horaria. El saldo no es nómina ni sanción.
+En **Historial**, abra una fecha para consultar eventos, pausas, tiempo efectivo, jornada esperada, diferencia, incidencias, regla/versionado y zona horaria. Si existen registros y el cálculo todavía no está materializado, el aviso indicará que está pendiente sin negar el fichaje; si no hay registros, falta autorización o hay un error técnico, cada caso muestra un mensaje distinto. Reintentar la consulta no modifica ni recalcula la jornada. El saldo no es nómina ni sanción.
 
 Para corregir un dato, desde el detalle use **Solicitar corrección** o abra **Correcciones**. Seleccione el registro, acción y fecha/hora propuesta, y escriba un motivo. La solicitud queda **Pendiente de revisión**; una aprobación genera un efecto aditivo y un rechazo muestra su motivo. El fichaje original nunca se borra. Los identificadores técnicos quedan en el detalle secundario de auditoría y no cambian el registro.
 
@@ -53,7 +53,7 @@ Para corregir un dato, desde el detalle use **Solicitar corrección** o abra **C
 - **Olvido o jornada incompleta:** solicite una corrección con la hora propuesta y el motivo.
 - **Secuencia inválida:** siga el botón disponible; si ya hay una pausa iniciada, finalícela antes de salir.
 - **Error de acceso:** no comparta credenciales; contacte al administrador de la empresa. La recuperación segura no está entregada todavía.
-- **Kiosco/QR/PIN:** use sólo el kiosco autorizado y registre únicamente la acción que está realizando. Un fallo repetido debe escalarse al soporte, sin revelar el PIN.
+- **Kiosco/QR/PIN:** la pantalla pública de PIN sólo funciona con su enlace de kiosco autorizado que contiene un identificador opaco. No revele el PIN. El QR continúa requiriendo sesión de empleado válida; un fallo repetido debe escalarse al soporte.
 
 ## Privacidad, límites legales y soporte
 

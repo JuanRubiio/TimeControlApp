@@ -1,2 +1,3 @@
 import { History } from '@/employee/components';
-export default function HistoryPage(){return <History/>;}
+import { requirePageSession } from '@/auth/page-guard';
+export default async function HistoryPage(){await requirePageSession('/employee/history');return <History/>;}

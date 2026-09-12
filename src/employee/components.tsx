@@ -9,8 +9,8 @@ import type { CorrectionRequest } from '@/corrections/contracts';
 import type { WorkdayStatus } from '@/workday-status/contracts';
 import { LogoutButton } from '@/auth/ui';
 import { LoadingBlock, StatusBadge, StatusNotice } from '@/ui/feedback';
-import { employeeApi } from './api';
-import { actionLabels, availableActions, dateTime, dayStatus, errorMessage, eventLabels, hasHistoricalOpenEvent, minutes } from './presentation';
+import { EmployeeApiError, employeeApi } from './api';
+import { actionLabels, availableActions, dateTime, dayStatus, errorMessage, eventLabels, hasHistoricalOpenEvent, historicalCalculationMessage, minutes, type HistoricalCalculationState } from './presentation';
 
 const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());
 const correctionKind = (status: CorrectionRequest['status']) => status === 'approved' ? 'success' : status === 'rejected' ? 'error' : 'warning';
@@ -47,8 +47,9 @@ export function History() {
 }
 
 export function DayDetail({ laborDate }: { laborDate: string }) {
-  const [events, setEvents] = useState<TimeEvent[]>([]); const [calculation, setCalculation] = useState<PersistedDailyCalculation | null>(); const [failure, setFailure] = useState<string>(); useEffect(() => { Promise.all([employeeApi.me(), employeeApi.events()]).then(async ([employee, items]) => { setEvents(items.filter((event) => event.laborDate === laborDate)); try { setCalculation(await employeeApi.calculation(employee.id, laborDate)); } catch { setCalculation(null); } }).catch((error) => setFailure(errorMessage(error))); }, [laborDate]);
-  return <main className="employee-shell"><EmployeeNav /><Link href="/employee/history">← Volver al historial</Link><h1>Jornada del {laborDate}</h1>{failure ? <StatusNotice kind="error">{failure}</StatusNotice> : <><section className="employee-section"><h2>Eventos y pausas</h2>{events.length ? <Events events={events} linkCorrections /> : <p className="subtle">No hay eventos registrados este día.</p>}</section>{calculation ? <Calculation calculation={calculation} /> : <StatusNotice kind="info">El cálculo aún no está disponible para esta jornada.</StatusNotice>}</>}</main>;
+  const [events, setEvents] = useState<TimeEvent[]>([]); const [calculation, setCalculation] = useState<PersistedDailyCalculation | null>(); const [calculationState,setCalculationState]=useState<HistoricalCalculationState>('no_events'); const [failure, setFailure] = useState<string>(); const load=async()=>{setFailure(undefined);try{const [employee,items]=await Promise.all([employeeApi.me(),employeeApi.events()]);const dayEvents=items.filter((event)=>event.laborDate===laborDate);setEvents(dayEvents);setCalculation(null);if(!dayEvents.length){setCalculationState('no_events');return;}try{setCalculation(await employeeApi.calculation(employee.id,laborDate));setCalculationState('available');}catch(error){setCalculationState(error instanceof EmployeeApiError&&(error.status===401||error.status===403)?'unauthorized':error instanceof EmployeeApiError&&error.status===404?'pending':'technical');}}catch(error){setFailure(errorMessage(error));}};useEffect(()=>{void load();},[laborDate]);
+  const calculationNotice=historicalCalculationMessage(calculationState);
+  return <main className="employee-shell"><EmployeeNav /><Link href="/employee/history">← Volver al historial</Link><h1>Jornada del {laborDate}</h1>{failure ? <StatusNotice kind="error">{failure}</StatusNotice> : <><section className="employee-section"><h2>Eventos y pausas</h2>{events.length ? <Events events={events} linkCorrections /> : <p className="subtle">No hay eventos registrados este día.</p>}</section>{calculation ? <Calculation calculation={calculation} /> : <StatusNotice kind={calculationState==='unauthorized'||calculationState==='technical'?'error':'info'}>{calculationNotice}{calculationState==='technical'&&<> <button className="link-button" onClick={()=>void load()}>Reintentar consulta</button></>}</StatusNotice>}</>}</main>;
 }
 
 export function Corrections() {

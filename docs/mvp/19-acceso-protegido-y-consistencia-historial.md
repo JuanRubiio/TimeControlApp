@@ -2,7 +2,7 @@
 
 **Objetivo:** impedir que una persona sin sesión acceda a las pantallas privadas, definir la excepción mínima y segura de kiosco, y hacer explícito y fiable el estado de cálculo de las jornadas históricas sin alterar eventos originales.
 
-**Estado:** contratada; no implementada.
+**Estado:** finalizada en código y validación sintética; pendiente sólo de revisión/integración en `master`.
 **Tamaño:** M.
 **Rama prevista:** `codex/s19-acceso-historial`, desde `TimeControlApp/master`.
 
@@ -115,3 +115,51 @@ No autoriza cambios en S2/S3/S6/S8/S9/S10/S15/S16 ni rutas de administración no
 - **Confirmado:** el detalle de historial colapsa todos los errores de cálculo en un único mensaje y puede existir evidencia sin proyección materializada.
 - **Aprobado por producto para este contrato:** kiosco PIN público sólo con `publicKioskId`; resto de rutas privadas redirigen a login; QR continúa autenticado.
 - **Bloqueo de implementación parcial:** falta enmienda S4/S5 para el consumidor de outbox y la reparación histórica. No se implementará ese bloque hasta contar con ella.
+
+## Implementación parcial — 12/09/2026
+
+### Alcance completado
+
+- Las páginas `/`, `/employee`, `/employee/history`, `/employee/history/[laborDate]`, `/employee/corrections`, `/admin`, `/admin/people`, `/admin/corrections` y `/admin/corrections/[id]` consultan la sesión en servidor antes de renderizar su UI. Cookie ausente, malformada, revocada o expirada redirige a `/login`.
+- `src/auth/return-to.ts` sólo acepta retornos internos de las familias `/employee` y `/admin`; rechaza URLs absolutas, `//host`, barras inversas, APIs, login, kiosco y otras rutas. El login reutiliza la misma normalización al finalizar contraseña o MFA y usa `/employee` como destino seguro por defecto.
+- `/` ya no carga un fichaje anónimo: con sesión válida redirige a `/employee`; sin ella, a login. Las APIs no se modificaron y continúan respondiendo JSON `401`/`403`.
+- Sólo `/kiosk?publicKioskId={uuid-opaco}` renderiza el PIN público mínimo. `/kiosk` y un ID sintácticamente inválido redirigen a login; la pantalla no recibe ni muestra centro, persona o sesión. QR deja de convertir la página pública de kiosco en fichaje web y conserva su API autenticada de S4.
+- El detalle de historial distingue cálculo materializado, registros pendientes de materialización (`404` con eventos), ausencia de eventos, `401`/`403` y fallo técnico recuperable. La lectura no inserta, recalcula ni repara jornada alguna.
+
+### Archivos afectados
+
+- Guardias y navegación: `src/auth/{page-guard,return-to,ui}.ts(x)` y las páginas autorizadas de `src/app/{page,employee/**,admin/**,login/**,kiosk/**}`.
+- Presentación: `src/employee/{api,components,presentation}.ts` y `src/time-events/kiosk-ui.tsx`.
+- Pruebas: `tests/auth-navigation.test.ts`, `tests/employee-presentation.test.ts`; se mantuvo la regresión de `tests/employee-api.test.ts`.
+- Documentación: este contrato, `README.md` del MVP y guía de usuario.
+
+### Pruebas y resultados reales
+
+- `npx tsc --noEmit`: correcto en host; el host conserva Node 18 y no puede iniciar Vitest por ausencia de `node:fs.statfsSync`.
+- `docker compose --env-file .s13.synthetic.env build app`: correcto con Node 20; permanecen cuatro advertencias conocidas de Turbopack en `src/exports/service.ts`, fuera de S19.
+- `docker compose --env-file .s13.synthetic.env run --rm --no-deps app npm test`: **96 pruebas correctas en 28 ficheros**.
+- Entorno Docker aislado `time-control-s19`: `/`, rutas privadas y kiosco sin/ID inválido devolvieron `307`; una ruta profunda redirigió a `/login?returnTo=%2Femployee%2Fhistory%2F2026-01-12`; `GET /api/v1/time-events` sin sesión devolvió `401`; kiosco con UUID opaco devolvió `200` con PIN y sin identidad.
+- No se ejecutó login autenticado ni aislamiento office/multisite en este entorno: el contenedor de esta configuración no recibió `DATABASE_URL`, `ENVIRONMENT_ID` ni `DEMO_PASSWORD` para el seeder. No se inventaron ni expusieron credenciales; queda como bloqueo de evidencia local, no como validación declarada.
+
+### Bloqueos, riesgos y aprobación requerida
+
+- Sigue obligatoria la enmienda conjunta S4/S5 antes de modificar `time-events`, `time-calculation`, `domain_event_outbox`, migraciones o implementar consumidor, reintento y reparación histórica. Debe definir carga mínima, deduplicación, reintento, actor/auditoría y reproceso. **Aprobación requerida del propietario S4/S5.**
+- No se añadieron migraciones, cambios de evidencia, recálculo por `GET`, reparación libre para empleado, telemetría, datos reales ni capacidades excluidas. S15 y el NO-GO para datos reales permanecen sin cambios.
+
+## Enmienda S4/S5 aprobada e implementación en curso — 12/09/2026
+
+El propietario aprobó que S4 publique la carga mínima de `time-event.recorded` y que S5/S19 sea propietario del consumidor, reintentos, materialización y reparación histórica interna. La migración aditiva `s019_202609121100_outbox_recalculation.sql` crea sólo el cursor de consumo: no cambia evidencia original. `src/time-calculation/outbox.ts` consume los eventos con el `id` de outbox como deduplicación, reintenta con espera y registra una reparación de sistema auditable. Los POST de fichaje solicitan el trabajo no esperado tras confirmar la respuesta; un fallo del consumidor no revierte el fichaje.
+
+### Cierre de consumidor — 12/09/2026
+
+La prueba PostgreSQL aislada con perfil `office` sintético confirmó dos fichajes (`201`), dos eventos `time-event.recorded` consumidos y una única proyección diaria en revisión `1`. La repetición sin trabajos pendientes procesó `0`; al reabrir de forma controlada un cursor sintético, el consumidor procesó `1`, elevó su contador de intentos a `2` y conservó la revisión `1`. La reparación limitada de la misma jornada devolvió `replayed:true`, dejó una entrada `time-calculation.history.repaired` en auditoría y no creó nueva versión ni evento.
+
+Durante esta prueba se detectó y corrigió una falta de permiso de bloqueo del consumidor: `s019_202609121115_outbox_consumer_permission.sql` concede únicamente `UPDATE` sobre `domain_event_outbox` a `mvp_app`, necesario para `FOR UPDATE SKIP LOCKED`. No concede mutación sobre `time_events`.
+
+**Estado:** S19 finalizada funcionalmente. El consumidor queda limitado al monolito/entorno dedicado y no expone una operación a empleado. S15 y el NO-GO de datos reales no cambian.
+
+### Cierre reforzado — 12/09/2026
+
+Tras revisión de cierre se añadió `src/instrumentation.ts` y un trabajador residente único por proceso Node dedicado: procesa inmediatamente y cada minuto los reintentos pendientes, sin incluir IDs, PIN, tokens o evidencia laboral en logs. La reparación queda sólo como script operacional con confirmación explícita, empleado/fecha obligatorios y comprobación de ámbito del entorno antes de auditar. La prueba versionada `tests/time-calculation-outbox.test.ts` y TypeScript/build Docker Node 20 finalizaron correctamente; las pruebas PostgreSQL manuales anteriores cubrieron consumo, duplicado, reintento y reparación.
+
+La última prueba reinició sólo la aplicación Docker, preservando PostgreSQL sintético, tras reabrir un cursor. A los diez segundos los dos consumos estaban completados y el contador máximo de intentos llegó a `4`; no se creó evidencia ni revisión adicional. Con ello queda validado también el arranque autónomo del reintento.
