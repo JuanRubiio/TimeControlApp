@@ -1,6 +1,6 @@
 # Fuente de verdad — MVP de control horario
 
-Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; S20 aporta referencias visuales no vinculantes para los contratos posteriores.** Fecha de revisión: 12/09/2026.
+Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; S20 finalizada y aprobada como referencia visual no vinculante; S16 será su primera consumidora.** Fecha de revisión: 12/09/2026.
 
 Este directorio es el contrato inicial de delivery. No se implementará una sesión hasta que sus decisiones previas estén aprobadas y se use su fichero como contrato de trabajo.
 
@@ -78,7 +78,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Evaluación y prioridad de S18 aprobadas; conserva límites y NO-GO de S15 |
 | S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Finalizada: fuente read-only S5, proyección/API, recorrido visual, E2E sintética, aislamiento y regresión Docker validados |
 | S19 | [19-acceso-protegido-y-consistencia-historial.md](19-acceso-protegido-y-consistencia-historial.md) | M | Finalizada: navegación protegida, entrada controlada, kiosco PIN, mensajes de historial y consumidor/reintento/reparación histórica auditada validados con datos sintéticos |
-| S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Biblioteca por rol y protocolo de diseño futuro; no autoriza funcionalidades ni sustituye contratos de implementación |
+| S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Finalizada: biblioteca de ocho referencias por rol y protocolo de diseño futuro; dirección no vinculante, primera consumidora S16, sin autorizar funcionalidades |
 
 ## Base transversal publicada por S0
 

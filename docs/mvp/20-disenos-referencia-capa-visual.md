@@ -1,6 +1,6 @@
 # S20 — Diseños de referencia para la capa visual
 
-**Estado:** preparada; referencias visuales generadas, no autorizan implementación ni cambios funcionales. **Tamaño:** M de diseño/documentación. **Dependencias:** S14 como sistema visual implementado; consume los límites de S4–S9, S15 y S16. **Base:** `master` `2e22bfb`.
+**Estado:** finalizada; las ocho referencias visuales están aprobadas como dirección no vinculante y no autorizan implementación ni cambios funcionales. **Tamaño:** M de diseño/documentación. **Dependencias:** S14 como sistema visual implementado; consume los límites de S4–S9, S15 y S16. **Base:** `master` `2e22bfb`.
 
 ## Nombre y objetivo
 
@@ -92,7 +92,7 @@ Algunos recursos gráficos representan convenciones visuales habituales, no requ
 
 ## Dominios, rutas, módulos, tablas y documentación afectados
 
-S20 sólo es propietaria de este contrato, los tres PNG y las referencias en `README.md`. Consume sin alterar S14 (presentación), S16 (configuración/exportación) y los contratos S4–S9. No afecta rutas, módulos, tablas, migraciones, RBAC, auditoría ni documentación de uso del producto.
+S20 sólo es propietaria de este contrato, los ocho PNG enumerados en el entregable y las referencias en `README.md`. Consume sin alterar S14 (presentación), S16 (configuración/exportación) y los contratos S4–S9. No afecta rutas, módulos, tablas, migraciones, RBAC, auditoría ni documentación de uso del producto.
 
 ## Dependencias y posibilidad de ejecución paralela
 
@@ -104,7 +104,7 @@ El principal riesgo es convertir una imagen persuasiva en una promesa funcional 
 
 ## Criterios de aceptación
 
-- Las tres referencias son legibles y cubren empleado móvil, responsable/escritorio y administrador/configuración-exportación.
+- Las ocho referencias son legibles, están enlazadas desde este contrato y cubren los roles y límites descritos en el inventario. Las tres composiciones prioritarias de validación son empleado móvil, responsable/escritorio y administrador/configuración-exportación.
 - Cada composición incluye estados de carga, vacío, error o confirmación donde resultan relevantes y foco visible como patrón transversal.
 - La guía separa explícitamente visual de funcional; no incorpora una capacidad no contratada.
 - Ninguna referencia muestra vigilancia, dato personal real, nómina, puntuación de productividad ni afirmación de cumplimiento automático.
@@ -112,10 +112,18 @@ El principal riesgo es convertir una imagen persuasiva en una promesa funcional 
 
 ## Pruebas necesarias
 
-Inspección visual de los tres PNG, revisión de enlaces y de alcance documental. Las sesiones que lleven una referencia a código deberán realizar sus propias pruebas de contraste, teclado, lector de pantalla, responsive, RBAC, regresión de API y datos sintéticos; S20 no las sustituye.
+Inspección visual de los ocho PNG —con revisión obligatoria de las tres composiciones prioritarias—, revisión de enlaces y de alcance documental. Las sesiones que lleven una referencia a código deberán realizar sus propias pruebas de contraste, teclado, lector de pantalla, responsive, RBAC, regresión de API y datos sintéticos; S20 no las sustituye.
 
 ## Decisiones que requieren aprobación
 
-1. Aprobar la dirección visual como referencia no vinculante, o indicar ajustes de marca/tono antes de consumirla.
-2. Confirmar qué futuros contratos pueden usarla primero: S16, una evolución de S14 u otra sesión específica.
+1. **Aprobada:** la dirección visual es una referencia no vinculante. Cada capacidad sigue requiriendo contrato, revisión de alcance y pruebas propias.
+2. **Aprobada:** S16 será la primera consumidora. Puede preparar configuración con datos sintéticos y contratos existentes, pero no activar descarga visible hasta el cierre de almacenamiento, vencimiento y auditoría de S15.
 3. Mantener sin aprobación independiente cualquier funcionalidad sólo ilustrada (búsqueda, notificaciones, ayuda activa o métricas).
+
+## Cierre documental — 12/09/2026
+
+- Alcance completado: ocho PNG de referencia bajo `assets/s20-diseno-referencia/`, protocolo de fichas futuras y límites de composición documentados; no se crearon rutas, componentes de producción, APIs, tablas, migraciones, permisos ni integraciones.
+- Se resuelve el P3 documental: el contrato ya no alterna entre tres y ocho activos. Las ocho imágenes son el entregable; las tres composiciones prioritarias sólo delimitan la revisión visual mínima por rol y superficie.
+- Validación: enlaces a los ocho PNG comprobados y revisión visual de las tres composiciones prioritarias. No aplica una suite de código porque S20 no altera software ni configuración.
+- Riesgo vigente: ninguna imagen habilita búsqueda, notificaciones, ayuda activa, métricas, descargas públicas o cambios de reglas. S16 deberá registrar qué composición adopta y validar responsive, accesibilidad, RBAC y contratos de servidor con fixtures sintéticos.
+- Bloqueo vigente: S15 continúa siendo la puerta para cualquier descarga visible, por sus requisitos de almacenamiento aislado, vencimiento, borrado controlado y auditoría.
