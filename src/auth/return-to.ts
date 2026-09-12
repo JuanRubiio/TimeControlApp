@@ -1,5 +1,12 @@
 const allowedPrefixes = ['/employee', '/admin'] as const;
 
+type RoleCarrier = { roles: readonly string[] } | null | undefined;
+
+/** The role landing is a usability default; page/API authorization remains server-side. */
+export function defaultDestination(actor: RoleCarrier): '/employee' | '/admin' {
+  return actor?.roles.some((role) => ['admin', 'manager', 'auditor'].includes(role)) ? '/admin' : '/employee';
+}
+
 /**
  * A return location is deliberately a small, internal allowlist.  It is
  * shared by the page guard and the login UI so a browser supplied value can
