@@ -161,3 +161,5 @@ Durante esta prueba se detectó y corrigió una falta de permiso de bloqueo del 
 ### Cierre reforzado — 12/09/2026
 
 Tras revisión de cierre se añadió `src/instrumentation.ts` y un trabajador residente único por proceso Node dedicado: procesa inmediatamente y cada minuto los reintentos pendientes, sin incluir IDs, PIN, tokens o evidencia laboral en logs. La reparación queda sólo como script operacional con confirmación explícita, empleado/fecha obligatorios y comprobación de ámbito del entorno antes de auditar. La prueba versionada `tests/time-calculation-outbox.test.ts` y TypeScript/build Docker Node 20 finalizaron correctamente; las pruebas PostgreSQL manuales anteriores cubrieron consumo, duplicado, reintento y reparación.
+
+La última prueba reinició sólo la aplicación Docker, preservando PostgreSQL sintético, tras reabrir un cursor. A los diez segundos los dos consumos estaban completados y el contador máximo de intentos llegó a `4`; no se creó evidencia ni revisión adicional. Con ello queda validado también el arranque autónomo del reintento.
