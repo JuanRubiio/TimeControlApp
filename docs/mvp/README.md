@@ -52,6 +52,8 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 
 S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles continuos; S12 empieza tras S1. S15 es puerta obligatoria para datos reales. S14 puede auditar/preparar UI en paralelo con S15; S16 consume el sistema visual S14 y no activa exportación visible hasta cerrar almacenamiento/retención S15.
 
+Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de diseño y decisión de alcance de [S20](20-disenos-referencia-capa-visual.md) antes de abrir una sesión de implementación. Diseñar una candidata no la aprueba ni altera el NO-GO de S15.
+
 ## Sesiones y contratos
 
 | Sesión | Contrato | Tamaño | Ejecución |
@@ -76,7 +78,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Evaluación y prioridad de S18 aprobadas; conserva límites y NO-GO de S15 |
 | S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Finalizada: fuente read-only S5, proyección/API, recorrido visual, E2E sintética, aislamiento y regresión Docker validados |
 | S19 | [19-acceso-protegido-y-consistencia-historial.md](19-acceso-protegido-y-consistencia-historial.md) | M | Finalizada: navegación protegida, entrada controlada, kiosco PIN, mensajes de historial y consumidor/reintento/reparación histórica auditada validados con datos sintéticos |
-| S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Referencias visuales preparadas; no autoriza funcionalidades ni sustituye contratos de implementación |
+| S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Biblioteca por rol y protocolo de diseño futuro; no autoriza funcionalidades ni sustituye contratos de implementación |
 
 ## Base transversal publicada por S0
 

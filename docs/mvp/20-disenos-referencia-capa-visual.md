@@ -8,15 +8,34 @@ Entregar diseños web de referencia coherentes para que las sesiones visuales y 
 
 ## Entregable verificable
 
-Una biblioteca visual inicial, acompañada de esta guía de uso:
+Una biblioteca visual por rol y estado, acompañada de esta guía de uso:
 
 | Referencia | Usuarios y flujos cubiertos | Archivo |
 | --- | --- | --- |
 | Administración y sistema visual | Responsable/RR. HH.: revisión de equipo, correcciones, filtros y estados transversales. | [administracion-y-sistema-visual.png](assets/s20-diseno-referencia/administracion-y-sistema-visual.png) |
 | Empleado móvil y estados | Empleado: jornada, pausa manual, confirmación, historial, corrección, error/reintento y foco. | [empleado-movil-y-estados.png](assets/s20-diseno-referencia/empleado-movil-y-estados.png) |
 | Configuración y exportación | Administrador: checklist guiado y exportación controlada, como orientación para S16. | [configuracion-y-exportacion.png](assets/s20-diseno-referencia/configuracion-y-exportacion.png) |
+| Acceso, MFA y kiosco | Todos los usuarios: acceso, MFA, sesión caducada; kiosco: PIN/QR sin revelar datos personales. | [acceso-mfa-y-kiosco.png](assets/s20-diseno-referencia/acceso-mfa-y-kiosco.png) |
+| Historial y corrección | Empleado: lista, detalle diario, solicitud y estados pendiente/aprobada/rechazada. | [historial-y-correccion-empleado.png](assets/s20-diseno-referencia/historial-y-correccion-empleado.png) |
+| Revisión y decisión | Responsable/RR. HH.: bandeja, evidencia, rechazo motivado y confirmación de decisión. | [revision-y-decision-responsable.png](assets/s20-diseno-referencia/revision-y-decision-responsable.png) |
+| Gestión administrativa | Administrador: personas, centros, relaciones, reglas, vigencias, validación y vacío. | [gestion-administracion.png](assets/s20-diseno-referencia/gestion-administracion.png) |
+| Candidatas futuras | Producto/diseño: importación, ausencias, cierre y avisos como exploración no disponible. | [exploracion-funciones-futuras.png](assets/s20-diseno-referencia/exploracion-funciones-futuras.png) |
 
-Las tres imágenes son referencias bitmap generadas para discusión. No son capturas del producto, no contienen datos reales y no son especificaciones pixel-perfect.
+Las ocho imágenes son referencias bitmap generadas para discusión. No son capturas del producto, no contienen datos reales y no son especificaciones pixel-perfect.
+
+## Inventario de cobertura por rol
+
+| Rol/superficie | Referencias | Cobertura | Límite |
+| --- | --- | --- | --- |
+| Visitante no autenticado | Acceso, MFA y kiosco | Login, MFA, sesión vencida, error/espera y entrada pública de kiosco. | No hay recuperación de contraseña nueva ni registro público. |
+| Empleado | Empleado móvil; historial y corrección | Jornada, pausa manual, confirmación, error/reintento, historial, detalle y corrección. | No muestra datos de terceros, nómina ni planificación. |
+| Responsable | Administración; revisión y decisión | Resumen de ámbito, filtros, bandeja, evidencia, aprobación/rechazo. | No añade SLA, automatismo, reapertura ni lectura fuera de centro. |
+| RR. HH. | Administración; revisión y decisión | Misma superficie visual que responsable, con permisos explícitos. | No se presume un rol ni permiso adicional. |
+| Administrador | Configuración/exportación; gestión administrativa | Empresa, centros, personas, relaciones, regla/calendario, exportación y auditoría visual. | Las operaciones se condicionan a S16/S15 y a RBAC servidor. |
+| Auditor/soporte temporal | Configuración/exportación | Referencia de lectura/exportación controlada. | No se diseña acceso permanente; requiere asignación temporal y auditada de S1/S9. |
+| Kiosco compartido | Acceso, MFA y kiosco | PIN y QR opaco, validación y error seguro. | No revela identidad, PIN, ubicación, cámara o datos de jornada. |
+
+No existe un «rol futuro» genérico que pueda diseñarse de forma responsable. Si un rol nuevo se propone, se abre primero su ficha de capacidad y se decide su necesidad, mínimos datos, RBAC, auditoría y límites de privacidad.
 
 ## Sistema transversal de referencia
 
@@ -41,6 +60,23 @@ Las tres imágenes son referencias bitmap generadas para discusión. No son capt
 ## Exclusiones
 
 S20 no crea rutas, componentes de producción, APIs, tablas, eventos, permisos, búsquedas, notificaciones, telemetría, métricas de productividad, calendario nuevo, lógica de exportación ni reglas de cálculo. No incluye GPS, biometría, cámara, fotografía, vídeo, vigilancia, app nativa, nómina, interpretación automática de convenios, dark patterns ni urgencia artificial.
+
+## Protocolo obligatorio para capacidades futuras
+
+Toda funcionalidad candidata —incluso si hoy está fuera de alcance— deberá tener una ficha de diseño específica **antes** de su revisión de alcance y, de nuevo, antes de cualquier implementación. La ficha no supone aprobación ni cambia el roadmap.
+
+| Elemento obligatorio de la ficha | Pregunta que resuelve |
+| --- | --- |
+| Problema, evidencia y usuario/rol | ¿Qué necesidad comprobable resuelve y para quién? |
+| Pantallas y estados | ¿Qué vista existe para inicio, carga, vacío, éxito, error, permiso denegado y recuperación? |
+| Flujos responsive y accesibles | ¿Cómo se completa por teclado, lector de pantalla, móvil y escritorio? |
+| Datos, privacidad y seguridad | ¿Qué datos mínimos usa, qué no recoge y qué autorización/auditoría requiere? |
+| Límite de negocio | ¿Qué no calcula, decide, vigila o promete? |
+| Dependencias y contrato técnico | ¿Qué sesión/API/tabla necesita y quién conserva la propiedad? |
+| Criterios de aceptación visuales y funcionales | ¿Cómo se valida sin confundir la referencia con la entrega? |
+| Decisión de alcance | ¿Se aprueba para el piloto, se aplaza o se rechaza? |
+
+La [exploración de funciones futuras](assets/s20-diseno-referencia/exploracion-funciones-futuras.png) es una plantilla visual para las candidatas ya conocidas: importación controlada, ausencias, revisión de período y avisos. Todas permanecen **no disponibles** y requieren la ficha anterior, evidencia y decisión posterior al piloto. No se diseñan ni se aceptan por adelantado capacidades de vigilancia, biometría, geolocalización, nómina, cumplimiento automático ni planificación compleja.
 
 ## Control de alcance de las composiciones
 
