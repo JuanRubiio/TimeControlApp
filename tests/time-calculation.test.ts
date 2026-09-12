@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { calculateDaily } from '../src/time-calculation/algorithm';
+import { selectRelevantEffectiveWorkday } from '../src/time-calculation/service';
 import type { CalculationInput, EffectiveWorkday } from '../src/time-calculation/contracts';
 
 const rule:CalculationInput['rule']={ruleId:'10000000-0000-4000-8000-000000000001',ruleVersionId:'20000000-0000-4000-8000-000000000001',scope:{type:'site',id:'30000000-0000-4000-8000-000000000001'},effectiveFrom:'2026-01-01',effectiveTo:null,timeZone:'Europe/Madrid',expectedMinutes:480,pausePolicy:{mode:'manual_visible',autoDeduct:false},calendar:{id:'40000000-0000-4000-8000-000000000001',name:'Sintético',timeZone:'Europe/Madrid',workingDays:[1,2,3,4,5],holidays:['2026-12-25']},shift:null};
@@ -7,6 +8,7 @@ const input=(events:CalculationInput['events'],laborDate='2026-06-01'):Calculati
 const e=(id:string,eventType:CalculationInput['events'][number]['eventType'],occurredAt:string)=>({id,eventType,occurredAt,ruleVersionId:rule.ruleVersionId});
 
 describe('S5 cálculo determinista',()=>{
+  it('conserva tras medianoche sólo una jornada efectiva previa que sigue abierta',()=>{const open=[e('1','clock_in','2026-10-24T21:00:00.000Z')];expect(selectRelevantEffectiveWorkday('2026-10-25',[],open)).toMatchObject({laborDate:'2026-10-24',events:open});expect(selectRelevantEffectiveWorkday('2026-10-25',[],[...open,e('2','clock_out','2026-10-25T05:00:00.000Z')])).toMatchObject({laborDate:'2026-10-25',events:[]});});
   it('publica una fuente efectiva mínima para consumidores read-only',()=>{const value:EffectiveWorkday={employeeId:'50000000-0000-4000-8000-000000000001',laborDate:'2026-06-01',siteId:'30000000-0000-4000-8000-000000000001',effectiveTimeZone:'Europe/Madrid',events:[{...e('1','clock_in','2026-06-01T07:00:00.000Z'),siteId:'30000000-0000-4000-8000-000000000001',laborDate:'2026-06-01',effectiveTimeZone:'Europe/Madrid'}]};expect(value.events[0]).not.toHaveProperty('reason');expect(value.events[0]).not.toHaveProperty('deviceOccurredAt');});
   it('calcula jornada estándar, diferencia y exceso sólo informativo',()=>{const value=calculateDaily(input([e('1','clock_in','2026-06-01T07:00:00.000Z'),e('2','clock_out','2026-06-01T16:00:00.000Z')]));expect(value).toMatchObject({presenceMinutes:540,effectiveMinutes:540,registeredBreakMinutes:0,expectedMinutes:480,differenceMinutes:60,excessMinutes:30,excessIsInformational:true});});
   it('cuenta únicamente pausas completas y visibles',()=>{const value=calculateDaily(input([e('1','clock_in','2026-06-01T07:00:00.000Z'),e('2','break_start','2026-06-01T11:00:00.000Z'),e('3','break_end','2026-06-01T11:30:00.000Z'),e('4','clock_out','2026-06-01T15:30:00.000Z')]));expect(value).toMatchObject({presenceMinutes:510,effectiveMinutes:480,registeredBreakMinutes:30,differenceMinutes:0,excessMinutes:0});});
