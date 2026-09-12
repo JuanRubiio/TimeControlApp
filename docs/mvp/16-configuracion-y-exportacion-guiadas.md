@@ -84,3 +84,10 @@ Base: `master` `747e1ae`, rama `codex/s16-configuracion-guiada`. Las dependencia
 - **Bloqueo S15:** no se muestra solicitud, descarga, URL ni enlace público de exportación hasta evidenciar almacenamiento aislado, vencimiento, borrado físico controlado y auditoría. La API S9 existente no se altera.
 - No hay migraciones ni cambios de tablas, RBAC, APIs, cálculo, eventos o auditoría. No se introducen importación CSV/Excel, notificaciones, ausencias, cierre de período, nómina, convenios, datos reales ni mecanismos de vigilancia.
 - Permanece pendiente la decisión de producto sobre si esta configuración es condición de piloto y la validación de calendario/regla por la persona responsable y asesoría antes de invitar empleados.
+
+### Corrección visual y de acceso por rol — 12/09/2026
+
+- La ruta conserva la navegación completa de Administración (Resumen, Plantilla y jornadas, Correcciones, Configuración y cierre de sesión), que faltaba en la composición inicial y dejaba una columna lateral vacía.
+- La configuración se reorganizó en bloques de Organización, Equipo y Jornada, con tarjetas de formulario, estado del entorno y estilos responsive para 1280, 768, 390 y 320 px. Los controles mantienen etiquetas nativas, foco visible y no se modificaron APIs, tablas, auditoría ni RBAC.
+- El ámbito de una regla ya muestra exclusivamente empresa o centros según el tipo elegido, evitando seleccionar un identificador incompatible antes de que el servidor valide la creación.
+- Integración mínima con S19: el destino de acceso sin `returnTo` pasa a ser `/admin` para administración, responsable y auditor, y `/employee` para empleado; un `returnTo` interno permitido conserva prioridad. La sesión, RBAC y aislamiento siguen verificándose en servidor. La exportación continúa bloqueada por S15.

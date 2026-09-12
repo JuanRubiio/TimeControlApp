@@ -19,10 +19,12 @@ Estas cuentas existen sólo después de cargar el perfil sintético `office` con
 | Rol | Correo | Contraseña | Qué revisar |
 |---|---|---|---|
 | Empleado | `night.office@demo.test` | `UiE2eSyntheticPassword-2026` | Jornada, fichaje, pausas, historial y solicitud de corrección. |
-| Responsable | `manager.office@demo.test` | `UiE2eSyntheticPassword-2026` | Resumen y correcciones del centro autorizado. Tras acceder, abra **Administración**. |
+| Responsable | `manager.office@demo.test` | `UiE2eSyntheticPassword-2026` | Resumen y correcciones del centro autorizado. Tras acceder llega directamente a **Administración**. |
 | Administración | `admin.office@demo.test` | `UiE2eSyntheticPassword-2026` | Panel completo de administración y revisión. En el primer acceso completa MFA, salvo que el entorno local sintético haya activado expresamente `LOCAL_SYNTHETIC_DEMO_MFA_BYPASS=true`. |
 
 Las tres cuentas y todos sus registros son sintéticos. Si se reinicia la base, vuelva a ejecutar el seed con la misma contraseña para recrearlas.
+
+Sin un enlace interno previo, empleado inicia en **Mi jornada** y responsable, auditoría o administración inician en **Administración**. Si abre una ruta interna permitida antes de autenticarse, el acceso vuelve a esa ruta tras iniciar sesión; el servidor mantiene la comprobación de permisos y ámbito.
 
 El bypass MFA es exclusivo de HTTP local, sólo permite cuentas administrativas `@demo.test` y añade una entrada de auditoría. No debe configurarse en ningún despliegue ni con datos reales.
 
