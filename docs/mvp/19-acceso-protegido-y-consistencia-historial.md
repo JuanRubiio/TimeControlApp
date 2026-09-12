@@ -2,7 +2,7 @@
 
 **Objetivo:** impedir que una persona sin sesión acceda a las pantallas privadas, definir la excepción mínima y segura de kiosco, y hacer explícito y fiable el estado de cálculo de las jornadas históricas sin alterar eventos originales.
 
-**Estado:** parcialmente completada: navegación protegida, entrada controlada, kiosco PIN acotado y mensajes de historial entregados; consumidor/reintento/reparación histórica bloqueados hasta enmienda S4/S5.
+**Estado:** finalizada en código y validación sintética; pendiente sólo de revisión/integración en `master`.
 **Tamaño:** M.
 **Rama prevista:** `codex/s19-acceso-historial`, desde `TimeControlApp/master`.
 
@@ -157,3 +157,7 @@ La prueba PostgreSQL aislada con perfil `office` sintético confirmó dos fichaj
 Durante esta prueba se detectó y corrigió una falta de permiso de bloqueo del consumidor: `s019_202609121115_outbox_consumer_permission.sql` concede únicamente `UPDATE` sobre `domain_event_outbox` a `mvp_app`, necesario para `FOR UPDATE SKIP LOCKED`. No concede mutación sobre `time_events`.
 
 **Estado:** S19 finalizada funcionalmente. El consumidor queda limitado al monolito/entorno dedicado y no expone una operación a empleado. S15 y el NO-GO de datos reales no cambian.
+
+### Cierre reforzado — 12/09/2026
+
+Tras revisión de cierre se añadió `src/instrumentation.ts` y un trabajador residente único por proceso Node dedicado: procesa inmediatamente y cada minuto los reintentos pendientes, sin incluir IDs, PIN, tokens o evidencia laboral en logs. La reparación queda sólo como script operacional con confirmación explícita, empleado/fecha obligatorios y comprobación de ámbito del entorno antes de auditar. La prueba versionada `tests/time-calculation-outbox.test.ts` y TypeScript/build Docker Node 20 finalizaron correctamente; las pruebas PostgreSQL manuales anteriores cubrieron consumo, duplicado, reintento y reparación.
