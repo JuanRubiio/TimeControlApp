@@ -4,8 +4,10 @@ import { appendAudit } from '@/audit/audit-writer';
 import { db } from '@/shared/db';
 import { config } from '@/shared/config';
 import { calculateDaily } from './algorithm';
-import type { CalculationEvent, DailyCalculation, PersistedDailyCalculation } from './contracts';
+import type { CalculationEvent, DailyCalculation, EffectiveWorkday, EffectiveWorkdayEvent, PersistedDailyCalculation } from './contracts';
 import type { ResolvedRule } from '@/work-rules/contracts';
+import { PostgresEmploymentScopeProvider } from '@/company-people/rule-scopes';
+import { localDateAt } from '@/work-rules/validation';
 
 type EventRow={id:string;eventType:CalculationEvent['eventType'];occurredAt:Date;ruleVersionId:string;laborDate:string;siteId:string};
 type VersionRow={id:string;revision:number;inputHash:string;algorithmVersion:string;sourceEventIds:string[];ruleVersionId:string;effectiveTimeZone:string;expectedMinutes:number;presenceMinutes:number;effectiveMinutes:number;registeredBreakMinutes:number;differenceMinutes:number;excessMinutes:number;incidents:DailyCalculation['incidents'];calculatedAt:Date;employeeId:string;laborDate:string;siteId:string};
@@ -23,6 +25,37 @@ function selectDayEvents(rows:EventRow[], laborDate:string):EventRow[] {
   }
   return selected;
 }
+async function effectiveEvents(employeeId:string,laborDate:string):Promise<EventRow[]> {
+  const raw=(await db.query<EventRow>(`SELECT * FROM (
+    SELECT t.id,t.event_type AS "eventType",t.occurred_at AS "occurredAt",t.rule_version_id AS "ruleVersionId",t.labor_date::text AS "laborDate",t.site_id AS "siteId"
+    FROM time_events t WHERE t.employee_id=$1 AND t.labor_date >= $2::date AND t.labor_date < ($2::date + interval '3 days')
+      AND NOT EXISTS (SELECT 1 FROM correction_effects ce WHERE ce.replaces_time_event_id=t.id)
+    UNION ALL
+    SELECT ce.id,ce.event_type AS "eventType",ce.occurred_at AS "occurredAt",ce.rule_version_id AS "ruleVersionId",ce.labor_date::text AS "laborDate",ce.site_id AS "siteId"
+    FROM correction_effects ce WHERE ce.employee_id=$1 AND ce.labor_date >= $2::date AND ce.labor_date < ($2::date + interval '3 days')
+  ) sources ORDER BY "occurredAt",id`,[employeeId,laborDate])).rows;
+  return selectDayEvents(raw,laborDate);
+}
+
+const priorLaborDate=(laborDate:string)=>{const value=new Date(`${laborDate}T12:00:00.000Z`);value.setUTCDate(value.getUTCDate()-1);return value.toISOString().slice(0,10);};
+/** Si el día actual aún no tiene evidencia, conserva sólo una jornada nocturna previa que siga abierta. */
+export function selectRelevantEffectiveWorkday<T extends Pick<CalculationEvent,'eventType'>>(laborDate:string,current:readonly T[],previous:readonly T[]):{laborDate:string;events:readonly T[]}{
+  if(current.length)return {laborDate,events:current};
+  const last=previous.at(-1); return last&&last.eventType!=='clock_out'?{laborDate:priorLaborDate(laborDate),events:previous}:{laborDate,events:current};
+}
+
+/** Contrato público S5: evidencia efectiva mínima para una jornada abierta, sin mutaciones. */
+export async function effectiveWorkday(employeeId:string,asOf:string):Promise<EffectiveWorkday|null>{
+  const employment=await new PostgresEmploymentScopeProvider().contextForEmployee(employeeId,asOf);
+  if(!employment)return null;
+  const requestedLaborDate=localDateAt(asOf,employment.effectiveTimeZone);
+  const current=await effectiveEvents(employeeId,requestedLaborDate);
+  const previous= current.length?[]:await effectiveEvents(employeeId,priorLaborDate(requestedLaborDate));
+  const selected=selectRelevantEffectiveWorkday(requestedLaborDate,current,previous);
+  const laborDate=selected.laborDate; const events=selected.events;
+  const first=events[0];
+  return {employeeId,laborDate,siteId:first?.siteId??employment.siteId,effectiveTimeZone:first?.siteId?employment.effectiveTimeZone:employment.effectiveTimeZone,events:events.map((event):EffectiveWorkdayEvent=>({...event,occurredAt:iso(event.occurredAt),effectiveTimeZone:employment.effectiveTimeZone}))};
+}
 async function ruleForVersion(client:pg.PoolClient,ruleVersionId:string):Promise<ResolvedRule|null>{
   const q=await client.query<any>(`SELECT wr.id AS "ruleId",rv.id AS "ruleVersionId",wr.scope_type AS "scopeType",wr.scope_id AS "scopeId",rv.effective_from::text AS "effectiveFrom",rv.effective_to::text AS "effectiveTo",rv.time_zone AS "timeZone",rv.expected_minutes AS "expectedMinutes",rv.pause_policy AS "pausePolicy",rv.calendar_snapshot AS calendar,rv.shift_snapshot AS shift FROM rule_versions rv JOIN work_rules wr ON wr.id=rv.work_rule_id WHERE rv.id=$1`,[ruleVersionId]);
   const row=q.rows[0]; return row?{ruleId:row.ruleId,ruleVersionId:row.ruleVersionId,scope:{type:row.scopeType,id:row.scopeId},effectiveFrom:row.effectiveFrom,effectiveTo:row.effectiveTo,timeZone:row.timeZone,expectedMinutes:row.expectedMinutes,pausePolicy:row.pausePolicy,calendar:row.calendar,shift:row.shift}:null;
@@ -38,9 +71,7 @@ export async function recalculateDaily(employeeId:string,laborDate:string,actorI
       SELECT t.id,t.event_type AS "eventType",t.occurred_at AS "occurredAt",t.rule_version_id AS "ruleVersionId",t.labor_date::text AS "laborDate",t.site_id AS "siteId"
       FROM time_events t WHERE t.employee_id=$1 AND t.labor_date >= $2::date AND t.labor_date < ($2::date + interval '3 days')
         AND NOT EXISTS (SELECT 1 FROM correction_effects ce WHERE ce.replaces_time_event_id=t.id)
-      UNION ALL
-      SELECT ce.id,ce.event_type AS "eventType",ce.occurred_at AS "occurredAt",ce.rule_version_id AS "ruleVersionId",ce.labor_date::text AS "laborDate",ce.site_id AS "siteId"
-      FROM correction_effects ce WHERE ce.employee_id=$1 AND ce.labor_date >= $2::date AND ce.labor_date < ($2::date + interval '3 days')
+      UNION ALL SELECT ce.id,ce.event_type AS "eventType",ce.occurred_at AS "occurredAt",ce.rule_version_id AS "ruleVersionId",ce.labor_date::text AS "laborDate",ce.site_id AS "siteId" FROM correction_effects ce WHERE ce.employee_id=$1 AND ce.labor_date >= $2::date AND ce.labor_date < ($2::date + interval '3 days')
     ) sources ORDER BY "occurredAt",id`,[employeeId,laborDate])).rows;
     const selected=selectDayEvents(raw,laborDate); if(!selected.length) throw new Error('CALCULATION_SOURCE_EMPTY');
     const first=selected.find((event)=>event.eventType==='clock_in')??selected[0]; const rule=await ruleForVersion(client,first.ruleVersionId); if(!rule) throw new Error('RULE_VERSION_UNRESOLVABLE');

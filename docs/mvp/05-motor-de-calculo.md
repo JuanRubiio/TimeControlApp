@@ -73,3 +73,9 @@ Cada resultado indica eventos y versión de regla usados; recalcular conserva hi
 ## Dependencias y validación
 
 Depende de S3/S4. API consumida por S8/S9. Pruebas deterministas por tabla de casos. Riesgo: equiparar exceso calculado con hora extraordinaria retribuible.
+
+## Enmienda read-only para S18 — 11/09/2026
+
+Se publica el contrato `EffectiveWorkday`/`EffectiveWorkdayEvent` y el adaptador `effectiveWorkday(employeeId, asOf)` de S5. Resuelve en servidor la relación laboral vigente, zona IANA y fecha laboral; devuelve únicamente la secuencia efectiva ordenada que S5 usa para cálculo, excluyendo eventos sustituidos e incorporando efectos de correcciones aprobadas. No muta evidencia, cálculos, auditoría ni idempotencias, y no expone motivos de corrección, PIN, datos de dispositivo ni datos de terceros. S18 lo consumirá después de autorizar y resolver el empleado propio; no recibe ámbito ni instante desde el navegador.
+
+La fuente contempla además medianoche: si la fecha local actual no tiene evidencia, conserva sólo la jornada laboral anterior que continúa abierta; una salida previa no reaparece como estado actual.
