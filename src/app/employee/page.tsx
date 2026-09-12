@@ -1,2 +1,3 @@
 import { Dashboard } from '@/employee/components';
-export default function EmployeePage(){return <Dashboard/>;}
+import { requirePageSession } from '@/auth/page-guard';
+export default async function EmployeePage(){await requirePageSession('/employee');return <Dashboard/>;}

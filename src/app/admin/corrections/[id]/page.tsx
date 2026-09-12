@@ -1,1 +1,3 @@
-'use client'; import { useParams } from 'next/navigation'; import { CorrectionDetail } from '@/admin/components'; export default function CorrectionPage(){const params=useParams<{id:string}>();return <CorrectionDetail id={params.id}/>;}
+import { requirePageSession } from '@/auth/page-guard';
+import CorrectionPageClient from './page-client';
+export default async function CorrectionPage({params}:{params:Promise<{id:string}>}){const {id}=await params;await requirePageSession(`/admin/corrections/${encodeURIComponent(id)}`);return <CorrectionPageClient/>;}

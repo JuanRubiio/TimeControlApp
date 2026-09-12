@@ -1,2 +1,7 @@
-import TimeClock from '@/time-events/ui';
-export default function Home(){ return <TimeClock/>; }
+import { requirePageSession } from '@/auth/page-guard';
+import { redirect } from 'next/navigation';
+
+export default async function Home(){
+  await requirePageSession('/employee');
+  redirect('/employee');
+}

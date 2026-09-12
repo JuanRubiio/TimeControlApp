@@ -1,4 +1,3 @@
-'use client';
-import { useParams } from 'next/navigation';
-import { DayDetail } from '@/employee/components';
-export default function DetailPage(){const params=useParams<{laborDate:string}>();return <DayDetail laborDate={params.laborDate}/>;}
+import { requirePageSession } from '@/auth/page-guard';
+import DetailPageClient from './page-client';
+export default async function DetailPage({params}:{params:Promise<{laborDate:string}>}){const {laborDate}=await params;await requirePageSession(`/employee/history/${encodeURIComponent(laborDate)}`);return <DetailPageClient/>;}

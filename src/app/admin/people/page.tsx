@@ -1,1 +1,1 @@
-import { People } from '@/admin/components'; export default function PeoplePage(){return <People/>;}
+import { People } from '@/admin/components'; import { requirePageSession } from '@/auth/page-guard'; export default async function PeoplePage(){await requirePageSession('/admin/people');return <People/>;}

@@ -1,1 +1,1 @@
-import { Corrections } from '@/admin/components'; export default function CorrectionsPage(){return <Corrections/>;}
+import { Corrections } from '@/admin/components'; import { requirePageSession } from '@/auth/page-guard'; export default async function CorrectionsPage(){await requirePageSession('/admin/corrections');return <Corrections/>;}
