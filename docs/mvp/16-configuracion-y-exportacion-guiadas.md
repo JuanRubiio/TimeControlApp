@@ -1,6 +1,6 @@
 # S16 — Configuración y exportación guiadas para piloto asistido
 
-**Estado:** muy recomendable antes del piloto; condicional si producto acepta operación técnica asistida diaria. **Tamaño:** M. **Dependencias:** S2, S3, S8, S9, S14 y cierre de almacenamiento de S15.
+**Estado:** configuración guiada completada con datos sintéticos; exportación visible bloqueada hasta el cierre verificable de S15. **Tamaño:** M. **Dependencias:** S2, S3, S8, S9, S14 y cierre de almacenamiento de S15.
 
 ## Nombre y objetivo
 
@@ -44,3 +44,41 @@ E2E de administrador/responsable/empleado, validación de vigencias, búsqueda/f
 1. Confirmar que S16 es condición de piloto o que se acepta explícitamente un piloto asistido con operación técnica limitada.
 2. Definir campos mínimos de alta y quién valida calendario/regla antes de invitar empleados.
 3. Aprobar que importación CSV/Excel, notificaciones, ausencias y cierre de período permanecen fuera de S16.
+
+## Plan de ejecución S16 — 12/09/2026
+
+Base: `master` `747e1ae`, rama `codex/s16-configuracion-guiada`. Las dependencias S2, S3, S8, S9, S14 y las referencias S17–S20 están integradas en esta base. La regresión previa con fixtures exclusivamente sintéticos finalizó correctamente: `docker compose run --rm --no-deps app npm test` — 98 pruebas en 29 ficheros.
+
+- Crear `src/configuration/{api,components}.tsx` y `src/app/admin/configuration/page.tsx`: checklist honesto y formularios de empresa, centro, persona, relación, calendario, turno, regla y versión, sobre las APIs existentes.
+- Añadir sólo el enlace mínimo de navegación desde `src/admin/components.tsx`; no se cambiarán tablas, migraciones, contratos HTTP, RBAC, cálculo, auditoría ni almacenamiento.
+- Añadir `tests/configuration-ui.test.ts`; ejecutar TypeScript, pruebas dirigidas y regresión Docker. La comprobación visual abarcará los anchos S14 y controles etiquetados/estados anunciables. Las pruebas de permisos conservarán las denegaciones del servidor para empleado y ámbitos ajenos.
+- La UI de descarga/exportación queda expresamente fuera de esta entrega: S15 no documenta aún el cierre verificable de almacenamiento aislado, vencimiento, borrado controlado y auditoría exigido por S16/S20.
+
+## Cierre de configuración guiada — 12/09/2026
+
+### Alcance completado
+
+- Nueva ruta protegida `/admin/configuration`, enlazada desde Administración, con checklist de progreso calculado exclusivamente a partir de respuestas confirmadas por API.
+- Formularios guiados para empresa, centro, persona, relación laboral, calendario, turno opcional, regla y versión vigente. Los formularios consumen sin modificar los contratos S2/S3; el servidor sigue validando datos, vigencias, ámbito, RBAC y auditoría.
+- Copy visible: pausas manuales y visibles, versiones históricas no sobrescribibles, reglas revisables con asesoría y ausencia de promesa de cumplimiento automático. No se solicita PII adicional.
+- La ruta exige en servidor permisos de configuración; una persona empleada o responsable sin permisos de escritura se redirige antes de renderizarla. Las APIs mantienen sus denegaciones y validación de ámbito en servidor.
+
+### Archivos afectados
+
+- `src/configuration/api.ts`, `src/configuration/components.tsx` y `src/app/admin/configuration/page.tsx`.
+- Cambio mínimo de navegación en `src/admin/components.tsx`.
+- `tests/configuration-ui.test.ts`, este contrato, `README.md` del MVP y guía de usuario del piloto.
+
+### Pruebas y resultados reales
+
+- Antes del cambio: `docker compose run --rm --no-deps app npm test` — **98 pruebas en 29 ficheros**, correctas.
+- Tras el cambio: build Docker de producción correcto; la ruta `/admin/configuration` queda incluida. Conserva cinco advertencias existentes de S19/S9 sobre Edge y acceso dinámico a ficheros de exportación, fuera del alcance S16.
+- Dirigidas: `docker compose run --rm --no-deps app npx vitest run tests/configuration-ui.test.ts tests/admin-ui.test.ts tests/company-people.test.ts tests/work-rules.test.ts tests/exports.test.ts tests/permissions.test.ts` — **19 pruebas**, correctas.
+- Regresión completa final: `docker compose run --rm --no-deps app npm test` — **102 pruebas en 30 ficheros**, correctas.
+- TypeScript: `docker compose run --rm --no-deps app npx tsc --noEmit` — correcto. La UI usa etiquetas asociadas, estados `status`/`alert`, controles nativos y los estilos responsive/foco de S14; se validó su inclusión en el build. La comprobación manual de lector de pantalla/zoom pertenece al cierre humano de S15 y no se declara automatizada.
+
+### Riesgos, bloqueos y decisiones pendientes
+
+- **Bloqueo S15:** no se muestra solicitud, descarga, URL ni enlace público de exportación hasta evidenciar almacenamiento aislado, vencimiento, borrado físico controlado y auditoría. La API S9 existente no se altera.
+- No hay migraciones ni cambios de tablas, RBAC, APIs, cálculo, eventos o auditoría. No se introducen importación CSV/Excel, notificaciones, ausencias, cierre de período, nómina, convenios, datos reales ni mecanismos de vigilancia.
+- Permanece pendiente la decisión de producto sobre si esta configuración es condición de piloto y la validación de calendario/regla por la persona responsable y asesoría antes de invitar empleados.
