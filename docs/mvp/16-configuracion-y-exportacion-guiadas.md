@@ -74,11 +74,13 @@ Base: `master` `747e1ae`, rama `codex/s16-configuracion-guiada`. Las dependencia
 - Antes del cambio: `docker compose run --rm --no-deps app npm test` — **98 pruebas en 29 ficheros**, correctas.
 - Tras el cambio: build Docker de producción correcto; la ruta `/admin/configuration` queda incluida. Conserva cinco advertencias existentes de S19/S9 sobre Edge y acceso dinámico a ficheros de exportación, fuera del alcance S16.
 - Dirigidas: `docker compose run --rm --no-deps app npx vitest run tests/configuration-ui.test.ts tests/admin-ui.test.ts tests/company-people.test.ts tests/work-rules.test.ts tests/exports.test.ts tests/permissions.test.ts` — **19 pruebas**, correctas.
-- Regresión completa final: `docker compose run --rm --no-deps app npm test` — **102 pruebas en 30 ficheros**, correctas.
+- Regresión completa final: `docker compose --project-name time-control-s16-p2 --env-file .local/s16-p2.synthetic.env run --rm --no-deps app npm test` — **103 pruebas en 30 ficheros**, correctas.
 - TypeScript: `docker compose run --rm --no-deps app npx tsc --noEmit` — correcto. La UI usa etiquetas asociadas, estados `status`/`alert`, controles nativos y los estilos responsive/foco de S14; se validó su inclusión en el build. La comprobación manual de lector de pantalla/zoom pertenece al cierre humano de S15 y no se declara automatizada.
+- P2 repetido en `time-control-s16-p2`: migración y `seed:demo` con perfil `office` sintético correctos; administración obtuvo 6/6 pasos, creó una persona sintética y recibió confirmación de servidor/auditoría. Responsable y empleado recibieron `307` al navegar directamente a configuración; el responsable conservó lectura de relaciones de su ámbito (`200`) y empleado recibió `403`. En 320, 390, 768 y 1280 px no hubo desbordamiento horizontal y se conservó el aviso de exportación bloqueada. No se usaron datos reales.
 
 ### Riesgos, bloqueos y decisiones pendientes
 
+- Corrección mínima documentada de S2: el entorno sintético P2 reveló que `GET /employments` fallaba con `column reference "id" is ambiguous`. Se calificó sólo la proyección de su consulta de lectura y se añadió regresión; no cambia tablas, permisos ni contrato HTTP.
 - **Bloqueo S15:** no se muestra solicitud, descarga, URL ni enlace público de exportación hasta evidenciar almacenamiento aislado, vencimiento, borrado físico controlado y auditoría. La API S9 existente no se altera.
 - No hay migraciones ni cambios de tablas, RBAC, APIs, cálculo, eventos o auditoría. No se introducen importación CSV/Excel, notificaciones, ausencias, cierre de período, nómina, convenios, datos reales ni mecanismos de vigilancia.
 - Permanece pendiente la decisión de producto sobre si esta configuración es condición de piloto y la validación de calendario/regla por la persona responsable y asesoría antes de invitar empleados.

@@ -44,3 +44,7 @@ Los cambios paralelos de S3 permanecen fuera de la propiedad funcional de S2; la
 ### Ajuste de integración S2/S3 — 10/09/2026
 
 La revisión previa a S4 reforzó dos invariantes: el centro sólo acepta identificadores IANA soportados tanto en API como en PostgreSQL, y un responsable debe tener una relación en el mismo centro vigente en la fecha de inicio de la relación que se crea o modifica. Se añadió el adaptador `PostgresEmploymentScopeProvider`: resuelve atómicamente para S3 la relación laboral activa, empresa, centro, zona efectiva y alcances `company`/`site`; los colectivos siguen reservados para su futuro dominio propietario.
+
+### Corrección mínima de integración S16 — 12/09/2026
+
+La validación HTTP del entorno sintético `time-control-s16-p2` detectó que `GET /api/v1/employments` fallaba con PostgreSQL `42702` por la columna `id` ambigua al unir `employments`, `employees` y `companies`. Se calificó exclusivamente la proyección de lectura con el alias `em`; no se modificaron tablas, contrato HTTP, autorización, aislamiento ni mutaciones. La regresión `tests/company-people.test.ts` y la suite completa Docker (103 pruebas) son correctas.
