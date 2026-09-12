@@ -6,24 +6,25 @@ Aplicación web de control horario para pruebas locales. Permite registrar entra
 
 ## Probar la aplicación en local
 
-Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) iniciado y el puerto `3000` disponible. No hace falta instalar Node ni PostgreSQL en el equipo.
+Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) iniciado y el puerto `3013` disponible para el perfil `office` (o `3014` para `multisite`). No hace falta instalar Node ni PostgreSQL en el equipo.
 
 En todos los comandos se debe usar el mismo nombre de proyecto y el mismo fichero de entorno. Defínalos una vez en la terminal que va a utilizar:
 
 ```powershell
-$Project='time-control'
-$EnvFile='.env'
+$Project='time-control-office'
+$EnvFile='.local/test-office.env'
 ```
 
-> Si utiliza otro fichero, por ejemplo `.s13.synthetic.env`, asigne ese nombre a `$EnvFile` y no mezcle sus comandos con `.env`. El perfil S13 expone la aplicación en el puerto `3013`.
+> Para el segundo entorno use `$Project='time-control-multisite'` y `$EnvFile='.local/test-multisite.env'`. No mezcle ficheros ni volúmenes entre ambos entornos.
 
 1. Cree su configuración local. No añada este archivo al repositorio.
 
    ```powershell
-   Copy-Item .env.example .env
+   New-Item -ItemType Directory -Force .local
+   Copy-Item config/test-env/office.example.env .local/test-office.env
    ```
 
-2. Abra `.env` y sustituya cada valor `replace-...` por un secreto local. Mantenga `SESSION_COOKIE_SECURE=false` únicamente para esta prueba HTTP local.
+2. Abra `.local/test-office.env` y sustituya cada valor `replace-...` por un secreto local. Mantenga `SESSION_COOKIE_SECURE=false` únicamente para esta prueba HTTP local. Las plantillas transversales de `config/test-env/` se versionan; los ficheros efectivos bajo `.local/` no.
 
    Para revisar la cuenta administrativa sintética sin configurar una aplicación TOTP, añada también esta línea. Sólo funciona para cuentas `@demo.test` con cookie HTTP local y nunca debe activarse en un despliegue:
 
@@ -40,12 +41,12 @@ $EnvFile='.env'
 4. Compruebe que está lista:
 
    ```powershell
-   Invoke-WebRequest http://localhost:3000/api/health
+   Invoke-WebRequest http://localhost:3013/api/health
    ```
 
-   Este ejemplo corresponde a `.env`. Si su fichero define `APP_PORT`, sustituya `3000` por ese valor (por ejemplo, `.s13.synthetic.env` usa `3013`).
+   Sustituya `3000` por el `APP_PORT` del perfil; `office.example.env` usa `3013` y `multisite.example.env`, `3014`.
 
-5. Cargue los datos demo y abra `http://localhost:<APP_PORT>/login` (`http://localhost:3000/login` con `.env`):
+5. Cargue los datos demo y abra `http://localhost:3013/login` para `office` (o `http://localhost:3014/login` para `multisite`):
 
    ```powershell
    $env:DEMO_PASSWORD='UiE2eSyntheticPassword-2026'

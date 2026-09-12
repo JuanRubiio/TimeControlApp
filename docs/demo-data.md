@@ -10,7 +10,7 @@ El modelo de aislamiento dedicado permite una única empresa por base. Por ello 
 
 ## Ejecución
 
-Después de migrar una base demo vacía, configure variables locales no versionadas y ejecute:
+Después de migrar una base demo vacía, copie uno de los perfiles versionados de [`config/test-env`](../config/test-env/README.md) a `.local/`, sustituya sus marcadores y ejecute:
 
 ```powershell
 $env:DEMO_PROFILE='office' # o multisite

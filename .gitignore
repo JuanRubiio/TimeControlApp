@@ -5,6 +5,9 @@ coverage/
 .exports/
 .env.*
 !.env.example
+# Perfiles locales de pruebas sintéticas; las plantillas seguras viven en config/test-env/.
+.s13.*.env
+.local/
 # Los parámetros reales por cliente incluyen secretos. Sólo se versiona la plantilla.
 ops/clients/*.env
 !ops/clients/client.example.env

@@ -2,10 +2,10 @@
 
 ## QA-001 — El rol `employee` no recibe permisos de fichaje propios
 
-Estado: abierto; propietaria sugerida: S1 (catálogo y asignación de permisos), con revisión de S4.
+Estado: **cerrada el 11/09/2026** por S14.
 
-Evidencia: `migrations/s001_202609091700_foundations.sql` crea el rol `employee`, pero sólo asigna permisos a `admin` y, posteriormente en S2, a `manager`. No hay inserción que otorgue a `employee` `time-event.create:self` ni `time-event.read:self`; el endpoint S4 `/api/v1/time-events` los exige en servidor.
+Evidencia histórica: `migrations/s001_202609091700_foundations.sql` creaba el rol `employee` sin `time-event.create:self` ni `time-event.read:self`, aunque el endpoint S4 los exige en servidor.
 
-Impacto: una cuenta que sólo tenga el rol `employee` no puede registrar ni consultar sus propios fichajes. El seeder S11 conserva ese rol para revelar el problema y no lo elude otorgando privilegios administrativos. El flujo HTTP completo puede ejecutarse con una cuenta de administrador vinculada a empleado, pero no satisface mínimo privilegio para una demo de empleado.
+Resolución: `migrations/s014_202609102350_employee_self_service_permissions.sql` concede exclusivamente los permisos propios de ficha, fichaje, cálculo y corrección necesarios para S4–S7. `tests/employee-rbac.test.ts` prueba su presencia y confirma que no se conceden permisos de ámbito ni decisión; S13 validó además el flujo HTTP con una cuenta `employee` sintética.
 
-Acción requerida: acordar en el contrato de permisos de S1 la asignación mínima de permisos de autoconsulta/autofichaje y entregar una migración aditiva de su sesión propietaria. S11 no modifica el catálogo ni las migraciones de S1/S4.
+No quedan acciones abiertas para esta incidencia. S11 no modificó la migración ni módulos propietarios.
