@@ -1,6 +1,6 @@
 # Fuente de verdad — MVP de control horario
 
-Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; ampliación prepiloto planificada, no implementada.** Fecha de revisión: 11/09/2026.
+Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; S20 aporta referencias visuales no vinculantes para los contratos posteriores.** Fecha de revisión: 12/09/2026.
 
 Este directorio es el contrato inicial de delivery. No se implementará una sesión hasta que sus decisiones previas estén aprobadas y se use su fichero como contrato de trabajo.
 
@@ -48,9 +48,11 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 
 ## Dependencias y orden
 
-`S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → S13 → S14 → S17 → S18 → S19 → S15 → S16 → piloto asistido`.
+`S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → S13 → S14 → S17 → S18 → S19 → S20 → S15 → S16 → piloto asistido`.
 
 S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles continuos; S12 empieza tras S1. S15 es puerta obligatoria para datos reales. S14 puede auditar/preparar UI en paralelo con S15; S16 consume el sistema visual S14 y no activa exportación visible hasta cerrar almacenamiento/retención S15.
+
+Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de diseño y decisión de alcance de [S20](20-disenos-referencia-capa-visual.md) antes de abrir una sesión de implementación. Diseñar una candidata no la aprueba ni altera el NO-GO de S15.
 
 ## Sesiones y contratos
 
@@ -76,6 +78,7 @@ S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles cont
 | S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Evaluación y prioridad de S18 aprobadas; conserva límites y NO-GO de S15 |
 | S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Finalizada: fuente read-only S5, proyección/API, recorrido visual, E2E sintética, aislamiento y regresión Docker validados |
 | S19 | [19-acceso-protegido-y-consistencia-historial.md](19-acceso-protegido-y-consistencia-historial.md) | M | Finalizada: navegación protegida, entrada controlada, kiosco PIN, mensajes de historial y consumidor/reintento/reparación histórica auditada validados con datos sintéticos |
+| S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Biblioteca por rol y protocolo de diseño futuro; no autoriza funcionalidades ni sustituye contratos de implementación |
 
 ## Base transversal publicada por S0
 
