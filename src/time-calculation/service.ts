@@ -37,12 +37,22 @@ async function effectiveEvents(employeeId:string,laborDate:string):Promise<Event
   return selectDayEvents(raw,laborDate);
 }
 
+const priorLaborDate=(laborDate:string)=>{const value=new Date(`${laborDate}T12:00:00.000Z`);value.setUTCDate(value.getUTCDate()-1);return value.toISOString().slice(0,10);};
+/** Si el día actual aún no tiene evidencia, conserva sólo una jornada nocturna previa que siga abierta. */
+export function selectRelevantEffectiveWorkday<T extends Pick<CalculationEvent,'eventType'>>(laborDate:string,current:readonly T[],previous:readonly T[]):{laborDate:string;events:readonly T[]}{
+  if(current.length)return {laborDate,events:current};
+  const last=previous.at(-1); return last&&last.eventType!=='clock_out'?{laborDate:priorLaborDate(laborDate),events:previous}:{laborDate,events:current};
+}
+
 /** Contrato público S5: evidencia efectiva mínima para una jornada abierta, sin mutaciones. */
 export async function effectiveWorkday(employeeId:string,asOf:string):Promise<EffectiveWorkday|null>{
   const employment=await new PostgresEmploymentScopeProvider().contextForEmployee(employeeId,asOf);
   if(!employment)return null;
-  const laborDate=localDateAt(asOf,employment.effectiveTimeZone);
-  const events=await effectiveEvents(employeeId,laborDate);
+  const requestedLaborDate=localDateAt(asOf,employment.effectiveTimeZone);
+  const current=await effectiveEvents(employeeId,requestedLaborDate);
+  const previous= current.length?[]:await effectiveEvents(employeeId,priorLaborDate(requestedLaborDate));
+  const selected=selectRelevantEffectiveWorkday(requestedLaborDate,current,previous);
+  const laborDate=selected.laborDate; const events=selected.events;
   const first=events[0];
   return {employeeId,laborDate,siteId:first?.siteId??employment.siteId,effectiveTimeZone:first?.siteId?employment.effectiveTimeZone:employment.effectiveTimeZone,events:events.map((event):EffectiveWorkdayEvent=>({...event,occurredAt:iso(event.occurredAt),effectiveTimeZone:employment.effectiveTimeZone}))};
 }
