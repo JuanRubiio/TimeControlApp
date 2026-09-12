@@ -22,6 +22,7 @@ Estado: **revisada tras integrar S1–S19; base de QA, CI y datos demo vigente p
 
 - `tests/support/demo-fixtures.ts`: perfiles y UUIDs deterministas, identidades sintéticas `@demo.test`, jornadas estándar, partida y nocturna, y casos UTC de medianoche/DST.
 - `scripts/seed-demo.ts`: seeder idempotente por perfil (`office` o `multisite`) para una base dedicada vacía; exige contraseña local de demo, no imprime secretos y rechaza mezclar dos empresas en un mismo entorno.
+- `config/test-env/{office,multisite}.example.env`: plantillas versionadas para dos entornos Docker sintéticos aislados, con puertos/UUID diferenciados; los ficheros efectivos se conservan bajo `.local/`, ignorados y fuera de Git.
 - `tests/qa-demo.test.ts` y `tests/qa-contracts.test.ts`: sinteticidad, calendario temporal, autorización de auditoría, aislamiento de consulta y preservación append-only.
 - `scripts/smoke.ts`, `npm run qa:smoke` y `.github/workflows/qa.yml`: smoke sin servicios externos para todas las suites S1–S19, tipado y build Node 20.19 en CI.
 - [Matriz QA](../qa-matrix.md) y [datos demo](../demo-data.md): trazabilidad, comandos y dependencias.
