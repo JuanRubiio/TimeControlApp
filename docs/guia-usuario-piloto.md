@@ -41,7 +41,7 @@ El responsable ve exclusivamente sus centros, personas, jornadas y correcciones 
 
 ## Empleado
 
-En **Mi jornada**, consulte primero **Siguiente acción** y pulse sólo la opción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. El botón se bloquea mientras se confirma el registro y la pantalla anuncia la hora confirmada. Si hay error, use **Reintentar la consulta** después de comprobar la conexión; no repita pulsaciones rápidamente.
+En **Mi jornada**, consulte primero el estado de la jornada y **Siguiente acción**; el tiempo efectivo mostrado es exclusivamente informativo y no es nómina, sanción ni decisión disciplinaria. Pulse sólo la opción que corresponda: **Registrar entrada**, **Iniciar pausa**, **Finalizar pausa** o **Registrar salida**. El botón se bloquea mientras se confirma el registro y la pantalla anuncia la hora confirmada. Si aparece un aviso de fichaje histórico pendiente, el estado corresponde a hoy: solicite una corrección para el registro anterior y siga únicamente la acción que confirme el servidor. Si hay error, use **Reintentar la consulta** después de comprobar la conexión; no repita pulsaciones rápidamente.
 
 En **Historial**, abra una fecha para consultar eventos, pausas, tiempo efectivo, jornada esperada, diferencia, incidencias, regla/versionado y zona horaria. El saldo no es nómina ni sanción.
 
