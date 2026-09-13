@@ -12,7 +12,7 @@ docker compose --env-file ops/clients/<cliente>.env -p time-control-<cliente> -f
 Remove-Item Env:RESTORE_CONFIRM
 ```
 
-La restauración verifica SHA-256, autenticación GCM y el UUID de origen **antes** de cargar el dump; después comprueba de nuevo `environment_context`. Para una prueba segura, hágala primero en un proyecto Compose/volumen de restauración separado con el mismo `ENVIRONMENT_ID`, y conserve su registro de resultado. Una restauración sobre el entorno activo requiere incidencia aprobada y ventana de mantenimiento. Los backups con formato anterior `TCBKUP01` se rechazan: no se emitieron en piloto y no tienen garantía de identidad previa.
+La restauración verifica SHA-256, autenticación GCM y el UUID de origen **antes** de cargar el dump; después comprueba de nuevo `environment_context`. Descifra primero a un temporal con permisos restringidos y sólo invoca `pg_restore` después de validar la identidad, por lo que un backup cruzado no abre el destino. El backup usa cliente PostgreSQL 16 compatible con el servidor y aborta/limpia sus artefactos si `pg_dump` falla. Para una prueba segura, hágala primero en un proyecto Compose/volumen de restauración separado con el mismo `ENVIRONMENT_ID`, y conserve su registro de resultado. Una restauración sobre el entorno activo requiere incidencia aprobada y ventana de mantenimiento. Los backups con formato anterior `TCBKUP01` se rechazan: no se emitieron en piloto y no tienen garantía de identidad previa.
 
 ## Política operativa propuesta
 

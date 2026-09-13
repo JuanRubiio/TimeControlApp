@@ -55,8 +55,8 @@ Proveedor/región/coste, RPO/RTO, política de retención y bloqueo, responsable
 
 ### Archivos afectados
 
-- Operación/configuración: `docker-compose.yml`, `ops/clients/client.example.env`, `package.json`, `scripts/ops/expire-exports.ts`, `src/exports/retention.ts`.
-- Pruebas: `tests/export-retention.test.ts`.
+- Operación/configuración: `Dockerfile.ops`, `docker/ops/backup.sh`, `docker/ops/restore.sh`, `docker-compose.yml`, `ops/clients/client.example.env`, `package.json`, `scripts/ops/expire-exports.ts`, `scripts/ops/verify-export-retention.ts`, `src/exports/retention.ts`.
+- Pruebas: `tests/export-retention.test.ts`, `tests/backup-script.test.ts`.
 - Documentación: `docs/operations/runbooks.md`, `docs/operations/pilot-deployment.md`, este contrato, `README.md` del MVP, S10 y guía de piloto.
 
 ### Migración, seguridad y datos
@@ -66,12 +66,15 @@ No se añade migración: S9 ya define `exports.status`, `expired_at`, `manifest`
 ### Validación ejecutada
 
 - Antes: `npm test -- tests/exports.test.ts tests/backup-crypto.test.ts` — 3/3 correctas.
-- Después: `npx tsc --noEmit`, `npm test`, `docker compose --env-file .env.example config --quiet` y `git diff --check` — correctos; Vitest: **110 pruebas en 31 ficheros**.
+- Después: `npx tsc --noEmit`, `npm test`, `docker compose --env-file .env.example config --quiet` y `git diff --check` — correctos; Vitest inicial: **110 pruebas en 31 ficheros**.
 - `tests/export-retention.test.ts` usa un artefacto sintético temporal y comprueba borrado físico, tratamiento idempotente de fichero ausente y rechazo de claves que intenten salir del almacén dedicado.
-- Docker: el socket requirió autorización. La prueba focal contra la imagen local no incluía el fichero nuevo y no se contabiliza como evidencia; se inició una reconstrucción local, pero no terminó con una imagen verificable. Queda repetir la suite focal en imagen reconstruida antes del piloto.
+- Ejecución real aislada: PostgreSQL fuente sintético migrado y sembrado; `npm run ops:verify-export-retention` confirmó `verified:true`, un artefacto borrado, una fila `expired`, manifiesto/snapshot conservados y una auditoría de sistema.
+- Backup/restore real: se creó un backup cifrado con PostgreSQL 16; un destino aislado con el mismo `ENVIRONMENT_ID` restauró correctamente checksum, identidad y una exportación expirada. Otro destino, con UUID distinto, superó checksum pero fue rechazado por autenticación GCM antes de invocar `pg_restore`, y quedó sin tabla `environment_context`.
+- Durante esta prueba se corrigieron dos defectos: `pg_dump` 15 contra servidor 16 podía crear un artefacto vacío por un pipeline sin `pipefail`; y restore verificaba checksum desde un directorio incorrecto y no aislaba el descifrado de `pg_restore`. `Dockerfile.ops` usa ahora PostgreSQL 16, backup falla y limpia artefactos parciales, y restore valida checksum/UUID antes de abrir el destino.
+- La reconstrucción de la imagen completa de Next.js no terminó durante `npm ci` en este runner y el proceso de desarrollo no abrió el puerto de smoke; no se declaran como evidencia. Repetir build/smoke HTTP de imagen actual antes del piloto.
 
 ### Riesgos, bloqueos y aprobación requerida
 
-- Pendientes bloqueantes: proveedor/región/coste, proxy TLS/HSTS/CORS/CSRF/WAF/rate limit efectivos, cifrado en reposo gestionado, restore completo con destino aislado, RPO/RTO y rollback aprobados, retención/bloqueo legal, DPA/subencargados, DPO, asesoría laboral, responsables 24×7, canal de derechos/incidentes, QR físico, lector de pantalla, red y aceptación humana.
-- No se han creado ni simulado datos reales, aprobaciones humanas, proveedores, QR físico, revisión de lector de pantalla, WAF/rate limit ni restauración PostgreSQL completa. Continúa el **NO-GO** y S16 no debe activar descarga visible.
-- No hay defectos P0 confirmados. Permanece abierto el P1 S13-005 hasta disponer de evidencia externa y operativa completa; la validación Docker de la nueva tarea es un bloqueo de evidencia P2 local, no una sustitución de aquel P1.
+- Pendientes bloqueantes: proveedor/región/coste, proxy TLS/HSTS/CORS/CSRF/WAF/rate limit efectivos, cifrado en reposo gestionado, RPO/RTO y rollback aprobados, retención/bloqueo legal, DPA/subencargados, DPO, asesoría laboral, responsables 24×7, canal de derechos/incidentes, QR físico, lector de pantalla, red y aceptación humana.
+- No se han creado ni simulado datos reales, aprobaciones humanas, proveedores, QR físico, revisión de lector de pantalla ni WAF/rate limit. Continúa el **NO-GO** y S16 no debe activar descarga visible.
+- No hay defectos P0 confirmados. Permanece abierto el P1 S13-005 hasta disponer de evidencia externa y operativa completa. Queda una limitación P2 de evidencia local: build/smoke HTTP de la imagen Next.js actual no finalizó en este runner; no sustituye el P1.
