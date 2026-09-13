@@ -1,9 +1,9 @@
-FROM node:20-bookworm-slim AS deps
+FROM node:20.19.0-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-FROM node:20-bookworm-slim AS build
+FROM node:20.19.0-bookworm-slim AS build
 WORKDIR /app
 ARG BUILD_ENVIRONMENT_ID=00000000-0000-4000-8000-000000000001
 # Sólo habilita la evaluación estática de rutas durante `next build`; runtime exige su propia configuración.
@@ -12,7 +12,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM node:20-bookworm-slim AS runner
+FROM node:20.19.0-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules

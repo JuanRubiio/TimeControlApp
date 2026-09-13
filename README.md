@@ -6,7 +6,7 @@ Aplicación web de control horario para pruebas locales. Permite registrar entra
 
 ## Probar la aplicación en local
 
-Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) iniciado y el puerto `3013` disponible para el perfil `office` (o `3014` para `multisite`). No hace falta instalar Node ni PostgreSQL en el equipo.
+Necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/) iniciado y el puerto `3013` disponible para el perfil `office` (o `3014` para `multisite`). No hace falta instalar Node ni PostgreSQL en el equipo para usar Docker. Si va a ejecutar `npm` directamente en el host, active **Node 20.19.0**: el proyecto, CI y las tres etapas de Docker usan esa versión exacta (`.nvmrc` y `.node-version`).
 
 En todos los comandos se debe usar el mismo nombre de proyecto y el mismo fichero de entorno. Defínalos una vez en la terminal que va a utilizar:
 
@@ -89,6 +89,14 @@ docker ps -a
 ```
 
 `down` conserva el volumen local para poder retomar la demo. Si quiere borrar también sus datos demo, use `docker compose --project-name $Project --env-file $EnvFile down -v`; esta acción elimina la base local y no se puede deshacer.
+
+Para evitar residuos de una prueba sintética efímera, ejecute el equivalente acotado al mismo proyecto y fichero de entorno:
+
+```powershell
+docker compose --project-name $Project --env-file $EnvFile down --volumes --remove-orphans --rmi local
+```
+
+El comando elimina únicamente contenedores, red, volumen PostgreSQL e imagen local de ese proyecto. No limpia caché global de Docker ni recursos de otros repositorios. Con el `.env` por defecto también están disponibles `npm run docker:stop` (no destructivo) y `npm run docker:reset` (elimina los datos locales).
 
 ## Límites del MVP
 

@@ -1,7 +1,8 @@
 import { requirePageSession } from '@/auth/page-guard';
+import { defaultDestination } from '@/auth/return-to';
 import { redirect } from 'next/navigation';
 
 export default async function Home(){
-  await requirePageSession('/employee');
-  redirect('/employee');
+  const actor = await requirePageSession('/');
+  redirect(defaultDestination(actor));
 }

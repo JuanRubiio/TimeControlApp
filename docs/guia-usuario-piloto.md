@@ -6,7 +6,7 @@ Time Control registra entradas, salidas y pausas manuales, muestra incidencias y
 
 No usa geolocalización, cámara, biometría, foto, vídeo ni vigilancia. La aplicación se ejecuta en un entorno dedicado por empresa; el acceso se limita por rol y ámbito autorizado.
 
-> Estado previo al piloto: esta guía describe sólo las pantallas entregadas. La configuración inicial por UI todavía no está disponible; no se debe invitar a usuarios no técnicos hasta cerrar los bloqueos operativos y de cumplimiento de S15. S17 ha documentado propuestas posteriores, pero no entrega temporizador, recordatorios, calendario, chatbot ni nuevas capacidades de seguimiento.
+> Estado previo al piloto: la configuración inicial guiada está disponible para administración autorizada en `/admin/configuration`, con datos confirmados por API. No se debe invitar a usuarios no técnicos hasta cerrar los bloqueos operativos y de cumplimiento de S15. S17 ha documentado propuestas posteriores, pero no entrega recordatorios, calendario adicional, chatbot ni nuevas capacidades de seguimiento.
 
 ## Requisitos de acceso
 
@@ -19,10 +19,12 @@ Estas cuentas existen sólo después de cargar el perfil sintético `office` con
 | Rol | Correo | Contraseña | Qué revisar |
 |---|---|---|---|
 | Empleado | `night.office@demo.test` | `UiE2eSyntheticPassword-2026` | Jornada, fichaje, pausas, historial y solicitud de corrección. |
-| Responsable | `manager.office@demo.test` | `UiE2eSyntheticPassword-2026` | Resumen y correcciones del centro autorizado. Tras acceder, abra **Administración**. |
+| Responsable | `manager.office@demo.test` | `UiE2eSyntheticPassword-2026` | Resumen y correcciones del centro autorizado. Tras acceder llega directamente a **Administración**. |
 | Administración | `admin.office@demo.test` | `UiE2eSyntheticPassword-2026` | Panel completo de administración y revisión. En el primer acceso completa MFA, salvo que el entorno local sintético haya activado expresamente `LOCAL_SYNTHETIC_DEMO_MFA_BYPASS=true`. |
 
 Las tres cuentas y todos sus registros son sintéticos. Si se reinicia la base, vuelva a ejecutar el seed con la misma contraseña para recrearlas.
+
+Sin un enlace interno previo, empleado inicia en **Mi jornada** y responsable, auditoría o administración inician en **Administración**. Si abre una ruta interna permitida antes de autenticarse, el acceso vuelve a esa ruta tras iniciar sesión; el servidor mantiene la comprobación de permisos y ámbito.
 
 El bypass MFA es exclusivo de HTTP local, sólo permite cuentas administrativas `@demo.test` y añade una entrada de auditoría. No debe configurarse en ningún despliegue ni con datos reales.
 
@@ -32,8 +34,8 @@ La pantalla **Administración y RR. HH. > Resumen** presenta personas, centros, 
 
 - En **Plantilla y jornadas**, filtre por centro, persona, estado y periodo; pulse **Aplicar filtros**. Puede abrir el detalle en lista para ver eventos originales, pausas, cálculo, incidencias, regla/versionado y zona horaria.
 - En **Correcciones**, seleccione Pendientes, Aprobadas, Rechazadas o Todos. Abra **Ver y decidir**: aprobar solicita el recálculo; rechazar exige un motivo de tres caracteres o más. La solicitud y el evento original no se editan.
-- Las altas de centros, empleados, relaciones, reglas y calendarios sólo están disponibles mediante APIs en esta versión. No existe una pantalla de configuración inicial; escale esta necesidad al equipo del piloto, no intente modificar datos directamente en la base.
-- CSV/PDF se ofrecen por API autorizada; la interfaz no incorpora un botón de exportación. Solicítelos al equipo de operación mientras S14 no entregue un flujo visible.
+- En **Configuración**, una administración con permisos de escritura puede completar empresa, centros, personas, relaciones, calendario, turno, reglas y versiones. El checklist sólo marca pasos cuando la API confirma los datos. Revise la vigencia y la regla con la asesoría correspondiente: la configuración es revisable y no interpreta convenios ni garantiza cumplimiento automático.
+- La solicitud y descarga visible de CSV/PDF siguen bloqueadas hasta el cierre verificable de almacenamiento, vencimiento, borrado y auditoría de S15. No existe enlace público; escale una exportación autorizada al equipo de operación.
 
 ## Responsable
 

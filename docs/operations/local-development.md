@@ -4,6 +4,10 @@
 
 Use Docker Desktop. Para pruebas sintéticas reproducibles copie `config/test-env/office.example.env` o `config/test-env/multisite.example.env` a `.local/`, sustituya cada valor `replace-...` por un secreto local único y conserve ese fichero fuera del control de versiones. `SESSION_COOKIE_SECURE=false` se permite únicamente para `localhost` HTTP; cualquier piloto exige `true` y TLS en el proxy que el cliente apruebe.
 
+## Runtime único
+
+CI, Docker y el host usan **Node 20.19.0**. Docker está fijado a `node:20.19.0-bookworm-slim`; el host debe activar la misma versión mediante el gestor local que se utilice, tomando `.nvmrc` o `.node-version` como fuente. Los comandos `npm run dev`, `npm test`, `npm run qa:smoke` y `npm run build` comprueban esa versión antes de continuar y explican cómo recuperarse. Si el host no dispone de Node 20.19.0, ejecute las comprobaciones dentro del contenedor en vez de mezclar versiones.
+
 ## Ciclo de trabajo
 
 ```powershell
@@ -19,6 +23,14 @@ docker compose --project-name $Project --env-file $EnvFile down
 ```
 
 `down` conserva PostgreSQL. Sólo `down -v` elimina la base local; es deliberadamente destructivo y no debe usarse para piloto. Los datos demo son sintéticos y el seeder impide mezclar empresas demo en una misma base.
+
+Al finalizar una prueba sintética efímera, elimine recursos del proyecto sin tocar otros entornos ni la caché global:
+
+```powershell
+docker compose --project-name $Project --env-file $EnvFile down --volumes --remove-orphans --rmi local
+```
+
+`--volumes` elimina la base sintética y `--rmi local` la imagen construida localmente; ambos son deliberados. No ejecute una poda global de Docker como parte del flujo normal, porque puede borrar caché útil o recursos de otros proyectos.
 
 ## Conexión local con DBeaver
 

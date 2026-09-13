@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.19.0"
+    "node": "20.19.0"
   },
+  "packageManager": "npm@10.8.2",
   "scripts": {
+    "predev": "node scripts/check-runtime.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/check-runtime.mjs",
     "build": "next build",
     "start": "next start",
+    "pretest": "node scripts/check-runtime.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:critical": "vitest run tests/qa-demo.test.ts tests/qa-contracts.test.ts tests/permissions.test.ts tests/company-people.test.ts tests/work-rules.test.ts tests/time-events.test.ts",
+    "preqa:smoke": "node scripts/check-runtime.mjs",
     "qa:smoke": "tsx scripts/smoke.ts",
+    "docker:stop": "docker compose down --remove-orphans",
+    "docker:reset": "docker compose down --volumes --remove-orphans --rmi local",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:check": "tsx scripts/db-check.ts",
     "ops:provision": "tsx scripts/ops/provision-environment.ts",
