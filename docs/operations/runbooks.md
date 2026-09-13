@@ -20,6 +20,10 @@ Detener la actualización, restaurar el `APP_IMAGE` inmutable anterior y levanta
 
 Revisar autorización, backup, hash, cliente y destino dedicado. Ejecutar el comando con `RESTORE_CONFIRM`, comprobar `environment_context`, salud y permisos; documentar RTO/RPO y resultado. Rotar secretos si existe indicio de compromiso.
 
+## Retención de exportaciones
+
+La tarea `npm run ops:expire-exports` se ejecuta sólo dentro del entorno dedicado y con su `DATABASE_URL`, `ENVIRONMENT_ID` y `EXPORT_STORAGE_DIR`. Localiza exportaciones vencidas, elimina exclusivamente el fichero UUID CSV/PDF dentro de ese directorio y conserva el manifiesto, snapshot, hash y fila de auditoría. Una clave inválida o un fallo de almacenamiento no cambia la exportación a vencida y deja auditoría de fallo; un fichero ya ausente se registra como tal sin recuperar ni recrear su contenido. Prográmela con la frecuencia y retención aprobadas por DPO/propietario; no borra registros laborales ni desbloquea una retención legal.
+
 ## Rotación de secretos
 
 Generar secreto distinto, actualizar el gestor/fichero seguro, reiniciar el entorno, probar login/MFA, métricas y backup. Para contraseñas PostgreSQL, cambiar rol y parámetro de forma coordinada. Mantener el secreto previo sólo durante la ventana aprobada y revocarlo después. Auditar operador, fecha y entorno sin anotar el valor.

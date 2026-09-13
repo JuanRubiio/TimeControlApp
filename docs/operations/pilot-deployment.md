@@ -18,6 +18,8 @@ docker compose --env-file ops/clients/<cliente>.env -p time-control-<cliente> ex
 
 El `CLIENT_SLUG`, el proyecto Compose, `ENVIRONMENT_ID`, imagen, puerto, contraseñas, pepper, token de métricas y directorio de backup son obligatorios y distintos para cada cliente. Esto separa contenedores/red/volúmenes, base, secretos y repositorio de copias. El almacenamiento futuro de exportaciones debe ser un bucket/ruta distinto por cliente; S9 será propietaria de conectarlo.
 
+Una vez aprobado el almacenamiento dedicado, configure `EXPORT_STORAGE_DIRECTORY` como ruta exclusiva no compartida y programe `npm run ops:expire-exports` dentro del contenedor de aplicación con la cuenta mínima necesaria. Compose monta esa ruta únicamente como `/exports` y fija `EXPORT_STORAGE_DIR=/exports`; la tarea no acepta rutas como argumento, no registra el contenido y conserva en PostgreSQL el manifiesto/auditoría tras borrar el artefacto vencido.
+
 El script no genera, imprime ni sobrescribe secretos. Rechaza parámetros débiles e intenta crear el fichero con exclusividad; guárdelo en un gestor de secretos y aplique permisos del SO. El fichero local es un puente de piloto, no una solución de gestión de secretos definitiva.
 
 ## Actualización, migración, rollback y retirada

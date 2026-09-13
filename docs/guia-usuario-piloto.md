@@ -35,7 +35,7 @@ La pantalla **Administración y RR. HH. > Resumen** presenta personas, centros, 
 - En **Plantilla y jornadas**, filtre por centro, persona, estado y periodo; pulse **Aplicar filtros**. Puede abrir el detalle en lista para ver eventos originales, pausas, cálculo, incidencias, regla/versionado y zona horaria.
 - En **Correcciones**, seleccione Pendientes, Aprobadas, Rechazadas o Todos. Abra **Ver y decidir**: aprobar solicita el recálculo; rechazar exige un motivo de tres caracteres o más. La solicitud y el evento original no se editan.
 - En **Configuración**, una administración con permisos de escritura puede completar empresa, centros, personas, relaciones, calendario, turno, reglas y versiones. El checklist sólo marca pasos cuando la API confirma los datos. Revise la vigencia y la regla con la asesoría correspondiente: la configuración es revisable y no interpreta convenios ni garantiza cumplimiento automático.
-- La solicitud y descarga visible de CSV/PDF siguen bloqueadas hasta el cierre verificable de almacenamiento, vencimiento, borrado y auditoría de S15. No existe enlace público; escale una exportación autorizada al equipo de operación.
+- La solicitud y descarga visible de CSV/PDF siguen bloqueadas hasta el cierre formal de S15. Ya existe una tarea interna para borrar artefactos vencidos y conservar su trazabilidad, pero faltan evidencia operativa, retención/bloqueo aprobados y autorizaciones externas. No existe enlace público; escale una exportación autorizada al equipo de operación.
 
 ## Responsable
 

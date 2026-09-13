@@ -73,7 +73,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | S12 | [12-despliegue-y-observabilidad.md](12-despliegue-y-observabilidad.md) | M | Paralela tras S1 |
 | S13 | [13-validacion-e2e-y-preparacion-piloto.md](13-validacion-e2e-y-preparacion-piloto.md) | M | Automatización y recorrido visual completados; NO-GO por operación/compliance |
 | S14 | [14-ui-ux-y-experiencia-piloto.md](14-ui-ux-y-experiencia-piloto.md) | M | Muy recomendable; UX/accesibilidad sin nuevas reglas |
-| S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Obligatoria; puerta de datos reales |
+| S15 | [15-cierre-operativo-y-cumplimiento-prepiloto.md](15-cierre-operativo-y-cumplimiento-prepiloto.md) | M | Integración interna de retención realizada; continúa como puerta de datos reales y NO-GO externo |
 | S16 | [16-configuracion-y-exportacion-guiadas.md](16-configuracion-y-exportacion-guiadas.md) | M | Configuración guiada completada; exportación visible bloqueada hasta evidencia de S15 |
 | S17 | [17-evolucion-integral-de-producto.md](17-evolucion-integral-de-producto.md) | M | Evaluación y prioridad de S18 aprobadas; conserva límites y NO-GO de S15 |
 | S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Finalizada: fuente read-only S5, proyección/API, recorrido visual, E2E sintética, aislamiento y regresión Docker validados |
@@ -103,6 +103,6 @@ Revisión de abogado laboralista y DPO; pruebas de aislamiento entre tenants; co
 
 ## Estado posterior a S13 y decisiones pendientes
 
-S13 confirmó los flujos funcionales con datos sintéticos y no encontró P0. El P1 S13-005 mantiene el **NO-GO**: faltan TLS/proxy/WAF/rate limit reales, restauración operativa, retención/borrado de exportaciones y cierres DPO/laboral/operación. Véase la [evaluación prepiloto](evaluacion-ampliacion-prepiloto.md).
+S13 confirmó los flujos funcionales con datos sintéticos y no encontró P0. El P1 S13-005 mantiene el **NO-GO**: S15 ya verificó localmente retención física auditada y restore aislado con rechazo cruzado; faltan TLS/proxy/WAF/rate limit reales, RPO/RTO/retención aprobados y cierres DPO/laboral/operación. Véase la [evaluación prepiloto](evaluacion-ampliacion-prepiloto.md).
 
 Decisiones pendientes del propietario: proveedor/región/coste y RPO/RTO; política de retención/bloqueo y responsables de soporte; aprobaciones DPO, DPA y asesoría laboral; condición Go; límite de rediseño S14; si S16 es obligatorio o se acepta un piloto asistido con configuración/exportación técnica; y protocolo de feedback minimizado de S15. S18 está finalizada y consume la fuente efectiva read-only aprobada por S5 sin reimplementar su algoritmo ni leer internals ajenos. S19 ya protegió la navegación, acotó el PIN público y diferencia el estado de historial; exige una enmienda conjunta S4/S5 antes de implementar consumidor/reintento/reparación histórica. Importación CSV/Excel, notificaciones, cierre de período y vacaciones/ausencias permanecen fuera del ciclo hasta obtener evidencia durante piloto.
