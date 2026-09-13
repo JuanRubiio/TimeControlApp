@@ -1,6 +1,6 @@
 # S15 — Cierre operativo y cumplimiento prepiloto
 
-**Estado:** obligatoria antes de datos reales. **Tamaño:** M de ingeniería/operación, más plazos externos. **Dependencias:** S10, S12, proveedor, DPO, asesoría laboral y propietario del producto.
+**Estado:** implementación interna parcial realizada el 13/09/2026; **NO-GO para datos reales** hasta cerrar evidencia externa y aprobaciones. **Tamaño:** M de ingeniería/operación, más plazos externos. **Dependencias:** S10, S12, proveedor, DPO, asesoría laboral y propietario del producto.
 
 ## Nombre y objetivo
 
@@ -42,3 +42,36 @@ Despliegue limpio, smoke autenticado, negativas de rate limit/RBAC/entorno, rest
 ## Decisiones que requieren aprobación
 
 Proveedor/región/coste, RPO/RTO, política de retención y bloqueo, responsables 24×7, DPA/subencargados, aprobación DPO/laboral, base y alcance de datos del piloto, y condición formal de Go.
+
+## Registro de ejecución — 13/09/2026
+
+### Base, dependencias y alcance realizado
+
+- Base verificada: `master` limpio y sincronizado en `88b8c19`; S10/S12, S14 y S16–S20 están integradas. Se trabajó en `codex/s15-cierre-operativo-prepiloto`.
+- Se implementó exclusivamente la integración transversal autorizada sobre S9: la retención física de artefactos de exportación. No se alteraron eventos laborales, correcciones, cálculo, RBAC, APIs de negocio ni migraciones funcionales.
+- `src/exports/retention.ts` y `scripts/ops/expire-exports.ts` ejecutan una tarea serializada por entorno: seleccionan exportaciones disponibles ya vencidas, eliminan sólo su fichero UUID CSV/PDF dentro de `EXPORT_STORAGE_DIR`, cambian el estado a `expired` y añaden auditoría de sistema. El `snapshot`, manifiesto y hash de S9 permanecen en PostgreSQL. Un fichero ya ausente queda auditado como tal; una ruta inválida o fallo de almacenamiento no caduca la fila.
+- Compose monta `EXPORT_STORAGE_DIRECTORY` del host dedicado únicamente en `/exports`; la plantilla de cliente exige una ruta de exportaciones distinta por cliente. No se crea bucket, proveedor, secreto ni cuenta externa.
+- Se actualizaron runbook y despliegue técnico para programar la tarea con mínimo privilegio. La frecuencia, retención y bloqueo legal siguen sujetos a aprobación DPO/propietario.
+
+### Archivos afectados
+
+- Operación/configuración: `docker-compose.yml`, `ops/clients/client.example.env`, `package.json`, `scripts/ops/expire-exports.ts`, `src/exports/retention.ts`.
+- Pruebas: `tests/export-retention.test.ts`.
+- Documentación: `docs/operations/runbooks.md`, `docs/operations/pilot-deployment.md`, este contrato, `README.md` del MVP, S10 y guía de piloto.
+
+### Migración, seguridad y datos
+
+No se añade migración: S9 ya define `exports.status`, `expired_at`, `manifest`, `snapshot` e índice de vencimiento. El recolector usa un bloqueo asesor de PostgreSQL para no ejecutarse en paralelo, restringe el nombre a UUID con extensión CSV/PDF y resuelve el destino bajo el único directorio del entorno. No incorpora PII adicional, no registra contenido, no borra registros laborales y no promete cumplimiento automático.
+
+### Validación ejecutada
+
+- Antes: `npm test -- tests/exports.test.ts tests/backup-crypto.test.ts` — 3/3 correctas.
+- Después: `npx tsc --noEmit`, `npm test`, `docker compose --env-file .env.example config --quiet` y `git diff --check` — correctos; Vitest: **110 pruebas en 31 ficheros**.
+- `tests/export-retention.test.ts` usa un artefacto sintético temporal y comprueba borrado físico, tratamiento idempotente de fichero ausente y rechazo de claves que intenten salir del almacén dedicado.
+- Docker: el socket requirió autorización. La prueba focal contra la imagen local no incluía el fichero nuevo y no se contabiliza como evidencia; se inició una reconstrucción local, pero no terminó con una imagen verificable. Queda repetir la suite focal en imagen reconstruida antes del piloto.
+
+### Riesgos, bloqueos y aprobación requerida
+
+- Pendientes bloqueantes: proveedor/región/coste, proxy TLS/HSTS/CORS/CSRF/WAF/rate limit efectivos, cifrado en reposo gestionado, restore completo con destino aislado, RPO/RTO y rollback aprobados, retención/bloqueo legal, DPA/subencargados, DPO, asesoría laboral, responsables 24×7, canal de derechos/incidentes, QR físico, lector de pantalla, red y aceptación humana.
+- No se han creado ni simulado datos reales, aprobaciones humanas, proveedores, QR físico, revisión de lector de pantalla, WAF/rate limit ni restauración PostgreSQL completa. Continúa el **NO-GO** y S16 no debe activar descarga visible.
+- No hay defectos P0 confirmados. Permanece abierto el P1 S13-005 hasta disponer de evidencia externa y operativa completa; la validación Docker de la nueva tarea es un bloqueo de evidencia P2 local, no una sustitución de aquel P1.

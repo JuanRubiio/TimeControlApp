@@ -37,6 +37,9 @@ services:
       BOOTSTRAP_ADMIN_NAME: ${BOOTSTRAP_ADMIN_NAME:-Administrador}
       METRICS_BEARER_TOKEN: ${METRICS_BEARER_TOKEN:-}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-}
+      EXPORT_STORAGE_DIR: /exports
+    volumes:
+      - ${EXPORT_STORAGE_DIRECTORY:-./.exports}:/exports
     ports:
       - "${APP_PORT:-3000}:3000"
     healthcheck:

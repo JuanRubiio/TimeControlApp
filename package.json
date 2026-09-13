@@ -23,6 +23,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:check": "tsx scripts/db-check.ts",
     "ops:provision": "tsx scripts/ops/provision-environment.ts",
+    "ops:expire-exports": "tsx scripts/ops/expire-exports.ts",
     "db:bootstrap-admin": "tsx scripts/bootstrap-admin.ts",
     "seed:demo": "tsx scripts/seed-demo.ts"
   },
