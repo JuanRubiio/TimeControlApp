@@ -15,7 +15,7 @@ describe('S14 presentación accesible', () => {
     expect(employee).toContain('Información técnica de esta jornada');
     expect(employee).toContain('Si eres responsable o administración, abre Administración');
     expect(admin).toContain('Referencias técnicas de auditoría');
-    expect(admin).toContain('disabled={busy}');
+    expect(admin).toContain('Consulta de evidencia y decisiones registradas');
   });
 
   it('define foco visible y puntos de ruptura para pantallas pequeñas', () => {
