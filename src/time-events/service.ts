@@ -8,6 +8,8 @@ import { localDateAt } from '@/work-rules/validation';
 import { PostgresRuleResolver } from '@/work-rules/resolver';
 import { PostgresEmploymentScopeProvider } from '@/company-people/rule-scopes';
 import { assertSequence, type TimeEvent, type TimeEventMethod, type TimeEventType } from './contracts';
+import { activeGeoPolicy } from '@/clocking-policy/service';
+import type { GeoVerification } from '@/clocking-policy/contracts';
 
 type EventRow = { id:string; employeeId:string; employmentId:string; siteId:string; ruleVersionId:string; eventType:TimeEventType; method:TimeEventMethod; occurredAt:Date; recordedAt:Date; deviceOccurredAt:Date|null; effectiveTimeZone:string; laborDate:string };
 type Principal = { employeeId:string; method:TimeEventMethod; userId?:string; kioskSessionId?:string };
@@ -17,6 +19,8 @@ const sha256=(value:string)=>createHash('sha256').update(value).digest('hex');
 function kioskPinPepper(){ if(!config.KIOSK_PIN_PEPPER) throw new Error('KIOSK_PIN_PEPPER_REQUIRED'); return config.KIOSK_PIN_PEPPER; }
 const pinLookup=(pin:string)=>createHmac('sha256',kioskPinPepper()).update(pin).digest('hex');
 const fingerprint=(eventType:TimeEventType,method:TimeEventMethod,kioskSessionId?:string)=>sha256(JSON.stringify({eventType,method,kioskSessionId:kioskSessionId??null}));
+const distanceMeters=(from:GeoVerification,to:{latitude:number;longitude:number})=>{const radians=(value:number)=>value*Math.PI/180;const dLat=radians(to.latitude-from.latitude);const dLon=radians(to.longitude-from.longitude);const a=Math.sin(dLat/2)**2+Math.cos(radians(from.latitude))*Math.cos(radians(to.latitude))*Math.sin(dLon/2)**2;return 6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));};
+const accuracyBand=(accuracy:number)=>accuracy<=25?'up_to_25m':accuracy<=50?'up_to_50m':'up_to_100m';
 
 async function appendAudit(client:pg.PoolClient,input:{actorType:'user'|'kiosk';actorId?:string;action:string;resourceType:string;resourceId?:string;result:'success'|'denied'|'failure';correlationId:string;changes?:Record<string,unknown>}) {
   await client.query('SELECT audit_append($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[config.ENVIRONMENT_ID,input.actorType,input.actorId??null,input.action,input.resourceType,input.resourceId??null,input.result,input.correlationId,JSON.stringify({}),JSON.stringify(input.changes??{})]);
@@ -27,7 +31,7 @@ export async function employeeForUser(userId:string) {
   return result.rows[0]?.id??null;
 }
 
-export async function recordEvent(principal:Principal,eventType:TimeEventType,deviceOccurredAt:string|undefined,idempotencyKey:string,correlationId:string):Promise<{event:TimeEvent;replayed:boolean}> {
+export async function recordEvent(principal:Principal,eventType:TimeEventType,deviceOccurredAt:string|undefined,idempotencyKey:string,correlationId:string,geo?:GeoVerification):Promise<{event:TimeEvent;replayed:boolean}> {
   const client=await db.connect();
   try { await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 404))',[principal.employeeId]);
@@ -39,6 +43,13 @@ export async function recordEvent(principal:Principal,eventType:TimeEventType,de
     const employment=await new PostgresEmploymentScopeProvider().contextForEmployee(principal.employeeId,occurredAt);
     if(!employment) throw new Error('EMPLOYMENT_NOT_ACTIVE');
     const laborDate=localDateAt(occurredAt,employment.effectiveTimeZone);
+    let geoPolicy:{id:string;zoneId:string;latitude:number;longitude:number;radiusMeters:number}|null=null;
+    if(principal.method==='geo_punctual') {
+      if(!geo || !['clock_in','clock_out'].includes(eventType)) throw new Error('GEO_EVENT_UNSUPPORTED');
+      geoPolicy=await activeGeoPolicy(employment.employmentId,laborDate);
+      if(!geoPolicy) throw new Error('GEO_POLICY_NOT_ACTIVE');
+      if(distanceMeters(geo,geoPolicy)>geoPolicy.radiusMeters+geo.accuracy) throw new Error('GEO_OUTSIDE_AUTHORIZED_ZONE');
+    }
     const rule=await new PostgresRuleResolver().resolve({occurredAt,effectiveTimeZone:employment.effectiveTimeZone,scopes:employment.scopes});
     if(!rule) throw new Error('RULE_VERSION_UNRESOLVABLE');
     // El advisory lock anterior serializa todas las escrituras de este empleado.
@@ -52,9 +63,10 @@ export async function recordEvent(principal:Principal,eventType:TimeEventType,de
     const inserted=await client.query<EventRow>(`INSERT INTO time_events(employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,recorded_at,device_occurred_at,effective_time_zone,labor_date,kiosk_session_id,created_by_user_id)
       VALUES($1,$2,$3,$4,$5,$6,$7,$7,$8,$9,$10,$11,$12) RETURNING ${eventColumns}`,[principal.employeeId,employment.employmentId,employment.siteId,rule.ruleVersionId,eventType,principal.method,occurredAt,deviceOccurredAt??null,employment.effectiveTimeZone,laborDate,principal.kioskSessionId??null,principal.userId??null]);
     const event=toEvent(inserted.rows[0]);
+    if(geoPolicy) await client.query(`INSERT INTO time_event_geo_verifications(event_id,policy_id,location_zone_id,accuracy_band) VALUES($1,$2,$3,$4)`,[event.id,geoPolicy.id,geoPolicy.zoneId,accuracyBand(geo!.accuracy)]);
     await client.query('INSERT INTO time_event_idempotency(employee_id,idempotency_key,request_fingerprint,event_id,response) VALUES($1,$2,$3,$4,$5)',[principal.employeeId,idempotencyKey,requestFingerprint,event.id,JSON.stringify({event})]);
     await client.query('INSERT INTO domain_event_outbox(name,payload,correlation_id) VALUES($1,$2,$3)', ['time-event.recorded',JSON.stringify({eventId:event.id,employeeId:event.employeeId,laborDate:event.laborDate,eventType:event.eventType,siteId:event.siteId,ruleVersionId:event.ruleVersionId,method:event.method,occurredAt:event.occurredAt}),correlationId]);
-    await appendAudit(client,{actorType:principal.method==='web'?'user':'kiosk',actorId:principal.userId,action:'time-event.recorded',resourceType:'time-event',resourceId:event.id,result:'success',correlationId,changes:{employeeId:event.employeeId,eventType:event.eventType,method:event.method,siteId:event.siteId,laborDate:event.laborDate,effectiveTimeZone:event.effectiveTimeZone,ruleVersionId:event.ruleVersionId}});
+    await appendAudit(client,{actorType:['web','geo_punctual'].includes(principal.method)?'user':'kiosk',actorId:principal.userId,action:'time-event.recorded',resourceType:'time-event',resourceId:event.id,result:'success',correlationId,changes:{employeeId:event.employeeId,eventType:event.eventType,method:event.method,siteId:event.siteId,laborDate:event.laborDate,effectiveTimeZone:event.effectiveTimeZone,ruleVersionId:event.ruleVersionId,...(geoPolicy?{geoPolicyId:geoPolicy.id,geoZoneId:geoPolicy.zoneId,geoAccuracyBand:accuracyBand(geo!.accuracy)}:{})}});
     await client.query('COMMIT'); return {event,replayed:false};
   } catch(error) { await client.query('ROLLBACK').catch(()=>undefined); throw error; } finally { client.release(); }
 }

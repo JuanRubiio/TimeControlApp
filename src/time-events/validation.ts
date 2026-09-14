@@ -1,9 +1,11 @@
 import { z } from 'zod';
 import { TIME_EVENT_TYPES } from './contracts';
+import { geoVerification } from '@/clocking-policy/validation';
 
 export const timeEventCommand = z.object({
   eventType:z.enum(TIME_EVENT_TYPES),
-  deviceOccurredAt:z.string().datetime({offset:true}).refine((value)=>/Z$/i.test(value), 'UTC required').optional()
+  deviceOccurredAt:z.string().datetime({offset:true}).refine((value)=>/Z$/i.test(value), 'UTC required').optional(),
+  geoVerification:geoVerification.optional()
 });
 export const kioskStartCommand = z.object({siteId:z.string().uuid(), expiresInMinutes:z.number().int().min(5).max(720).default(480)});
 export const kioskPinCommand = timeEventCommand.extend({publicKioskId:z.string().uuid(), pin:z.string().regex(/^\d{6,10}$/)});
