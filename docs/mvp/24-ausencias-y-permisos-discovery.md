@@ -55,6 +55,31 @@ type LeaveRequest = {
 
 El sobre de lectura no expondrá motivo, adjunto, correo, datos de terceros, identidad de quien decide fuera del ámbito permitido ni eventos de ficha. La decisión humana se prueba y audita en S6 con un código técnico interno; la persona solicitante recibe sólo el estado y un canal de ayuda definido por PO. Cualquier campo adicional exige una enmienda de contrato y revisión de privacidad/laboral.
 
+## Plantilla genérica sugerida para el piloto sintético
+
+La siguiente plantilla sirve para evaluar comprensión del recorrido con fixtures. No es un formulario de vacaciones, baja, permiso legal ni justificante.
+
+```text
+SOLICITUD OPERATIVA DE AUSENCIA
+
+Desde: [fecha]
+Hasta: [fecha]
+Tipo:   Solicitud general
+
+No incluyas motivos personales, médicos, documentos ni información de terceras personas.
+
+[Enviar solicitud]
+
+Al enviarla: «Hemos registrado tu solicitud. Su estado es pendiente de decisión humana.
+No modifica tu jornada, nómina ni derechos laborales.»
+```
+
+La bandeja de responsable sólo necesita mostrar persona dentro de ámbito, intervalo, estado y momento de solicitud. Sus únicas acciones candidatas son **Aprobar** o **No aprobar**, con una confirmación fija: «La decisión se registra; no modifica fichajes, cálculos ni derechos». Si se necesitara explicación, la persona recibe el canal de ayuda externo definido por la organización; no se habilita texto libre en esta fase.
+
+## Decisión de revisión postpiloto
+
+PO acuerda usar esta plantilla exclusivamente con datos sintéticos durante el piloto ampliado. La revisión DPO/laboral de categorías reales, retención, información y casos sensibles se abrirá en la fase postpiloto si la evidencia demuestra que la capacidad aporta valor. Esta postergación no habilita datos reales, categorías legales/médicas, adjuntos ni implementación fuera del contrato mínimo.
+
 ## Fuera de alcance
 
 - Vacaciones, bajas, permisos retribuidos/no retribuidos, bolsas de horas, antigüedad, convenios, derecho automático, documentación o certificados.
@@ -64,7 +89,7 @@ El sobre de lectura no expondrá motivo, adjunto, correo, datos de terceros, ide
 ## Puertas antes de implementación
 
 1. **PO:** confirma que la categoría genérica y la ausencia de motivo cubren la hipótesis; si no, define el problema sin añadir datos por defecto.
-2. **DPO/laboral:** determinan finalidad, base, información, minimización, conservación, acceso y si la categoría propuesta revela información sensible o laboralmente protegida.
+2. **DPO/laboral:** queda como puerta obligatoria de la fase postpiloto antes de categorías reales, datos reales o ampliación de la plantilla; no bloquea la evaluación sintética de la plantilla genérica.
 3. **S1/S2/S6:** acuerdan permisos, alcance, propiedad de solicitud/decisión y auditoría antes de cualquier tabla, API o UI.
 4. **UX/QA:** validan carga, vacío, error, cancelación, rechazo, teclado, foco, lector, 320/390/768/1280 y que `approved` no se interprete como derecho legal ni cambio de jornada.
 5. **S15:** conserva el NO-GO para datos reales, retención definitiva, operación y despliegue.
@@ -72,7 +97,7 @@ El sobre de lectura no expondrá motivo, adjunto, correo, datos de terceros, ide
 ## Criterios de salida del discovery
 
 - Se documenta el flujo mínimo y su alternativa externa menos intrusiva.
-- Existe decisión DPO/laboral sobre las categorías permitidas y prohibidas, sin inferir cumplimiento automático.
+- Queda preparada la solicitud de revisión DPO/laboral para la fase postpiloto, antes de cualquier categoría real o dato real.
 - PO elige rechazar, mantener como discovery o aprobar un contrato de implementación aislado.
 - Cualquier implementación futura incluye contratos de autorización, modelo, auditoría, API, fixtures sintéticos, pruebas de aislamiento y E2E manual; no reutiliza internals de otros dominios.
 
