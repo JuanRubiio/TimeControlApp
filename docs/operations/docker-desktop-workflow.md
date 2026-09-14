@@ -36,6 +36,10 @@ docker compose --project-name $Project --env-file $EnvFile down --remove-orphans
 
 La migración, seed, smoke, build y pruebas se ejecutan sólo contra el mismo `Project`/`EnvFile`. Los errores se diagnostican con health, `compose ps` y logs minimizados antes de reconstruir todo.
 
+### Regla de disponibilidad para revisión
+
+Al mover una historia a **En revisión**, se mantiene en ejecución el mismo entorno sintético (`Project` y `EnvFile`) que superó la validación, para que la persona revisora pueda comprobarlo sin recrearlo. Se registra su URL, perfil y estado de health en la evidencia de la historia. Sólo se ejecuta `down --remove-orphans` cuando la revisión haya terminado, el entorno haya sido sustituido de forma explícita o la persona usuaria lo solicite.
+
 ## Clasificación de limpieza
 
 | Operación | Efecto | Regla |
@@ -72,5 +76,6 @@ Ante interrupción o falta de espacio, registrar el Project/EnvFile, servicios a
 - [ ] Health, migración/seed y pruebas se ejecutaron contra el entorno declarado.
 - [ ] No se mezclaron datos, cookies, volúmenes ni secretos entre perfiles.
 - [ ] No hubo poda global ni borrado de volúmenes/imágenes ajenos.
+- [ ] Si la historia pasó a revisión, el entorno exacto de validación permanece levantado y se documentaron URL, perfil y health.
 - [ ] Si hubo limpieza destructiva, quedó registrada, autorizada y limitada al entorno sintético exacto.
 - [ ] La evidencia y los logs compartidos están minimizados.
