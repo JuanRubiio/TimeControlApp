@@ -54,7 +54,7 @@ Antes de datos reales, PO, DPO y asesoría laboral deben decidir: población/pue
 |---|---|---|---|
 | Jornada y turnos visibles read-only | Claridad para la persona empleada sin depender de soporte. | Medio; S3, vigencias, accesibilidad y copy no laboral. | **Priorizar HU-TC-024 (#45)** como siguiente candidata única. |
 | Geolocalización puntual | Movilidad justificada y acreditación del instante de fichaje. | Crítico; ADR-TC-022, DPO/laboral, EIPD y alternativa equivalente. | Mantener HU-TC-022 bloqueada por decisión. |
-| Ausencias/permisos | Autonomía de la plantilla y trazabilidad de decisión. | Alto; nuevo modelo, privacidad laboral y políticas. | Mantener HU-TC-025 posterior. |
+| Ausencias/permisos | Autonomía de la plantilla y trazabilidad de decisión. | Alto; nuevo modelo, privacidad laboral y políticas. | **PO selecciona HU-TC-025 (#46) para discovery mínimo, sin implementación.** |
 | Recordatorios/notificaciones | Reducir olvidos. | Medio; canal, consentimiento/expectativas y coste. | No priorizar ahora. |
 | IA, productividad, nómina, biometría y vigilancia | Suites competitivas amplias. | Crítico; incompatibles con el producto acotado. | Mantener rechazadas. |
 
@@ -65,7 +65,7 @@ La diferenciación propuesta es una vista personal de «mi jornada»: previsto f
 1. Segmento inicial: movilidad real, teletrabajo o ambos; no se presupone que la función sea general.
 2. Alternativa preferida: prueba de zona sin coordenada persistida, coordenada puntual minimizada o rechazo.
 3. Tratamiento ante permiso denegado, precisión insuficiente o ausencia de dispositivo compatible.
-4. Qué candidata competitiva, además de geolocalización, merece ser el siguiente incremento sintético.
+4. ~~Qué candidata competitiva, además de geolocalización, merece ser el siguiente incremento sintético.~~ Resuelta el 14/09/2026: HU-TC-025 (#46), sólo discovery; véase S24.
 
 ## Fuentes de referencia
 

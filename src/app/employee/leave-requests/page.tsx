@@ -1,0 +1,2 @@
+import { LeaveRequests } from '@/employee/components'; import { requirePageSession } from '@/auth/page-guard'; import { redirect } from 'next/navigation'; import { defaultDestination } from '@/auth/return-to';
+export default async function LeaveRequestsPage(){const actor=await requirePageSession('/employee/leave-requests');if(!actor.roles.includes('employee'))redirect(defaultDestination(actor));return <LeaveRequests/>;}
