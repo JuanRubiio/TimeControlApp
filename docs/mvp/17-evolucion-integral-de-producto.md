@@ -68,7 +68,7 @@ Una oportunidad sólo pasa a contrato de implementación si cumple todos los cri
 
 ## Exclusiones y rechazos
 
-S17 no implementa funcionalidades, cambia modelos, contratos API, cálculos, reglas, roles, auditoría o exportaciones. Quedan rechazados para este ciclo GPS/geolocalización, biometría, reconocimiento facial, cámara, foto, vídeo, vigilancia, monitorización de pantalla, analítica de productividad, fichaje automático, app nativa, nómina, interpretación de convenios y dark patterns.
+S17 no implementa funcionalidades, cambia modelos, contratos API, cálculos, reglas, roles, auditoría o exportaciones. Quedan rechazados para este ciclo biometría, reconocimiento facial, cámara, foto, vídeo, vigilancia, monitorización de pantalla, analítica de productividad, fichaje automático, app nativa, nómina, interpretación de convenios y dark patterns. La geolocalización deja de ser una exclusión absoluta únicamente para pasar al contrato de discovery y puerta de decisión [S22](22-fichaje-geolocalizado-y-diferenciacion-competitiva.md): no queda aprobada para implementación, datos reales, geovallas ni seguimiento continuo.
 
 También quedan fuera, hasta evidencia y aprobación, notificaciones, vacaciones/ausencias, cierre de período, importación CSV/Excel, conectores de nómina, SSO, turnos complejos y reapertura de decisiones.
 
@@ -134,6 +134,12 @@ El propietario del producto rechaza la prioridad anterior de ejecutar S15 antes 
 La nueva sesión sólo podrá cubrir estado inequívoco de jornada/pausa, tiempo efectivo en curso **informativo** mediante proyección read-only del servidor y ayuda contextual/recuperación mínima. Quedan excluidos calendario/planificación, recordatorios, notificaciones, chatbot, telemetría, cambios de reglas, cálculos en cliente, nómina, vigilancia y datos adicionales. S15 continúa siendo condición obligatoria y el NO-GO para datos reales no cambia; S16 sigue siendo prepiloto y se reordenará después de S15.
 
 Esta decisión satisface la aprobación de prioridad de S17. La sesión posterior debe tener contrato, rama, pruebas y aprobación propios antes de cualquier implementación.
+
+### Enmienda de alcance y piloto sintético — 14/09/2026
+
+El PO aplaza S15 como trabajo activo para ampliar el producto **sólo con datos y escenarios sintéticos**. Esta reordenación no cambia el NO-GO: S15 sigue siendo la puerta para datos reales, cualquier ubicación real, despliegue de piloto, exportación visible o afirmación de cumplimiento.
+
+Se abre S22 para evaluar fichaje geolocalizado puntual y un mapa competitivo de funcionalidades de usuario. La evaluación no autoriza a copiar capacidades de terceros ni a usar GPS por defecto. La propuesta deberá demostrar necesidad por rol, proporcionalidad, alternativa menos invasiva, información laboral/RGPD y coste operativo antes de un contrato de implementación separado.
 
 ### Estado final, archivos y validación
 

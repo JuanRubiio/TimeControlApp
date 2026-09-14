@@ -29,6 +29,11 @@ describe('S4 fichaje y pausas',()=>{
     expect(sql).toContain('domain_event_outbox');
     expect(sql).not.toMatch(/GRANT[^\n]*(UPDATE|DELETE) ON time_events/i);
   });
+  it('no bloquea una jornada nueva por un fichaje histórico ajeno a la ventana actual',()=>{
+    const service=readFileSync('src/time-events/service.ts','utf8');
+    expect(service).toMatch(/labor_date >= \(\$2::date - interval .*1 day/);
+    expect(service).toContain('Un evento histórico no');
+  });
   it('no almacena PIN ni QR en claro',()=>{
     const sql=readFileSync('migrations/s004_202609101500_time_events.sql','utf8');
     expect(sql).toContain('lookup_hmac'); expect(sql).toContain('pin_hash'); expect(sql).toContain('token_hash');

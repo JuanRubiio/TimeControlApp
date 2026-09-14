@@ -1,5 +1,7 @@
 # Desarrollo local reproducible
 
+> **Contrato operativo complementario:** aplicar el [flujo de Docker Desktop](docker-desktop-workflow.md) antes de arrancar, detener, limpiar o diagnosticar contenedores. Este documento conserva los comandos del producto; el contrato transversal define aislamiento, inventario y límites de limpieza.
+
 ## Precondiciones y secretos
 
 Use Docker Desktop. Para pruebas sintéticas reproducibles copie `config/test-env/office.example.env` o `config/test-env/multisite.example.env` a `.local/`, sustituya cada valor `replace-...` por un secreto local único y conserve ese fichero fuera del control de versiones. `SESSION_COOKIE_SECURE=false` se permite únicamente para `localhost` HTTP; cualquier piloto exige `true` y TLS en el proxy que el cliente apruebe.

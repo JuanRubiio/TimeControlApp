@@ -3,6 +3,8 @@
 **Estado:** guía de preparación para S21. No ejecutar pasos de conexión, no crear tokens, Apps, webhooks ni automatizaciones sin autorización explícita posterior.
 **Ámbito:** GitHub Free para trabajo interno; no contiene ni transporta datos de clientes, PII laboral, secretos o producción.
 
+> **Contrato operativo complementario:** para sesiones que usen `gh`, aplicar también el [flujo de Issues y Projects](../development/github-issues-project-workflow.md). Esta guía define la decisión de conexión; el contrato operativo define preflight, límites de API, recuperación e interacción segura.
+
 ## Idea clave
 
 Codex no necesita una conexión persistente a GitHub Projects para trabajar con una historia. El modo inicial recomendado es **manual y trazable**: el PO crea/actualiza el Issue y Project, y una sesión de Codex trabaja en el repositorio local sobre una historia ya aprobada. La sesión devuelve enlaces, SHA, pruebas y una recomendación de estado; una persona actualiza el tablero y aprueba cada transición relevante.

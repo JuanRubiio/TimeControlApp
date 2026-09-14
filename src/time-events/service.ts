@@ -38,14 +38,17 @@ export async function recordEvent(principal:Principal,eventType:TimeEventType,de
     const occurredAt=serverNow.toISOString();
     const employment=await new PostgresEmploymentScopeProvider().contextForEmployee(principal.employeeId,occurredAt);
     if(!employment) throw new Error('EMPLOYMENT_NOT_ACTIVE');
+    const laborDate=localDateAt(occurredAt,employment.effectiveTimeZone);
     const rule=await new PostgresRuleResolver().resolve({occurredAt,effectiveTimeZone:employment.effectiveTimeZone,scopes:employment.scopes});
     if(!rule) throw new Error('RULE_VERSION_UNRESOLVABLE');
     // El advisory lock anterior serializa todas las escrituras de este empleado.
     // No se usa FOR UPDATE: conceder UPDATE sólo para leer bloquearía la
     // inmutabilidad SQL de la evidencia al rol ordinario de la aplicación.
-    const last=await client.query<{event_type:TimeEventType}>('SELECT event_type FROM time_events WHERE employee_id=$1 ORDER BY recorded_at DESC,id DESC LIMIT 1',[principal.employeeId]);
+    // La máquina de estados sólo toma la jornada actual y, como máximo, la
+    // víspera necesaria para cerrar un turno nocturno. Un evento histórico no
+    // puede impedir iniciar una jornada nueva.
+    const last=await client.query<{event_type:TimeEventType}>('SELECT event_type FROM time_events WHERE employee_id=$1 AND labor_date >= ($2::date - interval \'1 day\') AND labor_date <= $2::date ORDER BY recorded_at DESC,id DESC LIMIT 1',[principal.employeeId,laborDate]);
     assertSequence(last.rows[0]?.event_type,eventType);
-    const laborDate=localDateAt(occurredAt,employment.effectiveTimeZone);
     const inserted=await client.query<EventRow>(`INSERT INTO time_events(employee_id,employment_id,site_id,rule_version_id,event_type,method,occurred_at,recorded_at,device_occurred_at,effective_time_zone,labor_date,kiosk_session_id,created_by_user_id)
       VALUES($1,$2,$3,$4,$5,$6,$7,$7,$8,$9,$10,$11,$12) RETURNING ${eventColumns}`,[principal.employeeId,employment.employmentId,employment.siteId,rule.ruleVersionId,eventType,principal.method,occurredAt,deviceOccurredAt??null,employment.effectiveTimeZone,laborDate,principal.kioskSessionId??null,principal.userId??null]);
     const event=toEvent(inserted.rows[0]);
