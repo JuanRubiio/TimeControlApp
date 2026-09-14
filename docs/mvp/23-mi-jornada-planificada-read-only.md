@@ -54,9 +54,16 @@ La futura ruta no aceptará `employeeId`, tenant, centro, zona, versión de regl
 
 ## Comprobación de contratos existente — 14/09/2026
 
-La revisión del código confirma que S3 publica `ResolvedRule`, `CalendarSnapshot` y `ShiftSnapshot`; y S5 publica `EffectiveWorkday` mediante `effectiveWorkday(employeeId, asOf)`. Es una base suficiente para conservar la semántica temporal, pero no es todavía una fuente consumible por S23: el resolvedor de S3 recibe ámbitos ya resueltos y S5 recibe `employeeId`. Ninguno ofrece por sí solo una proyección de calendario/turno publicado para la persona autenticada con autorización y fecha resueltas en servidor.
+La revisión del código confirma que S3 publica `ResolvedRule`, `CalendarSnapshot` y `ShiftSnapshot`; y S5 publica `EffectiveWorkday` mediante `effectiveWorkday(employeeId, asOf)`. Se añadió la enmienda `publishedWorkdayForEmployee(employeeId, asOf)` en S5: recibe sólo el empleo interno ya autorizado y un instante UTC de servidor, usa el contexto de empleo S2 para resolver ámbitos y zona, consulta la versión publicada de S3 y entrega calendario/turno/vigencia junto con un estado mínimo de evidencia efectiva.
 
-Por tanto, antes de código se requiere una enmienda conjunta y mínima de S3/S5 (con la autorización de sesión resuelta por la ruta de S23): una interfaz read-only que reciba el empleo ya autorizado y la fecha emitida por servidor, resuelva regla/vigencia/calendario/turno y devuelva el resumen mínimo de `EffectiveWorkday`. No podrá aceptar ámbitos ni versiones desde el cliente, ejecutar SQL desde S23, exponer eventos/motivos de corrección ni cambiar S3/S5. Las sesiones propietarias deberán aportar pruebas de contrato con fixtures S11, incluidos medianoche y DST.
+El sobre `PublishedWorkday` no expone eventos, identificadores de ámbito, motivos de corrección, dispositivos ni internals de cálculo. No acepta ámbitos, versión, turno ni fecha local desde navegador y no realiza escrituras. `tests/published-workday.test.ts` cubre ausencia de evidencia, jornada efectiva nocturna que cruza fecha y empleo no vigente. La futura ruta S23 seguirá siendo responsable de autenticar y autorizar a la persona antes de invocar el puerto; la enmienda no autoriza todavía esa ruta ni una UI.
+
+### Validación de la enmienda — 14/09/2026
+
+- `npm test -- tests/published-workday.test.ts`: 3 pruebas correctas; `npx tsc --noEmit` y `git diff --check` correctos.
+- En el proyecto Compose sintético aislado `time-control-s23-contract`, perfil `office`, health `200` y `npm test`: **116 pruebas correctas en 33 ficheros**.
+- La imagen construyó correctamente. Persisten advertencias conocidas de Turbopack en los módulos de exportación y por `node:crypto` en el runtime Edge; no son introducidas por esta enmienda.
+- Al terminar se ejecutó sólo `down --remove-orphans` sobre ese proyecto: se retiraron sus contenedores y red, se preservó su volumen sintético y no se limpió ningún recurso global ni ajeno.
 
 ## Secuencia recomendada
 

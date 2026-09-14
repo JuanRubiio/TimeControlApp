@@ -4,8 +4,9 @@ import { appendAudit } from '@/audit/audit-writer';
 import { db } from '@/shared/db';
 import { config } from '@/shared/config';
 import { calculateDaily } from './algorithm';
-import type { CalculationEvent, DailyCalculation, EffectiveWorkday, EffectiveWorkdayEvent, PersistedDailyCalculation } from './contracts';
-import type { ResolvedRule } from '@/work-rules/contracts';
+import type { CalculationEvent, DailyCalculation, EffectiveWorkday, EffectiveWorkdayEvent, PersistedDailyCalculation, PublishedWorkday } from './contracts';
+import type { EmploymentScopeProvider, ResolvedRule, RuleResolver } from '@/work-rules/contracts';
+import { PostgresRuleResolver } from '@/work-rules/resolver';
 import { PostgresEmploymentScopeProvider } from '@/company-people/rule-scopes';
 import { localDateAt } from '@/work-rules/validation';
 
@@ -55,6 +56,38 @@ export async function effectiveWorkday(employeeId:string,asOf:string):Promise<Ef
   const laborDate=selected.laborDate; const events=selected.events;
   const first=events[0];
   return {employeeId,laborDate,siteId:first?.siteId??employment.siteId,effectiveTimeZone:first?.siteId?employment.effectiveTimeZone:employment.effectiveTimeZone,events:events.map((event):EffectiveWorkdayEvent=>({...event,occurredAt:iso(event.occurredAt),effectiveTimeZone:employment.effectiveTimeZone}))};
+}
+
+export type PublishedWorkdayDependencies={
+  employmentScopeProvider:EmploymentScopeProvider;
+  ruleResolver:RuleResolver;
+  effectiveWorkday:(employeeId:string,asOf:string)=>Promise<EffectiveWorkday|null>;
+};
+
+const publishedWorkdayDefaults=():PublishedWorkdayDependencies=>({
+  employmentScopeProvider:new PostgresEmploymentScopeProvider(),
+  ruleResolver:new PostgresRuleResolver(),
+  effectiveWorkday
+});
+
+/**
+ * Enmienda S3/S5 para S23. El consumidor ya debe haber autorizado la identidad;
+ * este puerto sólo recibe el empleado interno y el instante UTC emitido por servidor.
+ */
+export async function publishedWorkdayForEmployee(employeeId:string,asOf:string,dependencies:PublishedWorkdayDependencies=publishedWorkdayDefaults()):Promise<PublishedWorkday|null>{
+  const employment=await dependencies.employmentScopeProvider.contextForEmployee(employeeId,asOf);
+  if(!employment)return null;
+  const laborDate=localDateAt(asOf,employment.effectiveTimeZone);
+  const [rule,effective]=await Promise.all([
+    dependencies.ruleResolver.resolve({occurredAt:asOf,effectiveTimeZone:employment.effectiveTimeZone,scopes:employment.scopes}),
+    dependencies.effectiveWorkday(employeeId,asOf)
+  ]);
+  return {
+    laborDate,
+    effectiveTimeZone:employment.effectiveTimeZone,
+    schedule:rule?{ruleVersionId:rule.ruleVersionId,effectiveFrom:rule.effectiveFrom,effectiveTo:rule.effectiveTo,timeZone:rule.timeZone,expectedMinutes:rule.expectedMinutes,calendar:rule.calendar,shift:rule.shift}:null,
+    evidence:effective?.events.length?{status:'recorded',laborDate:effective.laborDate}:{status:'no_evidence',laborDate:null}
+  };
 }
 async function ruleForVersion(client:pg.PoolClient,ruleVersionId:string):Promise<ResolvedRule|null>{
   const q=await client.query<any>(`SELECT wr.id AS "ruleId",rv.id AS "ruleVersionId",wr.scope_type AS "scopeType",wr.scope_id AS "scopeId",rv.effective_from::text AS "effectiveFrom",rv.effective_to::text AS "effectiveTo",rv.time_zone AS "timeZone",rv.expected_minutes AS "expectedMinutes",rv.pause_policy AS "pausePolicy",rv.calendar_snapshot AS calendar,rv.shift_snapshot AS shift FROM rule_versions rv JOIN work_rules wr ON wr.id=rv.work_rule_id WHERE rv.id=$1`,[ruleVersionId]);

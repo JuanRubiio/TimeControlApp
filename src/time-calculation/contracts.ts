@@ -21,3 +21,15 @@ export type PersistedDailyCalculation = DailyCalculation & { id:string; revision
  */
 export type EffectiveWorkdayEvent = Pick<CalculationEvent,'id'|'eventType'|'occurredAt'|'ruleVersionId'> & { siteId:string; laborDate:string; effectiveTimeZone:string };
 export type EffectiveWorkday = { employeeId:string; laborDate:string; siteId:string; effectiveTimeZone:string; events:readonly EffectiveWorkdayEvent[] };
+
+/**
+ * Contrato read-only S3/S5 para una futura vista propia de jornada publicada.
+ * No transporta eventos, ámbitos, motivos de corrección ni resultados laborales.
+ */
+export type PublishedSchedule = Pick<ResolvedRule,'ruleVersionId'|'effectiveFrom'|'effectiveTo'|'timeZone'|'expectedMinutes'|'calendar'|'shift'>;
+export type PublishedWorkday = {
+  laborDate:string;
+  effectiveTimeZone:string;
+  schedule:PublishedSchedule|null;
+  evidence:{ status:'no_evidence'|'recorded'; laborDate:string|null };
+};
