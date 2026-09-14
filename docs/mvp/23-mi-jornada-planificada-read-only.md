@@ -1,6 +1,6 @@
 # S23 — Mi jornada planificada, sólo lectura
 
-**Estado:** contrato de diseño sintético en refinamiento; no autoriza desarrollo ni datos reales. **Historia:** HU-TC-024 / #45. **Tamaño propuesto:** M. **Propietaria:** S23 para su futura proyección read-only, ruta, presentación y pruebas. **Dependencias:** S3, S11, S14, S20, decisión PO y revisión laboral si el copy o los datos cambian su interpretación.
+**Estado:** implementación sintética de ruta y presentación completada; pendiente sólo revisión visual responsive manual. No autoriza datos reales. **Historia:** HU-TC-024 / #45. **Tamaño:** M. **Propietaria:** S23 para su proyección read-only, ruta, presentación y pruebas. **Dependencias:** S3, S11, S14, S20 y revisión laboral si el copy o los datos cambian su interpretación.
 
 ## Objetivo
 
@@ -44,6 +44,13 @@ La futura ruta no aceptará `employeeId`, tenant, centro, zona, versión de regl
 7. La presentación cumple teclado, foco, contraste, lector de pantalla, carga/error anunciables y 320/390/768/1280 px con fixtures sintéticos.
 8. Pruebas unitarias, HTTP y de aislamiento cubren autorización, vigencias, vacío, incidencia, medianoche y DST; la regresión S3–S6/S11 es correcta.
 
+## Implementación de ruta y presentación — 14/09/2026
+
+- `GET /api/v1/published-workday/me` autentica la sesión, exige `time-event.read:self`, resuelve el empleado y `asOf` en servidor y llama al puerto S3/S5. No recibe parámetros de navegador y no realiza escrituras.
+- `src/published-workday/{service,http}.ts` devuelve errores genéricos para sesión, autorización, ausencia de empleo y fallo técnico. El sobre HTTP conserva sólo `laborDate`, zona, horario publicado y estado mínimo de evidencia.
+- `/employee` muestra «Jornada publicada» para hoy: turno, minutos esperados publicados, calendario y si existe evidencia registrada. Un vacío no infiere horario; una evidencia nocturna anterior se etiqueta como tal. El copy explica que no es orden de disponibilidad, nómina, convenio ni decisión disciplinaria, y enlaza sólo al flujo existente de correcciones.
+- Se mantienen excluidos selector histórico, edición, planificación, notificaciones, datos de terceros y cambios de eventos, cálculo, reglas, permisos o auditoría.
+
 ## Puertas y decisiones pendientes
 
 - **PO:** confirma rango temporal inicial, vocabulario de discrepancia y si el enlace de corrección se muestra sólo cuando existe una capacidad ya autorizada.
@@ -64,6 +71,13 @@ El sobre `PublishedWorkday` no expone eventos, identificadores de ámbito, motiv
 - En el proyecto Compose sintético aislado `time-control-s23-contract`, perfil `office`, health `200` y `npm test`: **116 pruebas correctas en 33 ficheros**.
 - La imagen construyó correctamente. Persisten advertencias conocidas de Turbopack en los módulos de exportación y por `node:crypto` en el runtime Edge; no son introducidas por esta enmienda.
 - Al terminar se ejecutó sólo `down --remove-orphans` sobre ese proyecto: se retiraron sus contenedores y red, se preservó su volumen sintético y no se limpió ningún recurso global ni ajeno.
+
+### Validación de ruta y presentación — 14/09/2026
+
+- `tests/published-workday.test.ts`, `tests/published-workday-http.test.ts` y `tests/employee-presentation.test.ts`: **9 pruebas correctas**; TypeScript y comprobación de diff correctos.
+- En el mismo entorno Docker sintético, `GET /api/v1/published-workday/me` devuelve `401` sin sesión y `200` con la sesión demo propia; el sobre positivo no contiene `employeeId`, `scope` ni eventos.
+- Build, health `200` y regresión Docker: **118 pruebas correctas en 34 ficheros**. Siguen las advertencias preexistentes de Turbopack ya documentadas; no se añade ninguna nueva.
+- Falta una revisión manual de los cuatro anchos S14 (320/390/768/1280) y teclado/lector de pantalla antes de declarar el cierre visual definitivo.
 
 ## Secuencia recomendada
 
