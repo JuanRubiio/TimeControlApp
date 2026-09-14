@@ -30,6 +30,31 @@ La candidata no debe recopilar diagnóstico médico, causa legal, documentos, ad
 
 El servidor resolverá identidad, empresa, empleo, centro, zona y permisos. Las fechas se validarán como fechas de calendario, no como horas trabajadas, y nunca se transformarán en minutos, saldo o interpretación de convenio.
 
+### Cribado de privacidad y laboral
+
+La categoría inicial no puede codificar salud, discapacidad, embarazo, violencia, afiliación sindical, cuidado de familiar, causa legal, retribución ni diagnóstico. La AEPD advierte que los justificantes de ausencia pueden contener datos de salud y exige minimización y confidencialidad; el RGPD trata los datos de salud como categoría especial y su artículo 9 limita su tratamiento. Por tanto, la interfaz candidata rechazará adjuntos y texto libre y no presentará la selección de categoría como una declaración de derecho. [AEPD: justificantes de ausencia](https://www.aepd.es/preguntas-frecuentes/3-proteccion-de-datos-en-el-ambito-laboral/FAQ-0301-pueden-contener-datos-de-salud-los-justificantes-de-ausencia-laboral), [RGPD, artículo 9 en BOE](https://www.boe.es/buscar/doc.php?id=DOUE-L-2016-80807).
+
+El Estatuto de los Trabajadores prevé supuestos de permisos y ausencias que dependen de norma aplicable, convenio o circunstancias concretas. S24 no los clasifica ni los ejecuta: DPO y asesoría laboral deberán decidir si la categoría genérica es admisible, qué información debe recibir la persona y cuándo un caso debe continuar por un canal externo especializado. [Estatuto de los Trabajadores, BOE](https://www.boe.es/buscar/act.php?id=BOE-A-2015-11430).
+
+## Superficie de contrato para una fase posterior
+
+No es una API autorizada. Si las puertas se cierran favorablemente, los propietarios S1/S2/S6 deberán acordar un puerto separado, con una forma mínima equivalente a:
+
+```ts
+type LeaveRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';
+type LeaveRequest = {
+  id: string;
+  fromDate: string; // YYYY-MM-DD, validada por servidor
+  toDate: string;   // YYYY-MM-DD, inclusiva
+  category: 'general_request';
+  status: LeaveRequestStatus;
+  requestedAt: string; // UTC de servidor
+  decidedAt: string | null;
+};
+```
+
+El sobre de lectura no expondrá motivo, adjunto, correo, datos de terceros, identidad de quien decide fuera del ámbito permitido ni eventos de ficha. La decisión humana se prueba y audita en S6 con un código técnico interno; la persona solicitante recibe sólo el estado y un canal de ayuda definido por PO. Cualquier campo adicional exige una enmienda de contrato y revisión de privacidad/laboral.
+
 ## Fuera de alcance
 
 - Vacaciones, bajas, permisos retribuidos/no retribuidos, bolsas de horas, antigüedad, convenios, derecho automático, documentación o certificados.
