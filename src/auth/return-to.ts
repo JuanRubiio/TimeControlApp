@@ -1,10 +1,11 @@
-const allowedPrefixes = ['/employee', '/admin'] as const;
+const allowedPrefixes = ['/employee', '/manager', '/admin'] as const;
 
 type RoleCarrier = { roles: readonly string[] } | null | undefined;
 
 /** The role landing is a usability default; page/API authorization remains server-side. */
-export function defaultDestination(actor: RoleCarrier): '/employee' | '/admin' {
-  return actor?.roles.some((role) => ['admin', 'manager', 'auditor'].includes(role)) ? '/admin' : '/employee';
+export function defaultDestination(actor: RoleCarrier): '/employee' | '/manager' | '/admin' {
+  if (actor?.roles.includes('manager')) return '/manager';
+  return actor?.roles.some((role) => ['admin', 'auditor'].includes(role)) ? '/admin' : '/employee';
 }
 
 /**
