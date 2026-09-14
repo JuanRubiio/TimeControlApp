@@ -42,7 +42,7 @@ El riesgo principal es transformar un fichaje puntual en monitorización laboral
 
 ## Registro de discovery — #42, geolocalización puntual
 
-**Resultado:** no se autoriza ubicación real ni se mueve la HU-TC-022 a desarrollo. Un posible contrato de implementación sólo podrá abrirse tras una EIPD preventiva y dictamen conjunto DPO/laboral.
+**Resultado:** no se autoriza ubicación real ni se mueve la HU-TC-022 a desarrollo. La puerta vinculante está en [ADR-0006](adr-0006-geolocalizacion-puntual.md): un posible contrato de implementación sólo podrá abrirse tras una EIPD preventiva y dictamen conjunto DPO/laboral.
 
 La opción a evaluar es una única muestra iniciada inequívocamente por la persona al comienzo o fin de jornada, en primer plano. La alternativa preferente es confirmar presencia en un área autorizada o descartar la coordenada tras validarla y conservar únicamente el resultado mínimo que DPO/laboral aprueben. Debe existir un método equivalente sin ubicación que no produzca perjuicio laboral.
 
