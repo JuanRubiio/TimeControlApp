@@ -52,6 +52,12 @@ La futura ruta no aceptará `employeeId`, tenant, centro, zona, versión de regl
 - **Asesoría laboral:** revisa el copy únicamente si se amplía el significado de los datos más allá de la información operativa publicada.
 - **S15:** sigue siendo NO-GO para datos reales; S23 no lo adelanta ni modifica.
 
+## Comprobación de contratos existente — 14/09/2026
+
+La revisión del código confirma que S3 publica `ResolvedRule`, `CalendarSnapshot` y `ShiftSnapshot`; y S5 publica `EffectiveWorkday` mediante `effectiveWorkday(employeeId, asOf)`. Es una base suficiente para conservar la semántica temporal, pero no es todavía una fuente consumible por S23: el resolvedor de S3 recibe ámbitos ya resueltos y S5 recibe `employeeId`. Ninguno ofrece por sí solo una proyección de calendario/turno publicado para la persona autenticada con autorización y fecha resueltas en servidor.
+
+Por tanto, antes de código se requiere una enmienda conjunta y mínima de S3/S5 (con la autorización de sesión resuelta por la ruta de S23): una interfaz read-only que reciba el empleo ya autorizado y la fecha emitida por servidor, resuelva regla/vigencia/calendario/turno y devuelva el resumen mínimo de `EffectiveWorkday`. No podrá aceptar ámbitos ni versiones desde el cliente, ejecutar SQL desde S23, exponer eventos/motivos de corrección ni cambiar S3/S5. Las sesiones propietarias deberán aportar pruebas de contrato con fixtures S11, incluidos medianoche y DST.
+
 ## Secuencia recomendada
 
 1. PO aprueba este contrato y sus límites.
