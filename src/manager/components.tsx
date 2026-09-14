@@ -7,7 +7,7 @@ import { StatusBadge, StatusNotice } from '@/ui/feedback';
 import { adminApi, type Employee, type Site } from '@/admin/api';
 import type { CorrectionRequest } from '@/corrections/contracts';
 
-function ManagerNav(){return <nav className="admin-nav" aria-label="Espacio de responsable"><Link href="/manager">Mi centro</Link><a href="#equipo">Equipo</a><a href="#correcciones">Correcciones</a><Link href="/manager/leave-requests">Solicitudes</Link><LogoutButton/></nav>}
+export function ManagerNav(){return <nav className="admin-nav" aria-label="Espacio de responsable"><Link href="/manager">Mi centro</Link><Link href="/manager#equipo">Equipo</Link><Link href="/manager#correcciones">Correcciones</Link><Link href="/manager/leave-requests">Solicitudes</Link><LogoutButton/></nav>}
 const kind=(status:CorrectionRequest['status'])=>status==='approved'?'success':status==='rejected'?'error':'warning';
 
 export function ManagerDashboard(){

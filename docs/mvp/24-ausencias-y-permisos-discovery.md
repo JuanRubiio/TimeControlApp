@@ -155,6 +155,8 @@ Esto no clasifica derechos, permisos legales, vacaciones o bajas, ni habilita da
 
 La implementación entrega el dominio aislado `leave-requests`, su migración aditiva, permisos explícitos y las rutas/UI candidatas descritas en este contrato. Sólo admite `general_request`, fechas de calendario y actor resuelto desde sesión; rechaza propiedades adicionales como motivo, adjunto o categoría distinta.
 
+El responsable puede rectificar sus estados `pending`, `approved` y `rejected` dentro de su centro. La rectificación no reescribe la evidencia: añade una nueva transición con actor, instante e idempotencia y actualiza sólo la proyección de estado actual. Una cancelación de la propia persona solicitante se conserva como terminal y no puede ser reabierta por responsable.
+
 - Empleado: `/employee/leave-requests`, crea, consulta y cancela mientras esté `pending`.
 - Responsable: `/manager/leave-requests`, consulta únicamente su ámbito y adopta una decisión humana única (`approved` o `rejected`).
 - API: mantiene clave de idempotencia al crear y decidir; persiste auditoría y outbox mínimos, sin tocar `time_events`, cálculo, calendario ni saldo.
