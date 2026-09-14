@@ -32,6 +32,18 @@ Una entrega futura sólo podría evaluar una muestra iniciada inequívocamente p
 
 Quedan prohibidos incluso tras una futura autorización: seguimiento en segundo plano, intervalos, geovallas, rutas, historial, localización de pausas, alertas de movimiento, perfiles, ranking, uso disciplinario, uso para nómina, decisiones automáticas, cámara, biometría y reutilización secundaria.
 
+## Política futura de método de fichaje por relación laboral
+
+La empresa podrá necesitar métodos distintos para puestos de oficina, centro fijo o movilidad justificada. La configuración candidata no será global ni libre por defecto: un administrador autorizado configurará una **política de método de fichaje** sobre una relación laboral concreta, con fecha de vigencia, autor y motivo operativo minimizado. El responsable podrá consultar el efecto dentro de su centro, pero no asignar, ampliar ni eludir la política.
+
+El catálogo futuro parte de `web`, `kiosco QR/PIN` y `verificación puntual de ubicación`. Esta última estará deshabilitada hasta superar todas las puertas de este ADR. La asignación debe conservar siempre un método equivalente sin localización y no podrá imponer una consecuencia automática por denegación de permiso, precisión insuficiente, fallo de red o dispositivo incompatible. Una excepción individual no puede contener ubicación, salud, motivo disciplinario ni texto libre laboral; sólo un código de necesidad aprobado y una vigencia revisable.
+
+Una futura entrega deberá resolver en servidor la política efectiva por relación y fecha, registrar de forma append-only los cambios de configuración y presentar a la persona la política aplicable antes de fichar. El cliente no podrá activar GPS mediante un selector ni configurar zonas/coordenadas hasta que DPO/laboral aprueben expresamente finalidad, exactitud, retención y destinatarios. La configuración de empresa es una medida de ámbito, no una sustitución de la evaluación de proporcionalidad.
+
+## Referencias de mercado, no requisitos
+
+Las páginas públicas de JornAda describen registro GPS al fichar y restricción de métodos por empleado; Sesame describe coordenadas en el momento de fichar, zonas y configuraciones por tipo de puesto; Woffu anuncia restricciones por dirección IP y geolocalización. Se usan para reconocer el patrón de configuración por contexto, no para copiar funcionalidad ni avalar sus afirmaciones: [JornAda](https://jorn-ada.com/functionalities/time-tracking), [Sesame](https://www.sesamehr.es/software-control-horario/) y [Woffu](https://woffu.com/es/precios-woffu/).
+
 ## Reglas de diseño para un futuro prototipo sintético
 
 Un prototipo previo a datos reales sólo podrá usar fixtures de coordenadas inventadas y no invocará `navigator.geolocation`. Debe ofrecer la alternativa sin localización en igualdad funcional y explicar que no verifica una obligación laboral. El servidor será la única autoridad de cualquier resultado futuro; el cliente nunca declara cumplimiento ni infiere presencia por precisión, dispositivo o IP.
@@ -39,4 +51,3 @@ Un prototipo previo a datos reales sólo podrá usar fixtures de coordenadas inv
 ## Resultado y revisión
 
 La salida actual es **mantener investigación bloqueada**. Se revisará únicamente si PO, DPO y asesoría laboral aportan la evidencia de las puertas anteriores para un cliente y segmento concretos. Cualquier cambio de riesgo, proveedor, finalidad, precisión o conservación reinicia la evaluación.
-

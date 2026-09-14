@@ -7,5 +7,7 @@ describe('ADR-0006 geolocalización puntual',()=>{
     expect(adr).toContain('Se rechaza por defecto la ubicación real');
     expect(adr).toContain('EIPD preventiva');
     expect(adr).toContain('La #43 permanece bloqueada');
+    expect(adr).toContain('Política futura de método de fichaje por relación laboral');
+    expect(adr).toContain('método equivalente sin localización');
   });
 });
