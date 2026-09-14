@@ -1,6 +1,6 @@
 # Fuente de verdad — MVP de control horario
 
-Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; S20 finalizada y aprobada como referencia visual no vinculante; S16 será su primera consumidora.** Fecha de revisión: 12/09/2026.
+Estado: **S1–S12 integradas; S13 validada con NO-GO para datos reales; S20 finalizada como referencia visual no vinculante; S22 abre discovery sintético de geolocalización puntual y diferenciación competitiva.** Fecha de revisión: 14/09/2026.
 
 Este directorio es el contrato inicial de delivery. No se implementará una sesión hasta que sus decisiones previas estén aprobadas y se use su fichero como contrato de trabajo.
 
@@ -16,7 +16,7 @@ Incluye: multiempresa básico; empresa, centros y empleados; autenticación y ro
 
 Se aplaza: portal de asesoría avanzado, importación Excel guiada, conectores de nómina, SSO, turnos rotativos complejos, PWA offline completa y API pública.
 
-Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalización por defecto, videovigilancia, monitorización de pantalla, nómina propia, IA de productividad, app nativa, hardware propio e interpretación automática de convenios.
+Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalización por defecto, videovigilancia, monitorización de pantalla, nómina propia, IA de productividad, app nativa, hardware propio e interpretación automática de convenios. La única excepción de discovery es S22: fichaje geolocalizado **puntual**, opcional y sintético; no autoriza aún capturar ubicación real ni implementar la función.
 
 ## No negociables de cumplimiento
 
@@ -24,7 +24,7 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 - Acceso/exportación para empleado, RLT e Inspección, conforme a permisos aplicables.
 - Correcciones aditivas: nunca sobrescribir ni borrar el evento original.
 - Auditoría de eventos, decisiones, accesos administrativos y exportaciones.
-- Privacidad por defecto: sin biometría, reconocimiento facial, foto o GPS en el MVP.
+- Privacidad por defecto: sin biometría, reconocimiento facial, foto ni GPS continuo/en segundo plano. S22 sólo evalúa una alternativa puntual, proporcional y no activada por defecto; la base y garantías para datos reales siguen pendientes de aprobación.
 - Aislamiento estricto por empresa, mínimo privilegio, cifrado, MFA de administradores, backups probados y datos demo sintéticos.
 - No prometer cumplimiento automático ni interpretar convenios; configuración revisable por asesoría.
 
@@ -33,7 +33,7 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 | Decisión | Recomendación | Límite | Afecta |
 |---|---|---|---|
 | ICP inicial | **Aprobado:** pymes y medianas generalistas afectadas por regulación de control de tiempo | Cerrado | S0, S1, S2, S8, S9 |
-| Métodos de fichaje | **Aprobado:** web responsive + QR/PIN; sin GPS ni biometría | Cerrado | S0, S4, S7, S10 |
+| Métodos de fichaje | **En evaluación S22:** web responsive + QR/PIN y posible geolocalización puntual; sin GPS continuo ni biometría | Reapertura acotada; sin datos reales | S0, S4, S7, S10, S22 |
 | Canales | **Aprobado:** web responsive/PWA, sin app nativa | Cerrado | S0, S4, S7 |
 | Pausas | **Aprobado:** manual y visible; reglas configurables; sin descuento automático por defecto | Cerrado | S3, S4, S5 |
 | Aprobaciones | **Aprobado:** sólo correcciones e incidencias | Cerrado | S6, S8 |
@@ -49,6 +49,8 @@ Fuera de alcance: biometría, reconocimiento facial, GPS continuo, geolocalizaci
 ## Dependencias y orden
 
 `S0 → S1 → {S2,S3,S4,S10,S11,S12} → {S5,S6,S7} → S8 → S9 → S13 → S14 → S17 → S18 → S19 → S20 → S15 → S16 → piloto asistido`.
+
+Para ampliación sintética, S22 puede realizar discovery tras S17/S20 y antes de S15. Ninguna entrega de S22 cambia la secuencia obligatoria `S15 → S16 → piloto con datos reales`.
 
 S9 también depende de contratos de S1, S4, S5 y S6. S11 y S10 son carriles continuos; S12 empieza tras S1. S15 es puerta obligatoria para datos reales. S14 puede auditar/preparar UI en paralelo con S15; S16 consume el sistema visual S14 y no activa exportación visible hasta cerrar almacenamiento/retención S15.
 
@@ -79,6 +81,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | S18 | [18-experiencia-diaria-y-jornada-en-curso.md](18-experiencia-diaria-y-jornada-en-curso.md) | M | Finalizada: fuente read-only S5, proyección/API, recorrido visual, E2E sintética, aislamiento y regresión Docker validados |
 | S19 | [19-acceso-protegido-y-consistencia-historial.md](19-acceso-protegido-y-consistencia-historial.md) | M | Finalizada: navegación protegida, entrada controlada, kiosco PIN, mensajes de historial y consumidor/reintento/reparación histórica auditada validados con datos sintéticos |
 | S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Finalizada: biblioteca de ocho referencias por rol y protocolo de diseño futuro; dirección no vinculante, primera consumidora S16, sin autorizar funcionalidades |
+| S22 | [22-fichaje-geolocalizado-y-diferenciacion-competitiva.md](22-fichaje-geolocalizado-y-diferenciacion-competitiva.md) | M | Discovery sintético y puerta de decisión; no implementa ni captura ubicación real |
 
 ## Base transversal publicada por S0
 
