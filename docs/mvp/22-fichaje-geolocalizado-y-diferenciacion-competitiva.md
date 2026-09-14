@@ -40,6 +40,26 @@ Evaluar un método adicional de fichaje por geolocalización puntual para person
 
 El riesgo principal es transformar un fichaje puntual en monitorización laboral. También existen riesgos de acceso indebido, precisión engañosa, discriminación de personas sin dispositivo compatible, coste de soporte y promesas normativas impropias. La mitigación es minimización por diseño, alternativa no intrusiva, autorización de servidor, fixtures sintéticos, pruebas de aislamiento y puertas humanas antes de cualquier dato real.
 
+## Registro de discovery — #42, geolocalización puntual
+
+**Resultado:** no se autoriza ubicación real ni se mueve la HU-TC-022 a desarrollo. Un posible contrato de implementación sólo podrá abrirse tras una EIPD preventiva y dictamen conjunto DPO/laboral.
+
+La opción a evaluar es una única muestra iniciada inequívocamente por la persona al comienzo o fin de jornada, en primer plano. La alternativa preferente es confirmar presencia en un área autorizada o descartar la coordenada tras validarla y conservar únicamente el resultado mínimo que DPO/laboral aprueben. Debe existir un método equivalente sin ubicación que no produzca perjuicio laboral.
+
+Antes de datos reales, PO, DPO y asesoría laboral deben decidir: población/puestos donde es necesaria; por qué no basta un medio menos invasivo; precisión, conservación, RBAC/destinatarios y proveedores; información y consulta de representación de trabajadores cuando corresponda; corrección/impugnación humana; y prohibición de todo uso disciplinario, analítico o secundario. La interfaz/API futura deberá rechazar intervalos, segundo plano, rutas, historial y geovallas.
+
+## Registro de discovery — #44, diferenciación competitiva
+
+| Candidata | Valor y segmento | Riesgo / dependencia | Decisión recomendada |
+|---|---|---|---|
+| Jornada y turnos visibles read-only | Claridad para la persona empleada sin depender de soporte. | Medio; S3, vigencias, accesibilidad y copy no laboral. | **Priorizar HU-TC-024 (#45)** como siguiente candidata única. |
+| Geolocalización puntual | Movilidad justificada y acreditación del instante de fichaje. | Crítico; ADR-TC-022, DPO/laboral, EIPD y alternativa equivalente. | Mantener HU-TC-022 bloqueada por decisión. |
+| Ausencias/permisos | Autonomía de la plantilla y trazabilidad de decisión. | Alto; nuevo modelo, privacidad laboral y políticas. | Mantener HU-TC-025 posterior. |
+| Recordatorios/notificaciones | Reducir olvidos. | Medio; canal, consentimiento/expectativas y coste. | No priorizar ahora. |
+| IA, productividad, nómina, biometría y vigilancia | Suites competitivas amplias. | Crítico; incompatibles con el producto acotado. | Mantener rechazadas. |
+
+La diferenciación propuesta es una vista personal de «mi jornada»: previsto frente a registrado, discrepancias explicadas y acceso a corrección. No incluye optimización, asignación automática, geolocalización, IA, scoring ni cálculos de nómina.
+
 ## Decisiones pendientes del PO
 
 1. Segmento inicial: movilidad real, teletrabajo o ambos; no se presupone que la función sea general.
