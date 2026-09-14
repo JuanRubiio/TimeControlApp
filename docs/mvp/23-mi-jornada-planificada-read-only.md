@@ -1,6 +1,6 @@
 # S23 — Mi jornada planificada, sólo lectura
 
-**Estado:** implementación sintética de ruta y presentación completada; pendiente sólo revisión visual responsive manual. No autoriza datos reales. **Historia:** HU-TC-024 / #45. **Tamaño:** M. **Propietaria:** S23 para su proyección read-only, ruta, presentación y pruebas. **Dependencias:** S3, S11, S14, S20 y revisión laboral si el copy o los datos cambian su interpretación.
+**Estado:** implementación sintética de ruta y presentación completada; validada manualmente en navegador con datos demo. No autoriza datos reales. **Historia:** HU-TC-024 / #45. **Tamaño:** M. **Propietaria:** S23 para su proyección read-only, ruta, presentación y pruebas. **Dependencias:** S3, S11, S14, S20 y revisión laboral si el copy o los datos cambian su interpretación.
 
 ## Objetivo
 
@@ -77,7 +77,16 @@ El sobre `PublishedWorkday` no expone eventos, identificadores de ámbito, motiv
 - `tests/published-workday.test.ts`, `tests/published-workday-http.test.ts` y `tests/employee-presentation.test.ts`: **9 pruebas correctas**; TypeScript y comprobación de diff correctos.
 - En el mismo entorno Docker sintético, `GET /api/v1/published-workday/me` devuelve `401` sin sesión y `200` con la sesión demo propia; el sobre positivo no contiene `employeeId`, `scope` ni eventos.
 - Build, health `200` y regresión Docker: **118 pruebas correctas en 34 ficheros**. Siguen las advertencias preexistentes de Turbopack ya documentadas; no se añade ninguna nueva.
-- Falta una revisión manual de los cuatro anchos S14 (320/390/768/1280) y teclado/lector de pantalla antes de declarar el cierre visual definitivo.
+- La revisión manual en navegador de los anchos S14 (320/390/768/1280) y del recorrido por teclado se completó el 14/09/2026. La comprobación con una tecnología asistiva real queda como validación específica de accesibilidad, fuera de esta E2E visual.
+
+### Revisión manual E2E en navegador — 14/09/2026
+
+Se utilizó una instancia local aislada de Chrome y la cuenta demo `night.office@demo.test`; no se consultaron ni modificaron datos reales.
+
+- En los cuatro anchos de referencia no hubo desbordamiento horizontal (`scrollWidth` igual a `clientWidth`) y el bloque **Jornada publicada** permaneció visible.
+- El recorrido con `Tab` alcanzó navegación, cierre de sesión y la acción de corrección; el foco visible de **Registrar entrada** se confirmó en el navegador.
+- Se detectó un defecto en la pantalla inicial: una jornada actual `Sin iniciar` podía mostrar acciones derivadas del último evento histórico. Se corrigió para que las acciones se deriven primero del estado actual autorizado por el servidor. Tras recargar, sólo se ofrecía `Registrar entrada`.
+- La regresión completa en Docker pasó con **119 pruebas en 34 archivos**. También se excluyó `.local` del contexto de Docker para evitar que perfiles temporales del navegador interfieran en las reconstrucciones.
 
 ## Secuencia recomendada
 
