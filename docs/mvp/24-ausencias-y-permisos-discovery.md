@@ -145,6 +145,12 @@ Tras confirmar transacción, el outbox podría publicar `leave-request.requested
 4. **UX/QA:** validan carga, vacío, error, cancelación, rechazo, teclado, foco, lector, 320/390/768/1280 y que `approved` no se interprete como derecho legal ni cambio de jornada.
 5. **S15:** conserva el NO-GO para datos reales, retención definitiva, operación y despliegue.
 
+## Ampliación sintética: tipologías y comentario opcional
+
+Por decisión de PO, el piloto sintético admite las tipologías cerradas `general_request`, `personal_management` y `availability_adjustment`, junto con un comentario opcional de hasta 500 caracteres. El formulario advierte expresamente que no se deben incluir datos médicos, documentos, datos de terceras personas ni información especialmente sensible. El comentario se conserva únicamente en la solicitud y sólo se muestra a la persona solicitante y al responsable autorizado de su centro; auditoría y outbox registran como máximo que existe comentario, no su contenido.
+
+Esto no clasifica derechos, permisos legales, vacaciones o bajas, ni habilita datos reales. Antes de cualquier uso real, la revisión postpiloto DPO/laboral deberá fijar finalidad, información, acceso, conservación y supresión del texto libre.
+
 ## Implementación sintética y evidencia de revisión
 
 La implementación entrega el dominio aislado `leave-requests`, su migración aditiva, permisos explícitos y las rutas/UI candidatas descritas en este contrato. Sólo admite `general_request`, fechas de calendario y actor resuelto desde sesión; rechaza propiedades adicionales como motivo, adjunto o categoría distinta.
