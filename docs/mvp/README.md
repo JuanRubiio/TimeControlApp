@@ -82,6 +82,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | S19 | [19-acceso-protegido-y-consistencia-historial.md](19-acceso-protegido-y-consistencia-historial.md) | M | Finalizada: navegación protegida, entrada controlada, kiosco PIN, mensajes de historial y consumidor/reintento/reparación histórica auditada validados con datos sintéticos |
 | S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Finalizada: biblioteca de ocho referencias por rol y protocolo de diseño futuro; dirección no vinculante, primera consumidora S16, sin autorizar funcionalidades |
 | S22 | [22-fichaje-geolocalizado-y-diferenciacion-competitiva.md](22-fichaje-geolocalizado-y-diferenciacion-competitiva.md) | M | Discovery sintético y puerta de decisión; no implementa ni captura ubicación real |
+| S23 | [23-mi-jornada-planificada-read-only.md](23-mi-jornada-planificada-read-only.md) | M | Refinamiento sintético de HU-TC-024; vista personal read-only, sin planificación ni interpretación laboral |
 
 ## Base transversal publicada por S0
 
