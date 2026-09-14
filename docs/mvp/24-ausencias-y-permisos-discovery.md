@@ -80,6 +80,57 @@ La bandeja de responsable sólo necesita mostrar persona dentro de ámbito, inte
 
 PO acuerda usar esta plantilla exclusivamente con datos sintéticos durante el piloto ampliado. La revisión DPO/laboral de categorías reales, retención, información y casos sensibles se abrirá en la fase postpiloto si la evidencia demuestra que la capacidad aporta valor. Esta postergación no habilita datos reales, categorías legales/médicas, adjuntos ni implementación fuera del contrato mínimo.
 
+## Propuesta de integración entre dominios
+
+La capacidad no reutiliza `corrections`: una corrección modifica la proyección de evidencia de fichaje y puede desencadenar cálculo; una solicitud de ausencia no debe hacerlo. Una fase posterior crea un dominio `leave-requests` separado y sólo consume de S1 la sesión/RBAC, de S2 la relación efectiva y el centro, y de S6 el patrón de decisión humana idempotente y auditada.
+
+| Propietario | Aporta | S24 no puede hacer |
+|---|---|---|
+| S1 | sesión, permisos tipados, cookie, auditoría append-only | Inferir rol o ámbito desde cliente. |
+| S2 | empleo activo, empresa, centro y zona IANA efectivos para cada fecha | Consultar o modificar tablas de personas directamente desde UI. |
+| S6 | patrón de transición única, idempotencia y decisión humana | Crear `correction_effect`, recalcular ni reutilizar sus tablas. |
+| S24 futuro | solicitud, cancelación y decisión operativas independientes | Convertir estado en saldo, evento, turno o derecho. |
+
+### Permisos candidatos
+
+Son nombres propuestos, no permisos concedidos todavía:
+
+```text
+leave-request.create:self
+leave-request.read:self
+leave-request.read:scope
+leave-request.decide:scope
+leave-request.cancel:self
+```
+
+El servidor exige el permiso y vuelve a resolver el empleo/centro en cada lectura o mutación. El rol `manager` sólo recibiría lectura y decisión de ámbito de centro mediante migración aditiva revisada; no puede crear solicitudes ajenas ni editar la configuración. Administración sólo actuaría si recibe los mismos permisos de manera explícita, nunca por el nombre del rol.
+
+### Rutas candidatas y estados
+
+| Operación | Ruta candidata | Reglas servidor | Resultado mínimo |
+|---|---|---|---|
+| Crear propia | `POST /api/v1/leave-requests` | fechas ISO de calendario, intervalo no invertido, empleo activo; `category` fijo `general_request`; `Idempotency-Key` | solicitud `pending` |
+| Leer propia | `GET /api/v1/leave-requests?mine=true` | identidad de sesión | sobre sin motivo ni adjunto |
+| Leer ámbito | `GET /api/v1/leave-requests` | permiso `read:scope`, centro efectivo | sólo centro autorizado |
+| Decidir | `POST /api/v1/leave-requests/{id}/decision` | `decide:scope`, transición única, clave idempotente | `approved` o `rejected` |
+| Cancelar propia | `POST /api/v1/leave-requests/{id}/cancel` | sólo solicitante y estado `pending` | `cancelled` |
+
+Transiciones permitidas: `pending → approved | rejected | cancelled`. Todas las demás devuelven `LEAVE_REQUEST_STATE_INVALID` sin revelar solicitudes fuera de ámbito. Reintentos idénticos devuelven el resultado confirmado; la misma clave con otra carga devuelve `IDEMPOTENCY_CONFLICT`.
+
+### Evidencia y eventos candidatos
+
+Una tabla futura sólo conservaría ID, empleo, centro, intervalo, categoría fija, estado, actor e instantes UTC. No contendría motivo, documentos, comentarios, diagnóstico ni saldo. Las decisiones y cancelaciones serían append-only; no habría `UPDATE` ordinario del contenido original.
+
+Tras confirmar transacción, el outbox podría publicar `leave-request.requested`, `leave-request.decided` o `leave-request.cancelled` con IDs, estado, centro, intervalo y correlación, sin contenido sensible. La auditoría usaría las mismas referencias mínimas. Ningún consumidor S3/S4/S5/S6 convierte esos eventos en cambios de jornada.
+
+### Pruebas necesarias si se abre implementación
+
+- Aislamiento entre empresas y denegación de centro ajeno; autoconsulta sin `employeeId` de navegador.
+- Intervalo invertido, empleo no vigente, categoría distinta de `general_request`, adjunto/motivo/campo inesperado y doble envío.
+- Transición única, cancelación después de decisión, decisión fuera de ámbito e idempotencia concurrente.
+- Ausencia de efectos en `time_events`, cálculos, reglas, calendario y saldos.
+- Fixtures exclusivamente sintéticos; estados de carga/error, teclado, foco, lector y 320/390/768/1280 en E2E manual.
+
 ## Fuera de alcance
 
 - Vacaciones, bajas, permisos retribuidos/no retribuidos, bolsas de horas, antigüedad, convenios, derecho automático, documentación o certificados.
