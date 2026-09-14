@@ -64,9 +64,13 @@ Si una operación falla a mitad:
 3. Si aparece un duplicado producido por la propia sesión, no ocultarlo: confirmar el número exacto, no añadirlo al Project y cerrar/marcarlo como no planificado sólo con autorización dentro del objetivo de corrección.
 4. Registrar en la respuesta final qué quedó aplicado, qué se aplazó por cuota y cuál es el siguiente paso seguro.
 
-## Relación con Git y cierre
+## Relación con Git, rama y cierre
 
-Un Issue aprobado abre una sesión de implementación separada que sigue [git-workflow.md](git-workflow.md): rama `codex/<sesion>-<tema>`, commits verificables, pruebas, push y PR. La tarjeta enlaza evidencia y recomienda estado; no ejecuta merge, despliegue ni cierre por sí sola.
+Un Issue aprobado abre una sesión de implementación separada que sigue [git-workflow.md](git-workflow.md). Antes de editar, se crea una rama por Issue con el patrón `codex/issue-<numero>-<tema>`, desde una base identificada. En el mismo momento se añade al Issue un comentario conciso con la rama, la base y el contrato/ADR aplicable. Así la asociación existe durante el desarrollo, no sólo al abrir la PR.
+
+Antes de crear una PR, su título y cuerpo se preparan en un fichero Markdown temporal y se inspeccionan localmente. Se publica mediante `gh pr create --body-file`; después se lee de vuelta con `gh pr view --json body` para verificar encabezados, saltos de línea, enlaces y el cierre. No se usan cadenas con `\\n` como sustituto de un cuerpo multilínea.
+
+La PR debe contener `Closes #<numero>` para enlazarla nativamente al Issue y cerrarlo sólo al integrarse. Si una rama atiende excepcionalmente más de un Issue, el PO debe autorizarlo y el cuerpo enumera cada relación; la norma por defecto sigue siendo una rama y una PR por Issue. La tarjeta enlaza evidencia y recomienda estado; no ejecuta merge, despliegue ni cierre por sí sola.
 
 ## Checklist de salida
 
@@ -75,4 +79,5 @@ Un Issue aprobado abre una sesión de implementación separada que sigue [git-wo
 - [ ] Cada Issue contiene sólo información minimizada y enlaces a contratos.
 - [ ] Las etiquetas y campos reflejan estado real, sin enviar trabajo a desarrollo sin DoR/PO.
 - [ ] Se verificaron duplicados, elementos pendientes y ausencia de PRs no autorizadas.
+- [ ] La rama se registró en el Issue al iniciarse y la PR usa cuerpo Markdown verificado, con `Closes #<numero>` cuando corresponda.
 - [ ] La respuesta identifica cambios, límites de API y decisiones pendientes.
