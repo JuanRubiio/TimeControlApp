@@ -31,6 +31,18 @@ Cada Issue candidata comienza en `Intake` o `Refinamiento` y describe como míni
 - evidencia o hipótesis, riesgos y mitigaciones;
 - dependencias, contrato/ADR propietario y decisión pendiente del PO.
 
+## Puerta UX/UI antes de desarrollar interfaz
+
+Toda Issue que cree o cambie una pantalla, flujo, formulario, navegación o componente visible debe pasar una revisión UX/UI **antes** de implementar. No basta con que el contrato funcional sea correcto.
+
+1. Identificar el rol, tarea principal, estados de carga/vacío/error/éxito, móvil y teclado.
+2. Revisar la propuesta contra el catálogo de componentes y los patrones visuales existentes; si falta un patrón, definirlo primero como componente reutilizable.
+3. Sustituir identificadores y entradas técnicas por etiquetas humanas y ayudas progresivas. Los datos avanzados permanecen disponibles, pero no dirigen el flujo principal.
+4. Para información espacial, mostrar una representación visual comprensible y declarar qué se muestra, qué no se registra y qué datos no se envían. Un mapa no autoriza seguimiento, proveedor ni telemetría.
+5. Adjuntar al Issue el resultado de la revisión UX/UI y sus criterios de aceptación; QA realiza una comprobación visual y E2E sintética antes de `En revisión`.
+
+Si una historia ya implementada revela una fricción visual sustancial, se abre una Issue UX separada y se bloquea su paso a revisión de producto hasta acordar si el ajuste pertenece al alcance actual. La revisión UX/UI no modifica RBAC, privacidad, contratos de servidor ni aprobación PO; los complementa.
+
 Para crear o actualizar Issues se prefiere la API REST de `gh` cuando la operación sea de repositorio. Antes de repetir una creación fallida, buscar por título y URL: una sesión parcialmente interrumpida puede haber creado el Issue aunque no haya podido añadirlo al Project. No repetir un lote completo a ciegas.
 
 Las etiquetas sirven para lectura visual, no sustituyen campos del Project. Mantener un vocabulario reducido, con color y significado estable; por ejemplo fase, decisión PO, riesgo de geolocalización o aplazamiento. Una capacidad desplazada de una exclusión a discovery debe actualizar el Issue/ADR de exclusión para no dejar contradicciones.
