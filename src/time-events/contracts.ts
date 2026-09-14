@@ -1,6 +1,6 @@
 export const TIME_EVENT_TYPES = ['clock_in','clock_out','break_start','break_end'] as const;
 export type TimeEventType = typeof TIME_EVENT_TYPES[number];
-export const TIME_EVENT_METHODS = ['web','kiosk_qr','kiosk_pin'] as const;
+export const TIME_EVENT_METHODS = ['web','kiosk_qr','kiosk_pin','geo_punctual'] as const;
 export type TimeEventMethod = typeof TIME_EVENT_METHODS[number];
 export type TimeEvent = {
   id:string; employeeId:string; employmentId:string; siteId:string; ruleVersionId:string;

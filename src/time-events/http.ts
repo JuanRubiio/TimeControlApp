@@ -10,6 +10,9 @@ export function failure(value:unknown,cid:string) {
   if(code==='IDEMPOTENCY_KEY_REQUIRED') return error('VALIDATION_FAILED','Se requiere una clave de idempotencia válida.',422,cid);
   if(code==='RULE_VERSION_UNRESOLVABLE') return error(code,'No hay una regla vigente aplicable para este fichaje.',409,cid);
   if(code==='EMPLOYMENT_NOT_ACTIVE') return error('FORBIDDEN','No existe una relación laboral activa para fichar.',403,cid);
+  if(code==='GEO_EVENT_UNSUPPORTED') return error(code,'La verificación puntual sólo está disponible al iniciar o finalizar jornada.',422,cid);
+  if(code==='GEO_POLICY_NOT_ACTIVE') return error(code,'No hay una política de ubicación puntual vigente para este fichaje.',409,cid);
+  if(code==='GEO_OUTSIDE_AUTHORIZED_ZONE') return error(code,'No se pudo verificar la ubicación en la zona autorizada. Puedes fichar sin ubicación o solicitar una corrección.',422,cid);
   if(code==='KIOSK_UNAVAILABLE'||code==='KIOSK_SITE_NOT_FOUND') return error('NOT_FOUND','El kiosco no está disponible.',404,cid);
   if(code==='EMPLOYEE_NOT_FOUND') return error('NOT_FOUND','Empleado no encontrado.',404,cid);
   return error('INTERNAL_ERROR','No se pudo registrar el fichaje.',500,cid);
