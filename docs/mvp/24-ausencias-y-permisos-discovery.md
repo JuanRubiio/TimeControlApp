@@ -1,6 +1,6 @@
 # S24 — Ausencias y permisos con decisión humana
 
-**Estado:** discovery aprobado por PO; sin implementación, datos reales ni efecto sobre jornada. **Historia:** HU-TC-025 / #46. **Tamaño:** M. **Dependencias:** S1, S2, S6, S10, S11, S14, S15, DPO y asesoría laboral. **Relación con piloto:** no elimina el NO-GO de S15.
+**Estado:** implementación sintética lista para revisión; sin datos reales ni efecto sobre jornada. **Historia:** HU-TC-025 / #46. **Tamaño:** M. **Dependencias:** S1, S2, S6, S10, S11, S14, S15, DPO y asesoría laboral. **Relación con piloto:** no elimina el NO-GO de S15.
 
 ## Decisión de discovery
 
@@ -144,6 +144,17 @@ Tras confirmar transacción, el outbox podría publicar `leave-request.requested
 3. **S1/S2/S6:** acuerdan permisos, alcance, propiedad de solicitud/decisión y auditoría antes de cualquier tabla, API o UI.
 4. **UX/QA:** validan carga, vacío, error, cancelación, rechazo, teclado, foco, lector, 320/390/768/1280 y que `approved` no se interprete como derecho legal ni cambio de jornada.
 5. **S15:** conserva el NO-GO para datos reales, retención definitiva, operación y despliegue.
+
+## Implementación sintética y evidencia de revisión
+
+La implementación entrega el dominio aislado `leave-requests`, su migración aditiva, permisos explícitos y las rutas/UI candidatas descritas en este contrato. Sólo admite `general_request`, fechas de calendario y actor resuelto desde sesión; rechaza propiedades adicionales como motivo, adjunto o categoría distinta.
+
+- Empleado: `/employee/leave-requests`, crea, consulta y cancela mientras esté `pending`.
+- Responsable: `/manager/leave-requests`, consulta únicamente su ámbito y adopta una decisión humana única (`approved` o `rejected`).
+- API: mantiene clave de idempotencia al crear y decidir; persiste auditoría y outbox mínimos, sin tocar `time_events`, cálculo, calendario ni saldo.
+- Evidencia local de 14/09/2026: 124 pruebas automatizadas superadas; E2E sintética con empleado y responsable superada (crear → aprobar → consultar y crear → cancelar); revisión visual de navegación, formulario y aislamiento de ruta de responsable superada.
+
+El entorno de revisión se conserva levantado en `http://localhost:3045` conforme al contrato operativo de Docker. La revisión DPO/laboral sigue aplazada únicamente a la fase postpiloto y antes de cualquier ampliación a datos o categorías reales.
 
 ## Criterios de salida del discovery
 
