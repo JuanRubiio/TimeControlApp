@@ -30,11 +30,14 @@ describe('S16 configuración guiada',()=>{
   });
   it('aplica el catálogo visual y evita que los datos técnicos sean la interfaz principal',()=>{
     expect(ui).toContain('Zona de validación');
-    expect(ui).toContain('Vista local orientativa');
-    expect(ui).toContain('Ajustar punto de referencia');
+    expect(ui).toContain('RealZoneMap');
+    expect(ui).toContain('Ajustar coordenadas con precisión');
     expect(ui).toContain('item.label ?? item.name');
-    expect(ui).toContain('no utiliza mapas ni telemetría de terceros');
     expect(ui).toContain('no existe seguimiento continuo');
+    const map=readFileSync('src/configuration/real-zone-map.tsx','utf8');
+    expect(map).toContain("https://tile.openstreetmap.org/{z}/{x}/{y}.png");
+    expect(map).toContain("marker.on('dragend'");
+    expect(map).toContain("map.on('click'");
   });
   it('mantiene controles y guardado aislados por bloque',()=>{
     expect(ui).toContain('const [busyForm, setBusyForm]');
