@@ -38,8 +38,8 @@ describe('S16 configuración guiada',()=>{
     expect(map).toContain("https://tile.openstreetmap.org/{z}/{x}/{y}.png");
     expect(map).toContain("map.on('click'");
     expect(map).toContain('fitBounds(circleRef.current.getBounds()');
-    expect(map).toContain('L.circleMarker');
-    expect(map).not.toContain('L.divIcon');
+    expect(map).toContain('L.divIcon');
+    expect(map).toContain("marker.on('dragend'");
     expect(ui).not.toContain('Ajustar coordenadas con precisión');
   });
   it('mantiene controles y guardado aislados por bloque',()=>{
