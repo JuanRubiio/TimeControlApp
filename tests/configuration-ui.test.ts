@@ -38,11 +38,22 @@ describe('S16 configuración guiada',()=>{
     expect(map).toContain("https://tile.openstreetmap.org/{z}/{x}/{y}.png");
     expect(map).toContain("marker.on('dragend'");
     expect(map).toContain("map.on('click'");
+    expect(map).toContain('fitBounds(circleRef.current.getBounds()');
+    expect(map).toContain('<svg viewBox="0 0 32 42"');
   });
   it('mantiene controles y guardado aislados por bloque',()=>{
     expect(ui).toContain('const [busyForm, setBusyForm]');
     expect(ui).toContain("busyForm === 'zone'");
     expect(ui).toContain("busyForm === 'policy'");
     expect(ui).toContain('Guardar cambios');
+  });
+  it('permite retirar una zona inactiva sin borrar su trazabilidad',()=>{
+    expect(ui).toContain('Retirar zona');
+    expect(ui).toContain('Se conserva la trazabilidad histórica');
+    expect(api).toContain('deleteZone');
+    const route=readFileSync('src/app/api/v1/work-location-zones/[id]/route.ts','utf8');
+    const service=readFileSync('src/clocking-policy/service.ts','utf8');
+    expect(route).toContain("'ZONE_IN_USE'");
+    expect(service).toContain("action:'clocking-policy.zone.deactivated'");
   });
 });
