@@ -92,7 +92,8 @@ Se utilizó una instancia local aislada de Chrome y la cuenta demo `night.office
 ### Refuerzo de contexto publicado — 15/09/2026
 
 - Las pruebas de presentación cubren fecha, festivo, día laborable y calendario no publicado sin inventar turno. TypeScript y la regresión local completaron **138 pruebas en 38 archivos**.
-- La imagen local se reconstruyó y el proyecto Compose sintético `time-control-s23-contract` quedó saludable y disponible en `http://localhost:3045` para revisión. La sesión de navegador activa pertenece a administración y no se cerró; no había una sesión aislada de navegador disponible para repetir el login del empleado sin alterar esa sesión compartida.
+- La imagen local se reconstruyó y el proyecto Compose sintético `time-control-s23-contract` quedó saludable y disponible en `http://localhost:3045` para revisión.
+- E2E manual en navegador con el perfil sintético de empleado: la pantalla muestra turno, tramos, minutos, calendario, día laborable, vigencia, zona IANA y evidencia registrada; el enlace de discrepancia llega a Correcciones sin enviar ninguna solicitud ni registrar un fichaje. Antes de repetir la prueba se repuso idempotentemente el fixture sintético de empleado, que había quedado desvinculado en la base local de revisión.
 
 ## Secuencia recomendada
 
