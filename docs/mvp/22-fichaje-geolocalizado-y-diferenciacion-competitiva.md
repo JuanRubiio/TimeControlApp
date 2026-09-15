@@ -55,7 +55,7 @@ Antes de datos reales, PO, DPO y asesoría laboral deben decidir: población/pue
 | Jornada y turnos visibles read-only | Claridad para la persona empleada sin depender de soporte. | Medio; S3, vigencias, accesibilidad y copy no laboral. | **Priorizar HU-TC-024 (#45)** como siguiente candidata única. |
 | Geolocalización puntual | Movilidad justificada y acreditación del instante de fichaje. | Crítico; ADR-TC-022, DPO/laboral, EIPD y alternativa equivalente. | Mantener HU-TC-022 bloqueada por decisión. |
 | Ausencias/permisos | Autonomía de la plantilla y trazabilidad de decisión. | Alto; nuevo modelo, privacidad laboral y políticas. | **PO selecciona HU-TC-025 (#46) para discovery mínimo, sin implementación.** |
-| Recordatorios/notificaciones | Reducir olvidos. | Medio; canal, consentimiento/expectativas y coste. | No priorizar ahora. |
+| Recordatorios/notificaciones | Reducir olvidos. | Medio; canal, consentimiento/expectativas y coste. | Discovery acotado en HU-TC-026 (#55); no implementar. Véase S25. |
 | IA, productividad, nómina, biometría y vigilancia | Suites competitivas amplias. | Crítico; incompatibles con el producto acotado. | Mantener rechazadas. |
 
 La diferenciación propuesta es una vista personal de «mi jornada»: previsto frente a registrado, discrepancias explicadas y acceso a corrección. La única excepción evaluada es la verificación puntual y transparente de entrada/salida bajo política autorizada; no incluye optimización, asignación automática, IA, scoring ni cálculos de nómina.
@@ -81,7 +81,7 @@ Las páginas públicas consultadas muestran que JornAda combina ubicación, mét
 2. Alternativa preferida: prueba de zona sin coordenada persistida, coordenada puntual minimizada o rechazo.
 3. Tratamiento ante permiso denegado, precisión insuficiente o ausencia de dispositivo compatible.
 4. ~~Qué candidata competitiva, además de geolocalización, merece ser el siguiente incremento sintético.~~ Resuelta el 14/09/2026: HU-TC-025 (#46), sólo discovery; véase S24.
-5. **Pendiente de cierre de #44:** PO decide si la matriz queda cerrada tras la revisión de #43/#45/#46 o si autoriza únicamente el discovery de recordatorios opcionales bajo un contrato y evaluación UX/UI independientes.
+5. ~~PO decide si la matriz queda cerrada tras la revisión de #43/#45/#46 o si autoriza únicamente el discovery de recordatorios opcionales.~~ Resuelta el 15/09/2026: se autorizó sólo el discovery HU-TC-026 (#55), cerrado en [S25](26-recordatorios-opcionales-discovery.md). No hay autorización de implementación.
 
 ## Fuentes de referencia
 
