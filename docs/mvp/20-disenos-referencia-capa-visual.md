@@ -44,6 +44,7 @@ No existe un «rol futuro» genérico que pueda diseñarse de forma responsable.
 | Tono y jerarquía | Superficies claras, azul marino como ancla, turquesa para acción principal y semántica moderada. | El color nunca es el único portador de estado; evitar apariencia de control o vigilancia. |
 | Tipografía | Sans legible, titulares claros, texto de apoyo sobrio y cifras tabulares donde ayuden a leer registros. | Mantener contraste AA y permitir zoom al 200 %. |
 | Espaciado y densidad | Escala base de 8 px, tarjetas sobrias, zonas de toque amplias y agrupación por tarea. | En móvil se prioriza una acción de fichaje inequívoca; en escritorio, lectura y revisión. |
+| Controles y acciones | Campo o selector estándar: 44 px; acción operativa: 40 px; radio común: 10 px; alternativas agrupadas con 10 px de separación. | `ui-control` y `ui-action` son la fuente del catálogo. Primaria, secundaria y destructiva sólo cambian jerarquía, no tamaño ni formato sin una excepción documentada. |
 | Navegación | Encabezado estable, navegación lateral en escritorio y navegación compacta en móvil. | Sólo mostrar destinos para los que el rol esté autorizado; el enlace no sustituye RBAC de servidor. |
 | Estados | Cargando, vacío, éxito, advertencia, error y reintento contextual. | No sugerir repetir un fichaje si la confirmación es incierta; preservar idempotencia S4. |
 | Formularios | Etiquetas visibles, ayuda cercana, validación comprensible y foco marcado. | Errores vienen de los contratos de servidor; no inventar reglas de jornada en cliente. |
