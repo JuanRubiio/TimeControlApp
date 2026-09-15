@@ -1,5 +1,5 @@
 import type { TimeEvent, TimeEventType } from '@/time-events/contracts';
-import type { PersistedDailyCalculation } from '@/time-calculation/contracts';
+import type { PersistedDailyCalculation, PublishedWorkday } from '@/time-calculation/contracts';
 
 export const eventLabels:Record<TimeEventType,string>={clock_in:'Entrada',clock_out:'Salida',break_start:'Inicio de pausa',break_end:'Fin de pausa'};
 export const actionLabels:Record<TimeEventType,string>={clock_in:'Registrar entrada',clock_out:'Registrar salida',break_start:'Iniciar pausa',break_end:'Finalizar pausa'};
@@ -10,6 +10,8 @@ export function dayStatus(last?:TimeEvent, calculation?:PersistedDailyCalculatio
 export function hasHistoricalOpenEvent(status:'not_started'|'working'|'on_break'|'ended'|undefined,last?:TimeEvent){return status==='not_started'&&!!last&&last.eventType!=='clock_out';}
 export function minutes(value:number){const sign=value<0?'−':'';const absolute=Math.abs(value);return `${sign}${Math.floor(absolute/60)} h ${String(absolute%60).padStart(2,'0')} min`;}
 export function dateTime(value:string,timeZone='Europe/Madrid'){return new Intl.DateTimeFormat('es-ES',{dateStyle:'medium',timeStyle:'short',timeZone}).format(new Date(value));}
+export function laborDate(value:string){return new Intl.DateTimeFormat('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(`${value}T12:00:00.000Z`));}
+export function calendarDayStatus(workday:PublishedWorkday){const calendar=workday.schedule?.calendar;if(!calendar)return 'Sin calendario publicado';if(calendar.holidays.includes(workday.laborDate))return 'Festivo publicado';const weekday=new Date(`${workday.laborDate}T12:00:00.000Z`).getUTCDay();return calendar.workingDays.includes(weekday)?'Día laborable según el calendario':'Día no laborable según el calendario';}
 export function errorMessage(value:unknown){return value instanceof Error?value.message:'No se pudo completar la operación. Comprueba tu conexión e inténtalo de nuevo.';}
 export type HistoricalCalculationState='available'|'pending'|'no_events'|'unauthorized'|'technical';
 export function historicalCalculationMessage(state:HistoricalCalculationState){return {available:'',pending:'Hay registros confirmados pendientes de cálculo. El fichaje se conserva y el cálculo se actualizará cuando el proceso autorizado lo materialice.',no_events:'No hay eventos registrados este día; por eso no hay cálculo de jornada.',unauthorized:'No tienes autorización para consultar el cálculo de esta jornada.',technical:'No se pudo consultar el cálculo por un problema técnico. Puedes reintentar la consulta sin modificar tus registros.'}[state];}
