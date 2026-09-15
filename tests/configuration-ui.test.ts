@@ -48,6 +48,10 @@ describe('S16 configuración guiada',()=>{
     expect(ui).toContain("busyForm === 'policy'");
     expect(ui).toContain('Guardar cambios');
   });
+  it('oculta el avance cuando no quedan pasos pendientes',()=>{
+    expect(ui).toContain('ready < checklist.length && <section className="configuration-overview"');
+    expect(ui).not.toContain('La configuración necesaria para el piloto está completa.');
+  });
   it('permite retirar una zona inactiva sin borrar su trazabilidad',()=>{
     expect(ui).toContain('Retirar zona');
     expect(ui).toContain('Se conserva la trazabilidad histórica');
