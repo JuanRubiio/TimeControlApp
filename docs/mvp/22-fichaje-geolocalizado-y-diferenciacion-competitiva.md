@@ -58,7 +58,22 @@ Antes de datos reales, PO, DPO y asesoría laboral deben decidir: población/pue
 | Recordatorios/notificaciones | Reducir olvidos. | Medio; canal, consentimiento/expectativas y coste. | No priorizar ahora. |
 | IA, productividad, nómina, biometría y vigilancia | Suites competitivas amplias. | Crítico; incompatibles con el producto acotado. | Mantener rechazadas. |
 
-La diferenciación propuesta es una vista personal de «mi jornada»: previsto frente a registrado, discrepancias explicadas y acceso a corrección. No incluye optimización, asignación automática, geolocalización, IA, scoring ni cálculos de nómina.
+La diferenciación propuesta es una vista personal de «mi jornada»: previsto frente a registrado, discrepancias explicadas y acceso a corrección. La única excepción evaluada es la verificación puntual y transparente de entrada/salida bajo política autorizada; no incluye optimización, asignación automática, IA, scoring ni cálculos de nómina.
+
+### Actualización de matriz — 15/09/2026
+
+La revisión posterior a las entregas sintéticas no convierte la publicidad de la competencia en requisito. Sólo contrasta patrones públicos con el alcance ya validado y conserva el NO-GO de S15 para datos reales.
+
+| Patrón público contrastado | Estado en TimeControl | Decisión y límite |
+|---|---|---|
+| Turnos, ausencias y distintos métodos de fichaje agrupados en una suite | La consulta de jornada/turno publicado está entregada en #45 y la solicitud con decisión humana en #46. | No ampliar a planificación, saldo automático, convenio, nómina ni aprobaciones automáticas. |
+| Ubicación opcional en el instante del fichaje para equipos móviles | #43 entrega una política por relación laboral, zona autorizada y alternativa equivalente sin ubicación, sólo con escenarios sintéticos. | No persistir coordenadas de la persona, no pedir ubicación fuera de entrada/salida, ni usar geovallas, segundo plano o consecuencias automáticas. |
+| Detección automática de oficina, salida automática, biometría, métricas de rendimiento o recordatorios multicanal | No forma parte de TimeControl. | Mantener rechazado: introduce vigilancia, presión laboral, automatización o datos que no son necesarios para validar el MVP. |
+| Restricción configurable por persona o puesto | La política de fichaje por relación laboral ya cubre el caso proporcional de método y zona autorizada. | Sólo Administración la configura; Responsable consulta dentro de su ámbito; no se usa como regla disciplinaria. |
+
+Las páginas públicas consultadas muestran que JornAda combina ubicación, métodos de fichaje, turnos y ausencias; Woffu declara una opción de ubicación en el momento del fichaje para movilidad; y Sesame anuncia detección de oficina, auto-checkout y biometría. Esos últimos automatismos se registran como **contra-patrones**, no como objetivos de producto: [JornAda](https://www.jorn-ada.com/funcionalidades/control-horario), [Woffu](https://woffu.com/es/control-horario-y-registro-de-la-jornada-laboral/), [Sesame HR](https://www.sesamehr.es/software-control-horario/).
+
+**Recomendación de #44:** no abrir una cuarta funcionalidad de usuario por imitación. Primero debe revisarse en producto el comportamiento sintético ya entregado de #43, #45 y #46. La única candidata posterior que podría volver a discovery es un recordatorio estrictamente opcional, pero requiere antes decisión PO sobre canal, horario, presión laboral, alternativa de no uso y privacidad; no pasa a desarrollo con esta matriz.
 
 ## Decisiones pendientes del PO
 
@@ -66,6 +81,7 @@ La diferenciación propuesta es una vista personal de «mi jornada»: previsto f
 2. Alternativa preferida: prueba de zona sin coordenada persistida, coordenada puntual minimizada o rechazo.
 3. Tratamiento ante permiso denegado, precisión insuficiente o ausencia de dispositivo compatible.
 4. ~~Qué candidata competitiva, además de geolocalización, merece ser el siguiente incremento sintético.~~ Resuelta el 14/09/2026: HU-TC-025 (#46), sólo discovery; véase S24.
+5. **Pendiente de cierre de #44:** PO decide si la matriz queda cerrada tras la revisión de #43/#45/#46 o si autoriza únicamente el discovery de recordatorios opcionales bajo un contrato y evaluación UX/UI independientes.
 
 ## Fuentes de referencia
 
