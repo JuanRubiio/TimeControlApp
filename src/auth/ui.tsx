@@ -13,7 +13,7 @@ async function api(url:string, body?:unknown) {
   return payload.data;
 }
 
-export function LogoutButton(){const router=useRouter(); const [busy,setBusy]=useState(false); return <button className="link-button" onClick={async()=>{setBusy(true);try{await api('/api/v1/auth/logout');router.replace('/login');router.refresh();}finally{setBusy(false);}}} disabled={busy}>{busy?'Cerrando sesión…':'Cerrar sesión'}</button>;}
+export function LogoutButton(){const router=useRouter(); const [busy,setBusy]=useState(false); return <button className="link-button" onClick={async()=>{setBusy(true);try{await api('/api/v1/auth/logout');window.dispatchEvent(new Event('time-control:logout'));router.replace('/login');router.refresh();}finally{setBusy(false);}}} disabled={busy}>{busy?'Cerrando sesión…':'Cerrar sesión'}</button>;}
 
 export default function Login(){
   const router=useRouter(); const params=useSearchParams(); const returnTo=safeReturnTo(params.get('returnTo')); const [roleDestination,setRoleDestination]=useState('/employee'); const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); const [code,setCode]=useState(''); const [mfa,setMfa]=useState(false); const [enrollment,setEnrollment]=useState(false); const [uri,setUri]=useState(''); const [error,setError]=useState(''); const [busy,setBusy]=useState(false);
