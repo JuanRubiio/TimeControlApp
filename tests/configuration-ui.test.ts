@@ -64,6 +64,8 @@ describe('S16 configuración guiada',()=>{
   it('muestra y sustituye políticas por trabajador sin reescribir la vigencia anterior',()=>{
     expect(ui).toContain('Política de fichaje por trabajador');
     expect(ui).toContain('Modificar política');
+    expect(ui).toContain('className="ui-control" name="method"');
+    expect(ui).toContain('className="ui-control" name="locationZoneId"');
     expect(api).toContain('replaceClockingPolicy');
     const route=readFileSync('src/app/api/v1/clocking-policies/[id]/route.ts','utf8');
     const service=readFileSync('src/clocking-policy/service.ts','utf8');
