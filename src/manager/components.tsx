@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { LogoutButton } from '@/auth/ui';
+import { WorkspaceNav } from '@/ui/workspace-nav';
 import { StatusBadge, StatusNotice } from '@/ui/feedback';
 import { adminApi, type Employee, type Site } from '@/admin/api';
 import type { CorrectionRequest } from '@/corrections/contracts';
 
-export function ManagerNav(){return <nav className="admin-nav" aria-label="Espacio de responsable"><Link href="/manager">Mi centro</Link><Link href="/manager/team">Equipo</Link><Link href="/manager/corrections">Correcciones</Link><Link href="/manager/leave-requests">Solicitudes</Link><LogoutButton/></nav>}
+export function ManagerNav(){return <WorkspaceNav ariaLabel="Espacio de responsable" variant="manager" items={[{href:'/manager',label:'Mi centro'},{href:'/manager/team',label:'Equipo'},{href:'/manager/corrections',label:'Correcciones'},{href:'/manager/leave-requests',label:'Solicitudes'}]} />}
 const kind=(status:CorrectionRequest['status'])=>status==='approved'?'success':status==='rejected'?'error':'warning';
 
 export function ManagerDashboard(){

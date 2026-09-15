@@ -9,9 +9,9 @@ import type { CorrectionRequest } from '@/corrections/contracts';
 import type { WorkdayStatus } from '@/workday-status/contracts';
 import type { LeaveRequest,LeaveRequestCategory } from '@/leave-requests/contracts';
 import type { EffectiveClockingPolicy,GeoVerification } from '@/clocking-policy/contracts';
-import { LogoutButton } from '@/auth/ui';
 import { LoadingBlock, StatusBadge, StatusNotice } from '@/ui/feedback';
 import { UiAction } from '@/ui/controls';
+import { WorkspaceNav } from '@/ui/workspace-nav';
 import { EmployeeApiError, employeeApi } from './api';
 import { actionLabels, actionsForCurrentStatus, calendarDayStatus, dateTime, dayStatus, errorMessage, eventLabels, hasHistoricalOpenEvent, historicalCalculationMessage, laborDate, minutes, type HistoricalCalculationState } from './presentation';
 
@@ -23,7 +23,7 @@ type DashboardSnapshot={events:TimeEvent[];calculation:PersistedDailyCalculation
 let dashboardSnapshot:DashboardSnapshot|undefined;
 
 export function EmployeeNav() {
-  return <nav className="employee-nav" aria-label="Navegación de empleado"><Link href="/employee">Hoy</Link><Link href="/employee/history">Historial</Link><Link href="/employee/corrections">Correcciones</Link><Link href="/employee/leave-requests">Solicitudes</Link><LogoutButton /></nav>;
+  return <WorkspaceNav ariaLabel="Navegación de empleado" variant="employee" items={[{href:'/employee',label:'Hoy'},{href:'/employee/history',label:'Historial'},{href:'/employee/corrections',label:'Correcciones'},{href:'/employee/leave-requests',label:'Solicitudes'}]} />;
 }
 
 export function Events({ events, linkCorrections = false }: { events: TimeEvent[]; linkCorrections?: boolean }) {
