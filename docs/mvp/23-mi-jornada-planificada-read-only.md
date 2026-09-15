@@ -49,6 +49,7 @@ La futura ruta no aceptará `employeeId`, tenant, centro, zona, versión de regl
 - `GET /api/v1/published-workday/me` autentica la sesión, exige `time-event.read:self`, resuelve el empleado y `asOf` en servidor y llama al puerto S3/S5. No recibe parámetros de navegador y no realiza escrituras.
 - `src/published-workday/{service,http}.ts` devuelve errores genéricos para sesión, autorización, ausencia de empleo y fallo técnico. El sobre HTTP conserva sólo `laborDate`, zona, horario publicado y estado mínimo de evidencia.
 - `/employee` muestra «Jornada publicada» para hoy: turno, minutos esperados publicados, calendario y si existe evidencia registrada. Un vacío no infiere horario; una evidencia nocturna anterior se etiqueta como tal. El copy explica que no es orden de disponibilidad, nómina, convenio ni decisión disciplinaria, y enlaza sólo al flujo existente de correcciones.
+- La presentación identifica además el nombre y tramos del turno, la vigencia, zona IANA y el estado de la fecha dentro del calendario publicado (laborable, no laborable o festivo). No habilita selector histórico mientras el PO no apruebe su rango; tampoco deriva una obligación de esos datos.
 - Se mantienen excluidos selector histórico, edición, planificación, notificaciones, datos de terceros y cambios de eventos, cálculo, reglas, permisos o auditoría.
 
 ## Puertas y decisiones pendientes
@@ -87,6 +88,12 @@ Se utilizó una instancia local aislada de Chrome y la cuenta demo `night.office
 - El recorrido con `Tab` alcanzó navegación, cierre de sesión y la acción de corrección; el foco visible de **Registrar entrada** se confirmó en el navegador.
 - Se detectó un defecto en la pantalla inicial: una jornada actual `Sin iniciar` podía mostrar acciones derivadas del último evento histórico. Se corrigió para que las acciones se deriven primero del estado actual autorizado por el servidor. Tras recargar, sólo se ofrecía `Registrar entrada`.
 - La regresión completa en Docker pasó con **119 pruebas en 34 archivos**. También se excluyó `.local` del contexto de Docker para evitar que perfiles temporales del navegador interfieran en las reconstrucciones.
+
+### Refuerzo de contexto publicado — 15/09/2026
+
+- Las pruebas de presentación cubren fecha, festivo, día laborable y calendario no publicado sin inventar turno. TypeScript y la regresión local completaron **138 pruebas en 38 archivos**.
+- La imagen local se reconstruyó y el proyecto Compose sintético `time-control-s23-contract` quedó saludable y disponible en `http://localhost:3045` para revisión.
+- E2E manual en navegador con el perfil sintético de empleado: la pantalla muestra turno, tramos, minutos, calendario, día laborable, vigencia, zona IANA y evidencia registrada; el enlace de discrepancia llega a Correcciones sin enviar ninguna solicitud ni registrar un fichaje. Antes de repetir la prueba se repuso idempotentemente el fixture sintético de empleado, que había quedado desvinculado en la base local de revisión.
 
 ## Secuencia recomendada
 
