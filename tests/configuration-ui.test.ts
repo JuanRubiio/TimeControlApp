@@ -48,6 +48,10 @@ describe('S16 configuración guiada',()=>{
     expect(ui).toContain("busyForm === 'policy'");
     expect(ui).toContain('Guardar cambios');
   });
+  it('espera los datos confirmados antes de pintar los formularios',()=>{
+    expect(ui).toContain('if (loading) return <main className="admin-shell">');
+    expect(ui).toContain('Recuperando la configuración confirmada por el servidor…');
+  });
   it('oculta el avance cuando no quedan pasos pendientes',()=>{
     expect(ui).toContain('ready < checklist.length && <section className="configuration-overview"');
     expect(ui).not.toContain('La configuración necesaria para el piloto está completa.');
