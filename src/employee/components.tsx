@@ -10,6 +10,7 @@ import type { WorkdayStatus } from '@/workday-status/contracts';
 import type { LeaveRequest,LeaveRequestCategory } from '@/leave-requests/contracts';
 import type { EffectiveClockingPolicy,GeoVerification } from '@/clocking-policy/contracts';
 import { LoadingBlock, StatusBadge, StatusNotice } from '@/ui/feedback';
+import { ReadRecoveryNotice } from '@/ui/read-recovery-notice';
 import { UiAction } from '@/ui/controls';
 import { WorkspaceNav } from '@/ui/workspace-nav';
 import { EmployeeApiError, employeeApi } from './api';
@@ -51,8 +52,8 @@ export function Dashboard() {
 }
 
 export function History() {
-  const [events, setEvents] = useState<TimeEvent[]>([]); const [failure, setFailure] = useState<string>(); useEffect(() => { employeeApi.events().then(setEvents).catch((error) => setFailure(errorMessage(error))); }, []); const dates = [...new Set(events.map((event) => event.laborDate))];
-  return <main className="employee-shell"><EmployeeNav /><h1>Mi historial</h1><p className="subtle">Consulta tus registros por día. Cada fichaje original se conserva aunque solicites una corrección.</p>{failure ? <StatusNotice kind="error">{failure}</StatusNotice> : !events.length ? <p className="subtle">No hay registros todavía.</p> : <ul className="day-list">{dates.map((date) => { const records = events.filter((event) => event.laborDate === date); return <li key={date}><Link href={`/employee/history/${date}`}><strong>{date}</strong><span>{records.length} {records.length === 1 ? 'registro' : 'registros'} · Ver detalle</span></Link></li>; })}</ul>}</main>;
+  const [events, setEvents] = useState<TimeEvent[]>([]); const [failure, setFailure] = useState<unknown>(); const load=()=>{setFailure(undefined);employeeApi.events().then(setEvents).catch(setFailure);}; useEffect(load, []); const dates = [...new Set(events.map((event) => event.laborDate))];
+  return <main className="employee-shell"><EmployeeNav /><h1>Mi historial</h1><p className="subtle">Consulta tus registros por día. Cada fichaje original se conserva aunque solicites una corrección.</p>{failure ? <ReadRecoveryNotice status={failure instanceof EmployeeApiError?failure.status:undefined} onRetry={load}/> : !events.length ? <p className="subtle">No hay registros todavía.</p> : <ul className="day-list">{dates.map((date) => { const records = events.filter((event) => event.laborDate === date); return <li key={date}><Link href={`/employee/history/${date}`}><strong>{date}</strong><span>{records.length} {records.length === 1 ? 'registro' : 'registros'} · Ver detalle</span></Link></li>; })}</ul>}</main>;
 }
 
 export function DayDetail({ laborDate }: { laborDate: string }) {
