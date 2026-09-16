@@ -92,6 +92,8 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | HU-TC-039 | [37-balance-horas-informativo-diseno.md](37-balance-horas-informativo-diseno.md) | M | Propuesta de balance propio y cerrado, estrictamente informativo y sin bolsa de horas |
 | E-TC-34 | [38-modulo-gestion-ausencias-opcional.md](38-modulo-gestion-ausencias-opcional.md) | M | Propuesta de módulo opcional de ausencias, con decisión humana y separación de fichajes/cálculo |
 | HU-TC-040 | [39-tipologias-ausencia-configurables-versionadas.md](39-tipologias-ausencia-configurables-versionadas.md) | M | Refinamiento bloqueado: catálogo cerrado, configurable por versión e instantánea histórica; sin saldo, datos sensibles ni efectos de jornada |
+| HU-TC-036 | [39-estados-criticos-consistentes-recuperacion-segura-diseno.md](39-estados-criticos-consistentes-recuperacion-segura-diseno.md) | M | Refinamiento de estados de carga, error, sesión vencida, denegación y recuperación segura; pendiente de aprobación PO, sin UI ni flujos |
+| HU-TC-033 | [39-politica-fichaje-propia-explicable-discovery.md](39-politica-fichaje-propia-explicable-discovery.md) | M | Refinement de política efectiva propia, explicable y read-only; sin cambiar fichaje, permisos, datos ni el NO-GO de S15 |
 
 ## Base transversal publicada por S0
 
