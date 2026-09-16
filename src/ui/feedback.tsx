@@ -1,10 +1,9 @@
-import type { ReactNode } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 
 export type FeedbackKind = 'info' | 'success' | 'error' | 'warning';
 
-export function StatusNotice({ children, kind = 'info' }: { children: ReactNode; kind?: FeedbackKind }) {
-  return <p className={`status-notice status-notice--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>{children}</p>;
-}
+export const StatusNotice = forwardRef<HTMLParagraphElement, { children: ReactNode; kind?: FeedbackKind } & React.ComponentPropsWithoutRef<'p'>>(({ children, kind = 'info', ...props }, ref) => <p {...props} ref={ref} className={`status-notice status-notice--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>{children}</p>);
+StatusNotice.displayName = 'StatusNotice';
 
 export function StatusBadge({ children, kind = 'info' }: { children: ReactNode; kind?: FeedbackKind }) {
   return <span className={`status-badge status-badge--${kind}`}>{children}</span>;
