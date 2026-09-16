@@ -89,6 +89,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | S24 | [24-ausencias-y-permisos-discovery.md](24-ausencias-y-permisos-discovery.md) | M | Discovery de ausencias con decisión humana; sin implementación, datos reales, saldo ni interpretación laboral |
 | HU-TC-037 | [35-plantillas-turno-y-asignaciones-versionadas.md](35-plantillas-turno-y-asignaciones-versionadas.md) | M | Propuesta de plantillas versionadas y asignaciones futuras con instantánea, sin cuadrante ni cambio de cálculo |
 | HU-TC-038 | [36-cuadrante-semanal-accesible-diseno.md](36-cuadrante-semanal-accesible-diseno.md) | M | Propuesta de cuadrante semanal accesible por centro autorizado, sin operaciones de planificación |
+| HU-TC-039 | [37-balance-horas-informativo-diseno.md](37-balance-horas-informativo-diseno.md) | M | Propuesta de balance propio y cerrado, estrictamente informativo y sin bolsa de horas |
 
 ## Base transversal publicada por S0
 
