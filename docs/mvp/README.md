@@ -87,6 +87,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | ADR-0008 | [adr-0008-modulos-rrhh-activables.md](adr-0008-modulos-rrhh-activables.md) | S | Propuesta de módulos por empresa: activación auditable, denegación de servidor y preservación de historia |
 | S23 | [23-mi-jornada-planificada-read-only.md](23-mi-jornada-planificada-read-only.md) | M | Ruta y vista personal read-only sintéticas implementadas; pendiente revisión visual S14, sin planificación ni interpretación laboral |
 | S24 | [24-ausencias-y-permisos-discovery.md](24-ausencias-y-permisos-discovery.md) | M | Discovery de ausencias con decisión humana; sin implementación, datos reales, saldo ni interpretación laboral |
+| HU-TC-037 | [35-plantillas-turno-y-asignaciones-versionadas.md](35-plantillas-turno-y-asignaciones-versionadas.md) | M | Propuesta de plantillas versionadas y asignaciones futuras con instantánea, sin cuadrante ni cambio de cálculo |
 
 ## Base transversal publicada por S0
 
