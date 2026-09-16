@@ -14,7 +14,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 const fail = (value: unknown) => value instanceof Error ? value.message : 'No se pudo completar la operación.';
 
 function ConfigurationForm({ step, title, description, children, onSubmit, busy }: { step: string; title: string; description: string; children: ReactNode; onSubmit: (form: FormData) => Promise<void>; busy: boolean }) {
-  return <section className="configuration-card"><div className="configuration-card-heading"><span>{step}</span><div><h3>{title}</h3><p>{description}</p></div></div><form className="configuration-form" onSubmit={(event) => { event.preventDefault(); void onSubmit(new FormData(event.currentTarget)); }}>{children}<button disabled={busy}>{busy ? 'Guardando…' : 'Guardar cambios'}</button></form></section>;
+  return <details className="configuration-card" open={step === 'PASO 1'}><summary className="configuration-card-heading"><span>{step}</span><div><h3>{title}</h3><p>{description}</p></div></summary><form className="configuration-form" onSubmit={(event) => { event.preventDefault(); void onSubmit(new FormData(event.currentTarget)); }}>{children}<button disabled={busy}>{busy ? 'Guardando…' : 'Guardar cambios'}</button></form></details>;
 }
 
 function Select({ label, name, items, required = false, help }: { label: string; name: string; items: SelectItem[]; required?: boolean; help?: string }) {
