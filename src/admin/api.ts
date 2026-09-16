@@ -1,6 +1,7 @@
 import type { CorrectionRequest } from '@/corrections/contracts';
 type Envelope<T>={data:T;error?:{message?:string};correlationId?:string};
-async function request<T>(url:string,init?:RequestInit):Promise<T>{const response=await fetch(url,{credentials:'same-origin',...init});const body=await response.json().catch(()=>null) as Envelope<T>;if(!response.ok)throw new Error(body?.error?.message??'No se pudo completar la consulta.');return body.data;}
+export class AdminApiError extends Error { constructor(readonly status:number){super('No se pudo completar la consulta.');this.name='AdminApiError';} }
+async function request<T>(url:string,init?:RequestInit):Promise<T>{const response=await fetch(url,{credentials:'same-origin',...init});const body=await response.json().catch(()=>null) as Envelope<T>;if(!response.ok)throw new AdminApiError(response.status);return body.data;}
 export type Site={id:string;name:string;timeZone:string}; export type Employee={id:string;displayName:string};
 export const adminApi={
   sites:()=>request<Site[]>('/api/v1/sites'), employees:()=>request<Employee[]>('/api/v1/employees'),
