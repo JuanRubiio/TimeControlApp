@@ -91,6 +91,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | HU-TC-038 | [36-cuadrante-semanal-accesible-diseno.md](36-cuadrante-semanal-accesible-diseno.md) | M | Propuesta de cuadrante semanal accesible por centro autorizado, sin operaciones de planificación |
 | HU-TC-039 | [37-balance-horas-informativo-diseno.md](37-balance-horas-informativo-diseno.md) | M | Propuesta de balance propio y cerrado, estrictamente informativo y sin bolsa de horas |
 | E-TC-34 | [38-modulo-gestion-ausencias-opcional.md](38-modulo-gestion-ausencias-opcional.md) | M | Propuesta de módulo opcional de ausencias, con decisión humana y separación de fichajes/cálculo |
+| HU-TC-040 | [39-tipologias-ausencia-configurables-versionadas.md](39-tipologias-ausencia-configurables-versionadas.md) | M | Refinamiento bloqueado: catálogo cerrado, configurable por versión e instantánea histórica; sin saldo, datos sensibles ni efectos de jornada |
 
 ## Base transversal publicada por S0
 
