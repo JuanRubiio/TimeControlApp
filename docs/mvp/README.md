@@ -91,6 +91,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | HU-TC-038 | [36-cuadrante-semanal-accesible-diseno.md](36-cuadrante-semanal-accesible-diseno.md) | M | Propuesta de cuadrante semanal accesible por centro autorizado, sin operaciones de planificación |
 | HU-TC-039 | [37-balance-horas-informativo-diseno.md](37-balance-horas-informativo-diseno.md) | M | Propuesta de balance propio y cerrado, estrictamente informativo y sin bolsa de horas |
 | E-TC-34 | [38-modulo-gestion-ausencias-opcional.md](38-modulo-gestion-ausencias-opcional.md) | M | Propuesta de módulo opcional de ausencias, con decisión humana y separación de fichajes/cálculo |
+| HU-TC-036 | [39-estados-criticos-consistentes-recuperacion-segura-diseno.md](39-estados-criticos-consistentes-recuperacion-segura-diseno.md) | M | Refinamiento de estados de carga, error, sesión vencida, denegación y recuperación segura; pendiente de aprobación PO, sin UI ni flujos |
 | HU-TC-033 | [39-politica-fichaje-propia-explicable-discovery.md](39-politica-fichaje-propia-explicable-discovery.md) | M | Refinement de política efectiva propia, explicable y read-only; sin cambiar fichaje, permisos, datos ni el NO-GO de S15 |
 
 ## Base transversal publicada por S0
