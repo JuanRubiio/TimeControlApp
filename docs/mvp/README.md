@@ -84,6 +84,7 @@ Toda capacidad futura, aunque esté fuera de alcance, debe pasar por la ficha de
 | S20 | [20-disenos-referencia-capa-visual.md](20-disenos-referencia-capa-visual.md) | M | Finalizada: biblioteca de ocho referencias por rol y protocolo de diseño futuro; dirección no vinculante, primera consumidora S16, sin autorizar funcionalidades |
 | S22 | [22-fichaje-geolocalizado-y-diferenciacion-competitiva.md](22-fichaje-geolocalizado-y-diferenciacion-competitiva.md) | M | Discovery sintético y puerta de decisión; no implementa ni captura ubicación real |
 | ADR-0006 | [adr-0006-geolocalizacion-puntual.md](adr-0006-geolocalizacion-puntual.md) | S | Puertas DPO/laboral y rechazo por defecto antes de cualquier contrato de geolocalización |
+| ADR-0008 | [adr-0008-modulos-rrhh-activables.md](adr-0008-modulos-rrhh-activables.md) | S | Propuesta de módulos por empresa: activación auditable, denegación de servidor y preservación de historia |
 | S23 | [23-mi-jornada-planificada-read-only.md](23-mi-jornada-planificada-read-only.md) | M | Ruta y vista personal read-only sintéticas implementadas; pendiente revisión visual S14, sin planificación ni interpretación laboral |
 | S24 | [24-ausencias-y-permisos-discovery.md](24-ausencias-y-permisos-discovery.md) | M | Discovery de ausencias con decisión humana; sin implementación, datos reales, saldo ni interpretación laboral |
 
