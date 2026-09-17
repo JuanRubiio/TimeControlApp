@@ -9,7 +9,7 @@ import { AdminApiError } from '@/admin/api';
 import { adminApi, type Employee, type Site } from '@/admin/api';
 import type { CorrectionRequest } from '@/corrections/contracts';
 
-export function ManagerNav(){return <WorkspaceNav ariaLabel="Espacio de responsable" variant="manager" items={[{href:'/manager',label:'Mi centro'},{href:'/manager/team',label:'Equipo'},{href:'/manager/corrections',label:'Correcciones'},{href:'/manager/leave-requests',label:'Solicitudes'}]} />}
+export function ManagerNav(){return <WorkspaceNav ariaLabel="Espacio de responsable" variant="manager" items={[{href:'/manager',label:'Mi centro'},{href:'/manager/team',label:'Equipo'},{href:'/manager/planning',label:'Cuadrante'},{href:'/manager/corrections',label:'Correcciones'},{href:'/manager/leave-requests',label:'Solicitudes'}]} />}
 const kind=(status:CorrectionRequest['status'])=>status==='approved'?'success':status==='rejected'?'error':'warning';
 
 export function ManagerDashboard(){

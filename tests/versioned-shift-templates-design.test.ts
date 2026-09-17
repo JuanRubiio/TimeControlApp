@@ -13,6 +13,6 @@ describe('diseño de plantillas y asignaciones de turno', () => {
   it('rechaza conflictos y cambios retroactivos sin automatizarlos', () => {
     expect(design).toContain('Nunca se resuelve cortando, fusionando, desplazando, borrando ni priorizando automáticamente');
     expect(design).toContain('No se puede publicar, cancelar ni sustituir una asignación cuyo inicio ya haya transcurrido');
-    expect(design).toContain('Responsable | Preparar un borrador de propuesta');
+    expect(design).toContain('Responsable | Publicar asignaciones futuras sólo para relaciones vigentes de sus centros');
   });
 });
