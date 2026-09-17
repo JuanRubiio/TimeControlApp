@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 
 const migration = readFileSync('migrations/s033_202609161830_shift_planning_foundation.sql', 'utf8');
 const centerMigration = readFileSync('migrations/s034_202609171200_shift_planning_centers.sql', 'utf8');
+const calendarMigration = readFileSync('migrations/s035_202609171500_planning_calendar_exceptions.sql', 'utf8');
 const permissions = readFileSync('src/permissions/catalog.ts', 'utf8');
 
 describe('fundación de planificación futura', () => {
@@ -30,5 +31,13 @@ describe('fundación de planificación futura', () => {
     expect(centerMigration).toContain("'shift-planning.publish:scope'");
     expect(centerMigration).toContain("WHERE r.code='manager'");
     expect(permissions).toContain("'shift-planning.publish:scope'");
+  });
+
+  it('modela descanso y festivos explícitos sin alterar el registro horario', () => {
+    expect(calendarMigration).toContain('working_days jsonb');
+    expect(calendarMigration).toContain('planning_site_holidays');
+    expect(calendarMigration).toContain("'national','regional','local'");
+    expect(calendarMigration).toContain("'vacation','absence'");
+    expect(calendarMigration).not.toContain('time_events');
   });
 });
