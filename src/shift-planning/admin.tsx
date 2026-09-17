@@ -15,7 +15,8 @@ const timeZones = [
 
 const statusLabel = { draft: 'Borrador', published: 'Publicada', retired: 'Retirada' };
 const duration = (minutes: number) => `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${minutes % 60} min` : ''}`;
-const employmentLabel = (employment: Employment) => `${employment.displayName} · ${employment.siteName} · vigente desde ${employment.effectiveFrom}`;
+const displayDate = (value: string) => value.slice(0, 10).split('-').reverse().join('/');
+const employmentLabel = (employment: Employment) => `${employment.displayName} · ${employment.siteName} · vigente desde ${displayDate(employment.effectiveFrom)}`;
 
 async function request<T>(url: string, init?: RequestInit) {
   const response = await fetch(url, { credentials: 'same-origin', ...init });
