@@ -55,13 +55,14 @@ export function ShiftPlanningAdmin() {
 
   const publishTemplate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const payload = { name: String(form.get('name')), timeZone: String(form.get('timeZone')), segments: [{ start: String(form.get('start')), end: String(form.get('end')) }] };
     try {
       await request(versionSource ? `/api/v1/shift-planning/templates/${versionSource.id}/version` : '/api/v1/shift-planning/templates', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
       setNotice(versionSource ? 'Nueva versión publicada. Las asignaciones existentes no han cambiado.' : 'Plantilla publicada.');
       setVersionSource(undefined);
-      event.currentTarget.reset();
+      formElement.reset();
       await load();
     } catch (error) {
       setNotice(error instanceof Error ? error.message : 'No se pudo publicar la plantilla.');
@@ -80,11 +81,12 @@ export function ShiftPlanningAdmin() {
 
   const publishAssignment = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     try {
       await request('/api/v1/shift-planning/assignments', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ employmentId: String(form.get('employmentId')), templateId: String(form.get('templateId')), effectiveFrom: String(form.get('effectiveFrom')), reasonCode: 'initial_plan' }) });
       setNotice('Jornada futura publicada.');
-      event.currentTarget.reset();
+      formElement.reset();
       await load();
     } catch (error) {
       setNotice(error instanceof Error ? error.message : 'No se pudo publicar la jornada.');
