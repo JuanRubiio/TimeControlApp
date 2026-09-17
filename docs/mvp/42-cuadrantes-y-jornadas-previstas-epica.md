@@ -4,7 +4,7 @@
 
 ## Decisión PO para el MVP
 
-El **Responsable prepara** borradores sólo para relaciones vigentes de su centro. **Administración publica**, cancela o sustituye asignaciones futuras. La persona empleada ve únicamente su propia asignación publicada mediante una superficie separada. Esta segregación mantiene una revisión humana antes de hacer visible una planificación y evita que la rejilla se convierta en un mecanismo de control laboral.
+Administración crea, versiona y habilita plantillas por centro. El **Responsable publica** asignaciones futuras sólo para relaciones vigentes de su centro y sólo con las plantillas que Administración le ha habilitado. La persona empleada ve únicamente su propia asignación publicada mediante una superficie separada.
 
 No hay publicación automática, arrastrar y soltar obligatorio, resolución de solapes, rellenado de fichajes, cálculo de saldo, interpretación de convenio ni indicadores de productividad.
 
@@ -13,8 +13,8 @@ No hay publicación automática, arrastrar y soltar obligatorio, resolución de 
 La demo presenta un ciclo completo y explicable:
 
 1. Administración crea una versión de plantilla reutilizable y publicada.
-2. Un Responsable prepara un borrador para una relación vigente de su centro y una semana futura.
-3. Administración revisa el intervalo y publica o devuelve el borrador; un conflicto requiere una nueva decisión humana.
+2. Administración habilita la plantilla para el centro correspondiente.
+3. Un Responsable publica una asignación para una relación vigente de su centro; un conflicto requiere una nueva decisión humana.
 4. El Responsable consulta el cuadrante semanal de su centro con estados textuales.
 5. La persona empleada consulta sólo su planificación publicada, claramente diferenciada de la jornada registrada.
 
@@ -25,8 +25,8 @@ Una asignación publicada conserva una instantánea de la plantilla, zona IANA, 
 | Tramo | Propietario | Valor y límite |
 | --- | --- | --- |
 | Fundamento de plantillas y asignaciones | Administración | Versiones inmutables, intervalos semiabiertos y conflictos explícitos; no toca `RuleResolver` ni S5. |
-| Borrador por centro | Responsable | Propone para relaciones vigentes de su centro; no publica ni puede actuar fuera de ámbito. |
-| Revisión y publicación | Administración | Publica, cancela o sustituye sólo futuro; no reescribe planificación pasada. |
+| Habilitación por centro | Administración | Decide qué plantillas puede usar cada centro; no reescribe el historial. |
+| Publicación por centro | Responsable | Publica sólo futuro, dentro de su ámbito y con plantilla habilitada; no reescribe planificación pasada. |
 | Cuadrante de consulta | Responsable | Tabla semántica y alternativa lineal por semana/centro; no edita desde la cuadrícula. |
 | Vista propia publicada | Empleado | Referencia informativa propia; no muestra equipo, cobertura, fichajes ni balance. |
 | Balance informativo | Empleado, opcional | Lectura propia de días no en curso, fuera de la ruta crítica del cuadrante. |

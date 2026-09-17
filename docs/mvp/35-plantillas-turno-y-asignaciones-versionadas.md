@@ -39,11 +39,11 @@ No se puede publicar, cancelar ni sustituir una asignación cuyo inicio ya haya 
 
 | Actor | Puede | No puede |
 | --- | --- | --- |
-| Administración | Crear versiones de plantilla; publicar, cancelar o sustituir asignaciones futuras de empresas/centros autorizados; revisar conflictos. | Reescribir una instantánea publicada, publicar fuera de relación vigente o modificar evidencia de fichaje. |
-| Responsable | Preparar un borrador de propuesta sólo para relaciones vigentes de sus centros; consultar publicaciones de su ámbito cuando #84 lo habilite. | Crear plantilla global, publicar/cancelar/sustituir, actuar fuera de ámbito o autoasignarse. |
+| Administración | Crear, versionar y retirar plantillas; habilitar cada versión para centros autorizados; revisar conflictos. | Reescribir una instantánea publicada, publicar fuera de relación vigente o modificar evidencia de fichaje. |
+| Responsable | Publicar asignaciones futuras sólo para relaciones vigentes de sus centros y con plantillas habilitadas por Administración. | Crear o editar plantilla global, publicar fuera de ámbito, usar una plantilla no habilitada o autoasignarse. |
 | Empleado | Consultar sólo una jornada publicada propia cuando exista la vista autorizada. | Crear, aceptar, editar o rechazar turnos; consultar a terceras personas. |
 
-La recomendación es que Administración conserve la publicación inicial. Si PO desea delegarla a Responsable, debe aprobar una enmienda con segregación de funciones, ventanas de cambio, auditoría y revisión laboral; no basta con ampliar la interfaz.
+**Decisión PO aprobada (2026-09-17):** el Responsable publica la asignación. La segregación se conserva separando el catálogo empresarial (Administración) de la publicación operativa por centro (Responsable), verificando servidor, relación vigente, centro autorizado, plantilla habilitada, solape y auditoría.
 
 ## Validación de intervalo y conflicto
 
@@ -74,7 +74,7 @@ Antes de implementar se necesitan pruebas unitarias y PostgreSQL para versión i
 - **Asignar una plantilla por referencia mutable:** un cambio posterior altera el pasado sin evidencia.
 - **Resolver solapes automáticamente:** toma una decisión de planificación sin criterio humano ni explicación.
 - **Usar directamente la asignación en S5/S23:** cambia fuentes de cálculo/publicación sin acuerdo de sus sesiones propietarias.
-- **Permitir que Responsable publique desde el primer corte:** combina propuesta y publicación sin la segregación acordada.
+- **Permitir que Responsable publique fuera de su centro o con una plantilla no habilitada:** elude la separación aprobada entre catálogo administrativo y publicación operativa por centro.
 
 ## Criterios de salida
 

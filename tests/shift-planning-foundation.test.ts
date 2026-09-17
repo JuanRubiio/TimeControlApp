@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 
 const migration = readFileSync('migrations/s033_202609161830_shift_planning_foundation.sql', 'utf8');
+const centerMigration = readFileSync('migrations/s034_202609171200_shift_planning_centers.sql', 'utf8');
 const permissions = readFileSync('src/permissions/catalog.ts', 'utf8');
 
 describe('fundación de planificación futura', () => {
@@ -22,5 +23,12 @@ describe('fundación de planificación futura', () => {
     expect(migration).not.toContain('time_events');
     expect(migration).not.toContain('daily_calculation');
     expect(migration).not.toContain('rule_versions');
+  });
+
+  it('separa el catálogo de Administración de la publicación por centro', () => {
+    expect(centerMigration).toContain('planned_shift_template_sites');
+    expect(centerMigration).toContain("'shift-planning.publish:scope'");
+    expect(centerMigration).toContain("WHERE r.code='manager'");
+    expect(permissions).toContain("'shift-planning.publish:scope'");
   });
 });

@@ -6,7 +6,7 @@ export type ShiftSegment = { start: string; end: string };
 
 export type PlannedTemplate = {
   id: string; name: string; version: number; status: PlannedTemplateStatus;
-  timeZone: string; segments: ShiftSegment[]; expectedMinutes: number;
+  timeZone: string; segments: ShiftSegment[]; expectedMinutes: number; sites: { id: string; name: string }[];
 };
 
 export type PlanningEmployment = {
