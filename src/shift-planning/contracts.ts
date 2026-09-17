@@ -9,6 +9,10 @@ export type PlannedTemplate = {
   timeZone: string; segments: ShiftSegment[]; expectedMinutes: number;
 };
 
+export type PlanningEmployment = {
+  id: string; displayName: string; siteName: string; effectiveFrom: string; effectiveTo: string | null;
+};
+
 export type PlannedAssignment = {
   id: string; employmentId: string; siteId: string; templateId: string;
   effectiveFrom: string; effectiveTo: string | null; status: PlannedAssignmentStatus;
