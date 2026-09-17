@@ -3,7 +3,69 @@
 import { useEffect, useState } from 'react';
 import { AdminNav } from '@/admin/components';
 
-type Item={id:string;name?:string;displayName?:string;effectiveFrom?:string;status?:string};
-async function request<T>(url:string,init?:RequestInit){const res=await fetch(url,{credentials:'same-origin',...init});const body=await res.json().catch(()=>null);if(!res.ok)throw new Error(body?.error?.message??'No se pudo completar la operación.');return body.data as T;}
+type Item = { id: string; name?: string };
 
-export function ShiftPlanningAdmin(){const [status,setStatus]=useState('disabled');const [templates,setTemplates]=useState<Item[]>([]);const [employments,setEmployments]=useState<Item[]>([]);const [notice,setNotice]=useState('');const load=()=>Promise.all([request<{status:string}>('/api/v1/shift-planning/module'),request<Item[]>('/api/v1/shift-planning/templates'),request<Item[]>('/api/v1/employments')]).then(([module,items,relations])=>{setStatus(module.status);setTemplates(items);setEmployments(relations);}).catch(error=>setNotice(error instanceof Error?error.message:'No se pudo cargar la planificación.'));useEffect(()=>{void load();},[]);const activate=async()=>{try{await request('/api/v1/shift-planning/module',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({status:'active'})});setNotice('Módulo activado para este entorno sintético.');await load();}catch(error){setNotice(error instanceof Error?error.message:'No se pudo activar el módulo.');}};const template=async(form:FormData)=>{try{await request('/api/v1/shift-planning/templates',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:String(form.get('name')),timeZone:String(form.get('timeZone')),segments:[{start:String(form.get('start')),end:String(form.get('end'))}],expectedMinutes:Number(form.get('expectedMinutes'))})});setNotice('Plantilla publicada.');await load();}catch(error){setNotice(error instanceof Error?error.message:'No se pudo crear la plantilla.');}};const assignment=async(form:FormData)=>{try{await request('/api/v1/shift-planning/assignments',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({employmentId:String(form.get('employmentId')),templateId:String(form.get('templateId')),effectiveFrom:String(form.get('effectiveFrom')),reasonCode:'initial_plan'})});setNotice('Jornada futura publicada.');await load();}catch(error){setNotice(error instanceof Error?error.message:'No se pudo publicar la jornada.');}};return <main className="admin-shell"><AdminNav/><header><p className="eyebrow">PLANIFICACIÓN FUTURA</p><h1>Jornadas previstas</h1><p className="subtle">Referencia operativa futura: no modifica fichajes, cálculos ni derechos laborales.</p></header>{notice&&<p className="status-notice status-notice--info" role="status">{notice}</p>}<section className="admin-section"><h2>Estado del módulo</h2><p>Estado actual: <strong>{status}</strong>.</p>{status!=='active'&&<button onClick={()=>void activate()}>Activar para demo sintética</button>}</section><section className="admin-section"><h2>Plantilla publicada</h2><form className="employee-form" onSubmit={event=>{event.preventDefault();void template(new FormData(event.currentTarget));}}><label>Nombre<input name="name" required maxLength={160}/></label><label>Zona horaria<input name="timeZone" defaultValue="Europe/Madrid" required/></label><label>Inicio<input name="start" type="time" defaultValue="09:00" required/></label><label>Fin<input name="end" type="time" defaultValue="17:00" required/></label><label>Minutos previstos<input name="expectedMinutes" type="number" min="0" max="1440" defaultValue="480" required/></label><button>Publicar plantilla</button></form>{templates.length>0&&<ul className="admin-list">{templates.map(item=><li key={item.id}><strong>{item.name}</strong><span>{item.status}</span></li>)}</ul>}</section><section className="admin-section"><h2>Publicar jornada futura</h2><form className="employee-form" onSubmit={event=>{event.preventDefault();void assignment(new FormData(event.currentTarget));}}><label>Relación laboral<select name="employmentId" required><option value="">Seleccione una relación</option>{employments.map(item=><option key={item.id} value={item.id}>{item.id}</option>)}</select></label><label>Plantilla<select name="templateId" required><option value="">Seleccione una plantilla</option>{templates.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Vigente desde<input name="effectiveFrom" type="date" required/></label><button>Publicar jornada</button></form></section></main>}
+const timeZones = [
+  { value: 'Europe/Madrid', label: 'Madrid (Europa central)' },
+  { value: 'Atlantic/Canary', label: 'Islas Canarias (Europa occidental)' },
+  { value: 'Europe/Lisbon', label: 'Lisboa (Europa occidental)' },
+  { value: 'Europe/London', label: 'Londres (Europa occidental)' },
+] as const;
+
+async function request<T>(url: string, init?: RequestInit) {
+  const response = await fetch(url, { credentials: 'same-origin', ...init });
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(body?.error?.message ?? 'No se pudo completar la operación.');
+  return body.data as T;
+}
+
+export function ShiftPlanningAdmin() {
+  const [status, setStatus] = useState('disabled');
+  const [templates, setTemplates] = useState<Item[]>([]);
+  const [employments, setEmployments] = useState<Item[]>([]);
+  const [notice, setNotice] = useState('');
+
+  const load = () => Promise.all([
+    request<{ status: string }>('/api/v1/shift-planning/module'),
+    request<Item[]>('/api/v1/shift-planning/templates'),
+    request<Item[]>('/api/v1/employments'),
+  ]).then(([module, items, relations]) => {
+    setStatus(module.status);
+    setTemplates(items);
+    setEmployments(relations);
+  }).catch((error) => setNotice(error instanceof Error ? error.message : 'No se pudo cargar la planificación.'));
+
+  useEffect(() => { void load(); }, []);
+
+  const activate = async () => {
+    try {
+      await request('/api/v1/shift-planning/module', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ status: 'active' }) });
+      setNotice('Módulo activado para este entorno sintético.');
+      await load();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'No se pudo activar el módulo.');
+    }
+  };
+
+  const template = async (form: FormData) => {
+    try {
+      await request('/api/v1/shift-planning/templates', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: String(form.get('name')), timeZone: String(form.get('timeZone')), segments: [{ start: String(form.get('start')), end: String(form.get('end')) }], expectedMinutes: Number(form.get('expectedMinutes')) }) });
+      setNotice('Plantilla publicada.');
+      await load();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'No se pudo crear la plantilla.');
+    }
+  };
+
+  const assignment = async (form: FormData) => {
+    try {
+      await request('/api/v1/shift-planning/assignments', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ employmentId: String(form.get('employmentId')), templateId: String(form.get('templateId')), effectiveFrom: String(form.get('effectiveFrom')), reasonCode: 'initial_plan' }) });
+      setNotice('Jornada futura publicada.');
+      await load();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'No se pudo publicar la jornada.');
+    }
+  };
+
+  return <main className="admin-shell"><AdminNav /><header><p className="eyebrow">PLANIFICACIÓN FUTURA</p><h1>Jornadas previstas</h1><p className="subtle">Referencia operativa futura: no modifica fichajes, cálculos ni derechos laborales.</p></header>{notice && <p className="status-notice status-notice--info" role="status">{notice}</p>}<section className="admin-section"><h2>Estado del módulo</h2><p>Estado actual: <strong>{status}</strong>.</p>{status !== 'active' && <button onClick={() => void activate()}>Activar para demo sintética</button>}</section><section className="admin-section"><h2>Publicar plantilla</h2><form className="employee-form" onSubmit={(event) => { event.preventDefault(); void template(new FormData(event.currentTarget)); }}><label>Nombre<input name="name" required maxLength={160} /></label><label>Zona horaria<select name="timeZone" defaultValue="Europe/Madrid" required>{timeZones.map((timeZone) => <option key={timeZone.value} value={timeZone.value}>{timeZone.label}</option>)}</select></label><label>Inicio<input name="start" type="time" defaultValue="09:00" required /></label><label>Fin<input name="end" type="time" defaultValue="17:00" required /></label><label>Minutos previstos<input name="expectedMinutes" type="number" min="0" max="1440" defaultValue="480" required /></label><button>Publicar plantilla</button></form></section><section className="admin-section"><h2>Publicar jornada futura</h2><form className="employee-form" onSubmit={(event) => { event.preventDefault(); void assignment(new FormData(event.currentTarget)); }}><label>Relación laboral<select name="employmentId" required><option value="">Seleccione una relación</option>{employments.map((item) => <option key={item.id} value={item.id}>{item.id}</option>)}</select></label><label>Plantilla<select name="templateId" required><option value="">Seleccione una plantilla</option>{templates.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Vigente desde<input name="effectiveFrom" type="date" required /></label><button>Publicar jornada</button></form></section></main>;
+}
