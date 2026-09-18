@@ -6,7 +6,9 @@ const source = (file: string) => readFileSync(resolve(process.cwd(), file), 'utf
 
 describe('transición global entre rutas', () => {
   it('envuelve cada vista de App Router en una transición de entrada', () => {
-    expect(source('src/app/template.tsx')).toContain('className="route-transition"');
+    const template = source('src/app/template.tsx');
+    expect(template).toContain('usePathname');
+    expect(template).toContain('key={pathname} className="route-transition"');
   });
 
   it('respeta la preferencia de reducción de movimiento', () => {
