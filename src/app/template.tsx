@@ -1,5 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 export default function RouteTemplate({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <div className="route-transition">{children}</div>;
+  const pathname = usePathname();
+
+  return <div key={pathname} className="route-transition">{children}</div>;
 }

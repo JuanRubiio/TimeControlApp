@@ -1,5 +1,5 @@
 import { describe,expect,it } from 'vitest';
-import { addDays,homeDay,weekStart } from '../src/employee-home/contracts';
+import { addDays,homeComparison,homeDay,weekStart } from '../src/employee-home/contracts';
 import type { PublishedWorkday } from '../src/time-calculation/contracts';
 
 const published=(date:string):PublishedWorkday=>({laborDate:date,effectiveTimeZone:'Europe/Madrid',evidence:{status:'no_evidence',laborDate:null},schedule:{ruleVersionId:'rule',effectiveFrom:'2026-01-01',effectiveTo:null,timeZone:'Europe/Madrid',expectedMinutes:480,calendar:{id:'calendar',name:'Calendario demo',timeZone:'Europe/Madrid',workingDays:[1,2,3,4,5],holidays:[]},shift:{id:'shift',name:'Diurno',segments:[{start:'09:00',end:'17:00'}]}}});
@@ -17,5 +17,12 @@ describe('inicio personal de empleado',()=>{
   });
   it('no inventa una comparación sin jornada publicada',()=>{
     expect(homeDay('2026-09-20',null,null,[],[])).toMatchObject({kind:'no_schedule',expectedMinutes:null,effectiveMinutes:null});
+  });
+  it('sólo destaca el cumplimiento de jornadas programadas ya finalizadas',()=>{
+    const base={date:'2026-09-17',kind:'schedule' as const,label:'09:00–17:00',expectedMinutes:480};
+    expect(homeComparison({...base,effectiveMinutes:480},'2026-09-18')).toBe('met_or_exceeded');
+    expect(homeComparison({...base,effectiveMinutes:470},'2026-09-18')).toBe('below');
+    expect(homeComparison({...base,effectiveMinutes:470},'2026-09-17')).toBeNull();
+    expect(homeComparison({...base,kind:'rest',effectiveMinutes:0},'2026-09-18')).toBeNull();
   });
 });
