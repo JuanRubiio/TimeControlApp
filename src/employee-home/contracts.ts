@@ -3,9 +3,16 @@ import type { PersistedDailyCalculation, PublishedWorkday } from '@/time-calcula
 export type EmployeeHomeDayKind='schedule'|'rest'|'holiday'|'vacation'|'absence'|'no_schedule';
 export type EmployeeHomeDay={date:string;kind:EmployeeHomeDayKind;label:string;expectedMinutes:number|null;effectiveMinutes:number|null};
 export type EmployeeHome={today:string;week:EmployeeHomeDay[];calendar:EmployeeHomeDay[];upcoming:EmployeeHomeDay[]};
+export type EmployeeHomeComparison='met_or_exceeded'|'below'|null;
 
 export const addDays=(date:string,offset:number)=>{const value=new Date(`${date}T12:00:00.000Z`);value.setUTCDate(value.getUTCDate()+offset);return value.toISOString().slice(0,10);};
 export const weekStart=(date:string)=>addDays(date,-((new Date(`${date}T12:00:00.000Z`).getUTCDay()+6)%7));
+
+/** Una comparación sólo se considera cerrada una vez que la fecha laboral ha pasado. */
+export function homeComparison(day:EmployeeHomeDay,today:string):EmployeeHomeComparison{
+  if(day.kind!=='schedule'||day.date>=today||day.effectiveMinutes===null||day.expectedMinutes===null)return null;
+  return day.effectiveMinutes>=day.expectedMinutes?'met_or_exceeded':'below';
+}
 
 type Holiday={date:string;type:'national'|'regional'|'local'};
 type Leave={fromDate:string;toDate:string;category:'vacation'|'absence'};

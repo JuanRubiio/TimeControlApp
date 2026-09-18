@@ -92,6 +92,8 @@ body .employee-home__day time,body .employee-home__day span,body .employee-home_
 body .employee-home__day--holiday,body .employee-home__day--vacation{border-left-color:var(--primary);background:var(--primary-soft)}
 body .employee-home__day--absence{border-left-color:var(--warning);background:var(--warning-bg)}
 body .employee-home__day--rest,body .employee-home__day--no_schedule{border-left-color:var(--line-strong);background:var(--surface-subtle);color:var(--muted)}
+body .employee-home__comparison--met_or_exceeded{color:#257451;font-weight:850}
+body .employee-home__comparison--below{color:#ad3d36;font-weight:850}
 body .employee-section--collapsible>summary:after{color:var(--ink)}
 body .employee-section--collapsible>summary:focus-visible{outline-color:var(--focus)}
 body .planning-grid__assigned span{background:var(--primary-soft);color:var(--ink)}
