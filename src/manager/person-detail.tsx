@@ -1,0 +1,20 @@
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { minutes } from '@/admin/presentation';
+import { AdminApiError } from '@/admin/api';
+import { LoadingBlock, StatusBadge } from '@/ui/feedback';
+import { ReadRecoveryNotice } from '@/ui/read-recovery-notice';
+import { managerApi, type TeamPersonDetail } from './api';
+import { ManagerNav } from './components';
+
+const correctionKind={pending:'warning',approved:'success',rejected:'error'} as const;
+const leaveKind={pending:'warning',approved:'success',rejected:'error',cancelled:'info'} as const;
+const leaveLabel:Record<TeamPersonDetail['leaveRequests'][number]['category'],string>={general_request:'Solicitud general',personal_management:'Gestión personal',availability_adjustment:'Disponibilidad',vacation:'Vacaciones',absence:'Ausencia'};
+
+export function ManagerPersonDetail({employeeId}:{employeeId:string}){
+  const [value,setValue]=useState<TeamPersonDetail>();const [failure,setFailure]=useState<unknown>();
+  const load=()=>{setFailure(undefined);managerApi.person(employeeId).then(setValue).catch(setFailure);};useEffect(()=>{void load();},[employeeId]);
+  return <main className="admin-shell"><ManagerNav/><header><p className="eyebrow">RESPONSABLE DE CENTRO</p><Link href="/manager/team">← Volver al equipo</Link><h1>{value?value.employee.displayName:'Detalle de persona'}</h1><p className="subtle">Historial operativo dentro de tu ámbito autorizado. No incluye comentarios personales, ubicación ni métricas de rendimiento.</p></header>{failure?<ReadRecoveryNotice status={failure instanceof AdminApiError?failure.status:undefined} onRetry={load}/>:!value?<LoadingBlock>Consultando el detalle operativo…</LoadingBlock>:<div className="manager-person"><section className="admin-section"><h2>Imputaciones</h2><p className="subtle">{value.site.name}. Tiempo efectivo frente a jornada publicada, cuando existe.</p>{value.workdays.length?<div className="planning-table-wrap"><table className="planning-table"><thead><tr><th>Fecha</th><th>Imputado</th><th>Jornada publicada</th><th>Estado</th></tr></thead><tbody>{value.workdays.map(day=><tr key={day.laborDate}><td>{day.laborDate}</td><td>{minutes(day.effectiveMinutes)}</td><td>{minutes(day.expectedMinutes)}</td><td>{day.incidents?<StatusBadge kind="warning">{day.incidents} {day.incidents===1?'incidencia':'incidencias'}</StatusBadge>:<StatusBadge kind="success">Sin incidencias</StatusBadge>}</td></tr>)}</tbody></table></div>:<p className="subtle">No hay imputaciones disponibles en tu ámbito.</p>}</section><section className="admin-section"><div className="section-heading"><div><h2>Correcciones</h2><p className="subtle">Historial de estado sin exponer el motivo de la persona.</p></div><Link href="/manager/corrections">Abrir bandeja</Link></div>{value.corrections.length?<ul className="admin-list">{value.corrections.map(item=><li key={item.id}><span><strong>{item.laborDate}</strong><small>Solicitud de corrección</small></span><StatusBadge kind={correctionKind[item.status]}>{item.status==='pending'?'Pendiente':item.status==='approved'?'Aprobada':'Rechazada'}</StatusBadge>{item.status==='pending'&&<Link href={`/manager/corrections/${item.id}`}>Revisar</Link>}</li>)}</ul>:<p className="subtle">No hay correcciones disponibles en tu ámbito.</p>}</section><section className="admin-section"><div className="section-heading"><div><h2>Solicitudes</h2><p className="subtle">Fechas, categoría y estado; no se muestran comentarios personales.</p></div><Link href="/manager/leave-requests">Abrir bandeja</Link></div>{value.leaveRequests.length?<ul className="admin-list">{value.leaveRequests.map(item=><li key={item.id}><span><strong>{leaveLabel[item.category]}</strong><small>{item.fromDate} · {item.toDate}</small></span><StatusBadge kind={leaveKind[item.status]}>{item.status==='pending'?'Pendiente':item.status==='approved'?'Aprobada':item.status==='rejected'?'Rechazada':'Cancelada'}</StatusBadge>{item.status==='pending'&&<Link href="/manager/leave-requests">Revisar</Link>}</li>)}</ul>:<p className="subtle">No hay solicitudes disponibles en tu ámbito.</p>}</section></div>}</main>;
+}
