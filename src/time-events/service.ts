@@ -20,7 +20,7 @@ function kioskPinPepper(){ if(!config.KIOSK_PIN_PEPPER) throw new Error('KIOSK_P
 const pinLookup=(pin:string)=>createHmac('sha256',kioskPinPepper()).update(pin).digest('hex');
 const fingerprint=(eventType:TimeEventType,method:TimeEventMethod,kioskSessionId?:string)=>sha256(JSON.stringify({eventType,method,kioskSessionId:kioskSessionId??null}));
 const distanceMeters=(from:GeoVerification,to:{latitude:number;longitude:number})=>{const radians=(value:number)=>value*Math.PI/180;const dLat=radians(to.latitude-from.latitude);const dLon=radians(to.longitude-from.longitude);const a=Math.sin(dLat/2)**2+Math.cos(radians(from.latitude))*Math.cos(radians(to.latitude))*Math.sin(dLon/2)**2;return 6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));};
-const accuracyBand=(accuracy:number)=>accuracy<=25?'up_to_25m':accuracy<=50?'up_to_50m':'up_to_100m';
+const accuracyBand=(accuracy:number)=>accuracy<=25?'up_to_25m':accuracy<=50?'up_to_50m':accuracy<=100?'up_to_100m':'over_100m';
 
 async function appendAudit(client:pg.PoolClient,input:{actorType:'user'|'kiosk';actorId?:string;action:string;resourceType:string;resourceId?:string;result:'success'|'denied'|'failure';correlationId:string;changes?:Record<string,unknown>}) {
   await client.query('SELECT audit_append($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[config.ENVIRONMENT_ID,input.actorType,input.actorId??null,input.action,input.resourceType,input.resourceId??null,input.result,input.correlationId,JSON.stringify({}),JSON.stringify(input.changes??{})]);
@@ -48,7 +48,7 @@ export async function recordEvent(principal:Principal,eventType:TimeEventType,de
       if(!geo || !['clock_in','clock_out'].includes(eventType)) throw new Error('GEO_EVENT_UNSUPPORTED');
       geoPolicy=await activeGeoPolicy(employment.employmentId,laborDate);
       if(!geoPolicy) throw new Error('GEO_POLICY_NOT_ACTIVE');
-      if(distanceMeters(geo,geoPolicy)>geoPolicy.radiusMeters+geo.accuracy) throw new Error('GEO_OUTSIDE_AUTHORIZED_ZONE');
+      if(distanceMeters(geo,geoPolicy)>geoPolicy.radiusMeters) throw new Error('GEO_OUTSIDE_AUTHORIZED_ZONE');
     }
     const rule=await new PostgresRuleResolver().resolve({occurredAt,effectiveTimeZone:employment.effectiveTimeZone,scopes:employment.scopes});
     if(!rule) throw new Error('RULE_VERSION_UNRESOLVABLE');
