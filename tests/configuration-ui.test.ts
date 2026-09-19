@@ -42,6 +42,12 @@ describe('S16 configuración guiada',()=>{
     expect(map).toContain("marker.on('dragend'");
     expect(ui).not.toContain('Ajustar coordenadas con precisión');
   });
+  it('mantiene la bandera de atribución de Leaflet a tamaño de icono',()=>{
+    const css=readFileSync('src/app/globals.css','utf8');
+    expect(css).toContain('.leaflet-attribution-flag');
+    expect(css).toContain('max-width:1em!important');
+    expect(css).toContain('max-height:.6669em!important');
+  });
   it('mantiene controles y guardado aislados por bloque',()=>{
     expect(ui).toContain('const [busyForm, setBusyForm]');
     expect(ui).toContain("busyForm === 'zone'");
