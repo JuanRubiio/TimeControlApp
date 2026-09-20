@@ -36,10 +36,11 @@
 1. `Intake` a `Refinamiento`: existe evidencia mínima y no contiene datos reales.
 2. `Pendiente aprobación PO` a `Diseño/ADR`: PO aprueba objetivo, exclusiones y riesgo.
 3. `Lista para desarrollo` a `En desarrollo`: contrato con pruebas, propietario de módulos y rama propuesta.
-4. `En revisión`/`QA`: PR con commits publicados y checks ejecutados.
-5. `Lista para merge`: revisiones requeridas sin hallazgos abiertos y PO informado de riesgo residual.
-6. `Merged` no equivale a `Desplegada`; despliegue exige autoridad de entorno y S15/Go-No-Go cuando aplique.
-7. `Cerrada`: PO valida resultado y aprendizaje; las decisiones pendientes quedan en nuevo Issue, no enterradas en comentarios.
+4. `En desarrollo` a `En revisión`: la rama está publicada y la PR enlaza la Issue, los commits, las pruebas y la documentación proporcional.
+5. `En revisión` a `QA/validación`: revisión técnica recibida; QA registra evidencia funcional y E2E cuando el cambio atraviesa un flujo integrado. Un fallo vuelve a `En desarrollo` o queda `Bloqueada` con causa.
+6. `QA/validación` a `Lista para merge`: revisiones requeridas sin hallazgos abiertos y PO informado de riesgo residual.
+7. `Merged` no equivale a `Desplegada`; pasa primero por `Pendiente despliegue autorizado`, y el despliegue exige autoridad de entorno y S15/Go-No-Go cuando aplique.
+8. `Cerrada`: tras `Validación producto`, el PO valida resultado y aprendizaje; las decisiones pendientes quedan en nuevo Issue, no enterradas en comentarios.
 
 ## Permisos y contenido
 
