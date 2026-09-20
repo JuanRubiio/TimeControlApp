@@ -18,7 +18,7 @@ La aprobación para desarrollar se registra en la Issue y se refleja en el Proje
 
 ## Inicio de desarrollo
 
-`Issue | rama codex/issue-<número>-<tema> | rama base y SHA | implementador | archivos/áreas previstas | contrato/ADR | plan de pruebas | inicio`.
+`Issue | rama codex/<sesión>-<tema> (incluye número de Issue cuando sea útil) | rama base y SHA | implementador | archivos/áreas previstas | contrato/ADR | plan de pruebas | inicio`.
 
 Publicar este registro como comentario breve en la Issue antes o al iniciar la edición. Si la Issue no está `Lista para desarrollo`, no se crea una rama de entrega.
 
@@ -26,13 +26,13 @@ Publicar este registro como comentario breve en la Issue antes o al iniciar la e
 
 `Closes #<número>`; resumen; alcance y exclusiones; decisiones/ADRs; riesgo y rollback; pruebas ejecutadas; evidencia de QA/E2E; cambios de datos/configuración; checklist de documentación.
 
-El título y cuerpo de la PR se preparan como Markdown legible y se revisan antes de publicar. Tras crearla, verificar que enlaza la Issue correcta, que los checks se ven y que el Project conserva la trazabilidad; la creación de una PR mueve la Issue a `En revisión`, no a `Merged`.
+El título y cuerpo de la PR se preparan como Markdown legible y se revisan antes de publicar. Tras crearla, verificar que enlaza la Issue correcta, que los checks se ven y que el Project conserva la trazabilidad; la creación de una PR mueve la Issue a `En revisión`, nunca directamente a `Merged`.
 
 ## Validación funcional y E2E
 
 `Issue/PR | entorno sintético | precondiciones | recorrido de usuario | datos de prueba | resultado esperado | resultado real | evidencia/enlace | responsable | fecha | incidencias`.
 
-La E2E es obligatoria cuando el cambio atraviesa interfaz, API, persistencia, autorización, integración o un flujo crítico. Si no aplica, QA deja una justificación explícita y la alternativa de validación. Un fallo abre o enlaza una Issue, devuelve la tarjeta a `En desarrollo` y bloquea el merge hasta que la evidencia se actualice.
+La E2E es obligatoria cuando el cambio atraviesa interfaz, API, persistencia, autorización, integración o un flujo crítico. Si no aplica, QA deja una justificación explícita y la alternativa de validación. Un fallo abre o enlaza una Issue, devuelve la tarjeta a `En desarrollo` y bloquea el merge hasta que la evidencia se actualice. Una validación satisfactoria se registra en `QA/validación` antes de `Lista para merge`.
 
 ## Autorización de merge
 

@@ -11,6 +11,7 @@
 - **Estado Kanban / límite WIP:**
 - **Propietario de producto / responsable de historia:**
 - **Fuente de evidencia / hipótesis:**
+- **Decisión PO (estado, alcance/riesgo aceptado y fecha):**
 
 ## Historia
 
@@ -60,6 +61,7 @@ Como **[rol autorizado]**, quiero **[acción concreta]**, para **[beneficio obse
 ## Plan de pruebas y Definition of Done
 
 - Unitarias / integración / contrato / E2E:
+- Justificación y alternativa si E2E no aplica:
 - Autorización, aislamiento, DST/UTC, idempotencia, auditoría y regresión:
 - Revisión manual UX/a11y:
 - Revisión seguridad/privacidad/operación:
@@ -77,6 +79,8 @@ Una historia está **Done** sólo si: criterios satisfechos; exclusiones preserv
 | Commits | | | |
 | Pull request y revisiones | | | |
 | Checks/CI/pruebas | | | |
+| Validación QA/E2E | | | |
+| Autorización de merge | | | |
 | Despliegue autorizado | | | |
 | Validación de producto | | | |
 | Cierre/aprendizaje | | | |

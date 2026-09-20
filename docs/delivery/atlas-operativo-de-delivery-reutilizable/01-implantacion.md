@@ -10,7 +10,7 @@ Nombrar `[PO]`, responsable técnico, responsable de seguridad/privacidad y auto
 
 Evaluar GitHub Issues y Projects (u otra combinación equivalente) por coste total, privacidad, residencia, control de acceso, auditoría, exportación, API y relación con Git. Configurar sólo tras aprobación: tipos, campos, estados, WIP y permisos humanos. Mantener una sola fuente operativa de estado.
 
-Crear un Project con estos estados, sin saltos implícitos: `Intake`, `Refinamiento`, `Lista para desarrollo`, `En desarrollo`, `En revisión`, `Lista para merge`, `Merged`, `Desplegada` y `Cerrada`. Definir también `Bloqueada` como señal transversal (campo o etiqueta), con causa, propietario y siguiente revisión.
+Crear un Project con estos estados, sin saltos implícitos: `Intake`, `Refinamiento`, `Pendiente aprobación PO`, `Diseño/ADR`, `Lista para desarrollo`, `En desarrollo`, `En revisión`, `QA/validación`, `Lista para merge`, `Merged`, `Pendiente despliegue autorizado`, `Desplegada`, `Validación producto` y `Cerrada`. Definir también `Bloqueada` y `Rechazada/Aplazada` como estados de excepción, con causa, propietario y siguiente revisión.
 
 Configurar como mínimo los campos `Tipo`, `Prioridad`, `Tamaño`, `Riesgo`, `Dominio propietario`, `Decisión PO`, `Revisión técnica`, `QA/E2E`, `Seguridad/privacidad`, `Dependencia` y `Estado`. Usar etiquetas sólo como ayuda visual; los campos y enlaces son la trazabilidad operativa.
 

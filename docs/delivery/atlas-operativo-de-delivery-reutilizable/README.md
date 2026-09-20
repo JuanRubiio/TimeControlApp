@@ -9,15 +9,16 @@ Un equipo dispone de un backlog gobernable, una entrada manual de trabajo, histo
 ## Flujo operativo de referencia
 
 ```text
-Intake → Refinamiento → Lista para desarrollo → En desarrollo → En revisión
-  ↑          │                 │                     │               │
-  └─ PO pide completar/        └─ PO autoriza        └─ PR +         └─ validación
-     rechaza                     inicio                 pruebas         técnica y E2E
-                                                                    ↓
-                                                    Lista para merge → Merged → Desplegada/Cerrada
+Intake → Refinamiento → Pendiente aprobación PO → Diseño/ADR → Lista para desarrollo
+                                         │                                  │
+                                         └─ PO aprueba alcance/riesgo         └─ rama y desarrollo
+                                                                                ↓
+En revisión → QA/validación → Lista para merge → Merged → Pendiente despliegue autorizado
+     │              │                                                        ↓
+     └─ PR          └─ validación técnica y E2E                 Desplegada → Validación producto → Cerrada
 ```
 
-El Project refleja el estado de delivery; la Issue conserva el contexto y decisiones; Git y la PR contienen el cambio y su evidencia. Ninguna flecha es automática por defecto. El PO decide prioridad, alcance, entrada a desarrollo, aceptación de producto y cierre; la persona autorizada para integrar decide el merge tras las verificaciones requeridas.
+El Project refleja el estado de delivery; la Issue conserva el contexto y decisiones; Git y la PR contienen el cambio y su evidencia. `Bloqueada` y `Rechazada/Aplazada` son estados de excepción visibles desde cualquier fase. Ninguna flecha es automática por defecto. El PO decide prioridad, alcance, entrada a desarrollo, aceptación de producto y cierre; la persona autorizada para integrar decide el merge tras las verificaciones requeridas.
 
 ## Cómo usar este Atlas en un proyecto nuevo
 

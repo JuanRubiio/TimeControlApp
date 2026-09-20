@@ -28,7 +28,8 @@
 
 - Criterios/controles que debe comprobar:
 - Pruebas o evidencia requerida:
+- ¿Requiere E2E? recorrido integrado, excepción justificada o no aplica:
 - Receptor del hand-off:
 - Máximo de reintentos: dos; después dividir, mejorar evidencia o escalar.
 - Escalar a: PO / arquitectura / seguridad-privacidad / SRE (según corresponda).
-- Estado Kanban recomendado al terminar: `puede avanzar` / `bloqueada` / `requiere decisión PO`.
+- Estado Kanban recomendado al terminar y evidencia para la transición: uno de los estados configurados del Project; si no puede avanzar, `Bloqueada` con causa, desbloqueador y fecha de revisión.

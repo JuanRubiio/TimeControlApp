@@ -95,8 +95,8 @@ Estado: `Lista para desarrollo`.
 ### 4. Desarrollar en rama aislada
 
 1. Comprobar `git status --short`, rama, base y trabajo ajeno; no descartar ni mezclar cambios.
-2. Partir de la base identificada y crear `codex/<sesion>-<tema>`.
-3. Actualizar en la historia los archivos previstos y el responsable.
+2. Partir de la base identificada y crear `codex/<sesion>-<tema>`; incluir el número de Issue cuando ayude a la trazabilidad.
+3. Registrar en la Issue la rama, base/SHA, archivos previstos y responsable antes o al iniciar la edición.
 4. Trabajar mediante commits pequeños, coherentes y reversibles; separar migración, implementación, pruebas y documentación cuando proceda.
 5. Usar únicamente fixtures sintéticos. No añadir `.env`, tokens, dumps, artefactos locales ni información de cliente.
 6. Ejecutar pruebas proporcionales, TypeScript/build cuando aplique y `git diff --check`; inspeccionar el diff antes de preparar el commit.
@@ -106,7 +106,7 @@ Estado: `En desarrollo` → `En revisión`.
 
 ### 5. Revisar y validar
 
-El revisor independiente parte de contrato, diff, pruebas y ADR, no de una conclusión del implementador. QA comprueba criterios positivos y negativos, aislamiento, regresión y evidencia sintética. UX valida teclado, foco, mensajes, responsive y copy cuando corresponde. Seguridad/privacidad revisa minimización, autorización en servidor, secretos, logs, auditoría, retención/exportación e implicaciones de proveedor cuando aplica.
+El revisor independiente parte de contrato, diff, pruebas y ADR, no de una conclusión del implementador. QA comprueba criterios positivos y negativos, aislamiento, regresión y evidencia sintética; ejecuta o revisa una E2E cuando el cambio atraviesa interfaz, API, persistencia, autorización, integración o un flujo crítico. Si E2E no aplica, deja la justificación y la validación alternativa. UX valida teclado, foco, mensajes, responsive y copy cuando corresponde. Seguridad/privacidad revisa minimización, autorización en servidor, secretos, logs, auditoría, retención/exportación e implicaciones de proveedor cuando aplica.
 
 Los hallazgos se registran como comentarios o Issues vinculados, con severidad y evidencia. Sólo los resueltos o aceptados de forma explícita por PO pueden dejar pasar la puerta. Un riesgo alto no se «resuelve» cerrando el Issue: necesita control o aceptación documentada.
 
