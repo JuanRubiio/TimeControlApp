@@ -1,0 +1,12 @@
+export type OfficialHolidaySource={id:string;name:string;publisher:string;coverage:'national_regional'|'regional'|'local';territory:string;formats:readonly string[];url:string;reviewRequired:boolean;adapter:'catalogue'|'catalunya'|'castellon'};
+
+// Registro cerrado: la Administración elige una fuente conocida, nunca una URL
+// arbitraria. Cada adaptador valida su propio formato antes de proponer cambios.
+export const OFFICIAL_HOLIDAY_SOURCES:readonly OfficialHolidaySource[]=[
+  {id:'boe-labour-calendar',name:'Calendario laboral estatal',publisher:'Ministerio de Trabajo y Economía Social · BOE',coverage:'national_regional',territory:'España',formats:['HTML','PDF'],url:'https://www.boe.es/buscar/doc.php?id=BOE-A-2025-21667',reviewRequired:true,adapter:'catalogue'},
+  {id:'euskadi-labour-calendar',name:'Calendario laboral de Euskadi',publisher:'Gobierno Vasco',coverage:'local',territory:'Euskadi',formats:['API REST','JSON','CSV','iCal'],url:'https://opendata.euskadi.eus/catalogo/-/calendario-laboral-de-euskadi-para-el-2026/',reviewRequired:false,adapter:'catalogue'},
+  {id:'catalunya-local-holidays',name:'Fiestas locales de Catalunya',publisher:'Generalitat de Catalunya',coverage:'local',territory:'Catalunya',formats:['JSON','CSV','XML'],url:'https://analisi.transparenciacatalunya.cat/api/v3/views/b4eh-r8up/query.json?accessType=DOWNLOAD',reviewRequired:false,adapter:'catalunya'},
+  {id:'castilla-leon-local-holidays',name:'Fiestas locales de Castilla y León',publisher:'Junta de Castilla y León',coverage:'local',territory:'Castilla y León',formats:['CSV'],url:'https://datosabiertos.jcyl.es/web/jcyl/risp/es/empleo/fiestas-locales/1284952783683-3.csv',reviewRequired:true,adapter:'catalogue'},
+  {id:'castellon-local-holidays',name:'Fiestas locales de Castellón',publisher:'Diputación Provincial de Castellón',coverage:'local',territory:'Castellón',formats:['API','JSON','CSV'],url:'https://dipcas.opendatasoft.com/api/v2/catalog/datasets/calendario-de-fiestas-locales/exports/json',reviewRequired:false,adapter:'castellon'},
+  {id:'galicia-labour-calendar',name:'Calendario laboral de Galicia',publisher:'Xunta de Galicia',coverage:'regional',territory:'Galicia',formats:['CSV','iCal','ODS','XLSX'],url:'https://abertos.xunta.gal/catalogo/economia-empresa-emprego/-/dataset/0684/calendario-laboral-2026/001/descarga-directa-ficheiro.csv',reviewRequired:true,adapter:'catalogue'}
+];
