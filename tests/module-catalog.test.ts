@@ -18,4 +18,16 @@ describe('module catalogue boundaries',()=>{
     expect(exportsRoute).toContain("reason:'S15_NOT_CLOSED'");
     expect(migration).toContain("'shift_planning','exports'");
   });
+  it('does not expose planning navigation until the module is confirmed active',()=>{
+    const admin=readFileSync('src/admin/components.tsx','utf8');
+    const manager=readFileSync('src/manager/components.tsx','utf8');
+    const availability=readFileSync('src/modules/ui.ts','utf8');
+    const configuration=readFileSync('src/configuration/components.tsx','utf8');
+    expect(admin).toContain("planningEnabled?[{href:'/admin/planning'");
+    expect(manager).toContain("planningEnabled?[{href:'/manager/planning'");
+    expect(manager).toContain("planningEnabled?managerRead<{holidays:ManagerHoliday[]}>");
+    expect(availability).toContain("const [active,setActive]=useState<string[]>([])");
+    expect(configuration).toContain('role="switch"');
+    expect(configuration).toContain('moduleAvailabilityChanged()');
+  });
 });
