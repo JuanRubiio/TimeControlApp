@@ -43,7 +43,7 @@ export async function recordEvent(principal:Principal,eventType:TimeEventType,de
     const employment=await new PostgresEmploymentScopeProvider().contextForEmployee(principal.employeeId,occurredAt);
     if(!employment) throw new Error('EMPLOYMENT_NOT_ACTIVE');
     const laborDate=localDateAt(occurredAt,employment.effectiveTimeZone);
-    let geoPolicy:{id:string;zoneId:string;latitude:number;longitude:number;radiusMeters:number}|null=null;
+    let geoPolicy:{id:string|null;zoneId:string;latitude:number;longitude:number;radiusMeters:number}|null=null;
     if(principal.method==='geo_punctual') {
       if(!geo || !['clock_in','clock_out'].includes(eventType)) throw new Error('GEO_EVENT_UNSUPPORTED');
       geoPolicy=await activeGeoPolicy(employment.employmentId,laborDate);
