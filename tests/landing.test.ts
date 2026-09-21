@@ -7,6 +7,7 @@ const styles = readFileSync('src/app/globals.css', 'utf8');
 describe('landing pública', () => {
   it('ofrece información y un acceso, sin captación pública', () => {
     expect(page).toContain('href="/login"');
+    expect(page).toContain('href="/transparencia"');
     expect(page).toContain('No realiza seguimiento continuo de ubicación.');
     expect(page).not.toMatch(/<form|newsletter|analytics/i);
   });
