@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe,it,expect } from 'vitest';
 import { PRODUCT_MODULES,installed } from '@/modules/catalog';
-describe('module catalogue',()=>{it('uses stable identifiers and does not treat a disabled module as installed',()=>{expect(PRODUCT_MODULES.map(module=>module.key)).toEqual(['shift_planning','exports']);expect(installed('disabled')).toBe(false);expect(installed('active')).toBe(true);});it('keeps exports visibly locked even when it can be installed',()=>{expect(PRODUCT_MODULES.find(module=>module.key==='exports')?.locked).toBe(true);});});
+describe('module catalogue',()=>{it('uses stable identifiers and does not treat a disabled module as installed',()=>{expect(PRODUCT_MODULES.map(module=>module.key)).toEqual(['shift_planning','informative_hour_balance','exports']);expect(installed('disabled')).toBe(false);expect(installed('active')).toBe(true);});it('keeps exports visibly locked even when it can be installed',()=>{expect(PRODUCT_MODULES.find(module=>module.key==='exports')?.locked).toBe(true);});});
 
 describe('module catalogue boundaries',()=>{
   const planningHttp=readFileSync('src/shift-planning/http.ts','utf8');

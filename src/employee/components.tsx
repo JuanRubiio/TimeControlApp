@@ -14,6 +14,7 @@ import { LoadingBlock, StatusBadge, StatusNotice } from '@/ui/feedback';
 import { ReadRecoveryNotice } from '@/ui/read-recovery-notice';
 import { UiAction } from '@/ui/controls';
 import { WorkspaceNav } from '@/ui/workspace-nav';
+import { useModuleEnabled } from '@/modules/ui';
 import { EmployeeApiError, employeeApi } from './api';
 import { actionLabels, actionsForCurrentStatus, calendarDayStatus, dateTime, dayStatus, errorMessage, eventLabels, hasHistoricalOpenEvent, historicalCalculationMessage, laborDate, minutes, type HistoricalCalculationState } from './presentation';
 
@@ -25,7 +26,8 @@ type DashboardSnapshot={events:TimeEvent[];calculation:PersistedDailyCalculation
 let dashboardSnapshot:DashboardSnapshot|undefined;
 
 export function EmployeeNav() {
-  return <WorkspaceNav ariaLabel="Navegación de empleado" variant="employee" items={[{href:'/employee',label:'Hoy'},{href:'/employee/history',label:'Historial'},{href:'/employee/corrections',label:'Correcciones'},{href:'/employee/leave-requests',label:'Solicitudes'}]} />;
+  const balanceEnabled=useModuleEnabled('informative_hour_balance');
+  return <WorkspaceNav ariaLabel="Navegación de empleado" variant="employee" items={[{href:'/employee',label:'Hoy'},{href:'/employee/history',label:'Historial'},...(balanceEnabled?[{href:'/employee/monthly-review',label:'Revisión mensual'}]:[]),{href:'/employee/corrections',label:'Correcciones'},{href:'/employee/leave-requests',label:'Solicitudes'}]} />;
 }
 
 export function Events({ events, linkCorrections = false }: { events: TimeEvent[]; linkCorrections?: boolean }) {

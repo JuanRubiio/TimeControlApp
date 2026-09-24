@@ -1,0 +1,8 @@
+import { NextRequest } from 'next/server';
+import { currentActor } from '@/auth/service';
+import { config } from '@/shared/config';
+import { correlationId } from '@/shared/correlation';
+import { data,monthlyReviewFailure,monthlyReviewInput,reviewKey } from '@/monthly-review/http';
+import { defaultMonthlyPeriod,markMonthlyReview,monthlyReview } from '@/monthly-review/service';
+export async function GET(request:NextRequest){const cid=correlationId();const actor=await currentActor(request.cookies.get(config.SESSION_COOKIE_NAME)?.value??'');const raw=request.nextUrl.searchParams.get('period');if(raw){const parsed=monthlyReviewInput.safeParse({period:raw});if(!parsed.success)return monthlyReviewFailure(actor,cid,new Error('MONTHLY_REVIEW_PERIOD_INVALID'));try{return data(await monthlyReview(actor!,parsed.data.period),cid);}catch(value){return monthlyReviewFailure(actor,cid,value);}}try{return data(await monthlyReview(actor!,await defaultMonthlyPeriod(actor!)),cid);}catch(value){return monthlyReviewFailure(actor,cid,value);}}
+export async function POST(request:NextRequest){const cid=correlationId();const actor=await currentActor(request.cookies.get(config.SESSION_COOKIE_NAME)?.value??'');const parsed=monthlyReviewInput.safeParse(await request.json().catch(()=>null));const key=reviewKey.safeParse(request.headers.get('idempotency-key'));if(!parsed.success||!key.success)return monthlyReviewFailure(actor,cid,new Error('MONTHLY_REVIEW_PERIOD_INVALID'));try{return data(await markMonthlyReview(actor!,parsed.data.period,key.data,cid),cid,201);}catch(value){return monthlyReviewFailure(actor,cid,value);}}
