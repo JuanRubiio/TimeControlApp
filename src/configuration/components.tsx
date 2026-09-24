@@ -6,6 +6,7 @@ import { LoadingBlock, StatusBadge, StatusNotice } from '@/ui/feedback';
 import { configurationApi as api, type Calendar, type ClockingPolicy, type Company, type Employee, type Employment, type RuleVersion, type Shift, type Site, type SiteClockingPolicy, type WorkLocationZone, type WorkRule } from './api';
 import { RealZoneMap } from './real-zone-map';
 import { moduleAvailabilityChanged } from '@/modules/ui';
+import { AssistedOnboarding } from './assisted-onboarding';
 
 type Data = { company?: Company; sites: Site[]; employees: Employee[]; employments: Employment[]; zones: WorkLocationZone[]; policies: ClockingPolicy[]; sitePolicies: SiteClockingPolicy[]; calendars: Calendar[]; shifts: Shift[]; rules: WorkRule[]; versions: RuleVersion[] };
 type SelectItem = { id: string; name?: string; displayName?: string; label?: string };
