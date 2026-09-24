@@ -1,4 +1,6 @@
 import type { Employee } from '@/admin/api';
+import type { CorrectionRequest } from '@/corrections/contracts';
+import type { LeaveRequest } from '@/leave-requests/contracts';
 
 type Envelope<T>={data:T;error?:{message?:string}};
 export type TeamSnapshot={
@@ -18,4 +20,4 @@ async function request<T>(url:string):Promise<T>{
   return body.data;
 }
 
-export const managerApi={team:()=>request<{team:TeamSnapshot[]}>('/api/v1/manager/team').then(value=>value.team),person:(employeeId:string)=>request<{person:TeamPersonDetail}>(`/api/v1/manager/team/${encodeURIComponent(employeeId)}`).then(value=>value.person)};
+export const managerApi={team:()=>request<{team:TeamSnapshot[]}>('/api/v1/manager/team').then(value=>value.team),person:(employeeId:string)=>request<{person:TeamPersonDetail}>(`/api/v1/manager/team/${encodeURIComponent(employeeId)}`).then(value=>value.person),attention:()=>Promise.all([request<{corrections:CorrectionRequest[]}>('/api/v1/corrections'),request<{leaveRequests:LeaveRequest[]}>('/api/v1/leave-requests')]).then(([corrections,leaveRequests])=>({corrections:corrections.corrections,leaveRequests:leaveRequests.leaveRequests}))};
