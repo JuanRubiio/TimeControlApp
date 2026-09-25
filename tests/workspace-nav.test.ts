@@ -9,6 +9,7 @@ describe('shell autenticado', () => {
     expect(nav).toContain('WorkspaceNavItem');
     expect(nav).toContain('secondaryItems');
     expect(nav).toContain('workspace-nav__secondary');
+    expect(readFileSync('src/app/globals.css', 'utf8')).toContain('.workspace-nav__primary+.link-button{margin-top:auto}');
   });
 
   it('mantiene los menús declarativos, sin permisos de cliente', () => {
