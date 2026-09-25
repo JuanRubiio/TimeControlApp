@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe,it,expect } from 'vitest';
 import { PRODUCT_MODULES,installed } from '@/modules/catalog';
-describe('module catalogue',()=>{it('uses stable identifiers and does not treat a disabled module as installed',()=>{expect(PRODUCT_MODULES.map(module=>module.key)).toEqual(['shift_planning','informative_hour_balance','exports']);expect(installed('disabled')).toBe(false);expect(installed('active')).toBe(true);});it('keeps exports visibly locked even when it can be installed',()=>{expect(PRODUCT_MODULES.find(module=>module.key==='exports')?.locked).toBe(true);});});
+describe('module catalogue',()=>{it('uses stable identifiers and does not treat a disabled module as installed',()=>{expect(PRODUCT_MODULES.map(module=>module.key)).toEqual(['shift_planning','people_management','informative_hour_balance','exports']);expect(installed('disabled')).toBe(false);expect(installed('active')).toBe(true);});it('keeps exports visibly locked even when it can be installed',()=>{expect(PRODUCT_MODULES.find(module=>module.key==='exports')?.locked).toBe(true);});});
 
 describe('module catalogue boundaries',()=>{
   const planningHttp=readFileSync('src/shift-planning/http.ts','utf8');
@@ -29,5 +29,16 @@ describe('module catalogue boundaries',()=>{
     expect(availability).toContain("const [active,setActive]=useState<string[]>([])");
     expect(configuration).toContain('role="switch"');
     expect(configuration).toContain('moduleAvailabilityChanged()');
+  });
+  it('keeps person management out of configuration and behind its own enabled module',()=>{
+    const peoplePage=readFileSync('src/app/admin/people/page.tsx','utf8');
+    const peopleUi=readFileSync('src/admin/people-management.tsx','utf8');
+    const admin=readFileSync('src/admin/components.tsx','utf8');
+    expect(peoplePage).toContain("productModuleStatus('people_management')");
+    expect(peoplePage).toContain("redirect('/admin/configuration?module=people_management')");
+    expect(admin).toContain("useModuleEnabled('people_management')");
+    expect(peopleUi).toContain('Dar de baja');
+    expect(peopleUi).toContain('Editar persona');
+    expect(peopleUi).toContain('Crear personas');
   });
 });
