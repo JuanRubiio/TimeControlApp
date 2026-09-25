@@ -14,4 +14,12 @@ describe('gestión de personas',()=>{
     expect(ui).toContain('pero no una cuenta de acceso');
     expect(ui).toContain('flujo separado');
   });
+  it('espera la carga completa y prioriza el listado antes del alta',()=>{
+    const ui=readFileSync('src/admin/people-management.tsx','utf8');
+    expect(ui).toContain('const [sites,setSites]');
+    expect(ui).toContain('Cargando plantilla…');
+    expect(ui).toContain('<section className="admin-section"><div className="section-heading"><div><h2>Personas activas</h2>');
+    expect(ui).toContain('{showCreate&&<AssistedOnboarding');
+    expect(ui).toContain("showCreate?'Cerrar alta':'Nueva persona'");
+  });
 });
