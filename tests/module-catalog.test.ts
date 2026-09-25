@@ -26,7 +26,8 @@ describe('module catalogue boundaries',()=>{
     expect(admin).toContain("planningEnabled?[{href:'/admin/planning'");
     expect(manager).toContain("planningEnabled?[{href:'/manager/planning'");
     expect(manager).toContain("planningEnabled?managerRead<{holidays:ManagerHoliday[]}>");
-    expect(availability).toContain("const [active,setActive]=useState<string[]>([])");
+    expect(availability).toContain("const [active,setActive]=useState<string[]>(()=>cachedActive??[])");
+    expect(availability).toContain('cachedActive=value.data.active');
     expect(configuration).toContain('role="switch"');
     expect(configuration).toContain('moduleAvailabilityChanged()');
   });
