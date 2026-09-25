@@ -7,12 +7,15 @@ describe('shell autenticado', () => {
     expect(nav).toContain('usePathname');
     expect(nav).toContain("aria-current={active ? 'page' : undefined}");
     expect(nav).toContain('WorkspaceNavItem');
+    expect(nav).toContain('secondaryItems');
+    expect(nav).toContain('workspace-nav__secondary');
   });
 
   it('mantiene los menús declarativos, sin permisos de cliente', () => {
     expect(readFileSync('src/employee/components.tsx', 'utf8')).toContain('WorkspaceNav');
     expect(readFileSync('src/manager/components.tsx', 'utf8')).toContain('WorkspaceNav');
     expect(readFileSync('src/admin/components.tsx', 'utf8')).toContain('WorkspaceNav');
+    expect(readFileSync('src/admin/components.tsx', 'utf8')).toContain('secondaryItems={[{ href: \'/admin/configuration\'');
     expect(readFileSync('src/auth/page-guard.ts', 'utf8')).toContain('requireWorkspaceRole');
   });
 });

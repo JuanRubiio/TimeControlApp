@@ -21,5 +21,6 @@ describe('gestión de personas',()=>{
     expect(ui).toContain('<section className="admin-section"><div className="section-heading"><div><h2>Personas activas</h2>');
     expect(ui).toContain('{showCreate&&<AssistedOnboarding');
     expect(ui).toContain("showCreate?'Cerrar alta':'Nueva persona'");
+    expect(readFileSync('src/admin/components.tsx','utf8')).toContain('<AdminNav/><PeopleManagement/></main>');
   });
 });

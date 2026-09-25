@@ -23,7 +23,8 @@ describe('module catalogue boundaries',()=>{
     const manager=readFileSync('src/manager/components.tsx','utf8');
     const availability=readFileSync('src/modules/ui.ts','utf8');
     const configuration=readFileSync('src/configuration/components.tsx','utf8');
-    expect(admin).toContain("planningEnabled?[{href:'/admin/planning'");
+    expect(admin).toContain("useModuleEnabled('shift_planning')");
+    expect(admin).toContain("href: '/admin/planning'");
     expect(manager).toContain("planningEnabled?[{href:'/manager/planning'");
     expect(manager).toContain("planningEnabled?managerRead<{holidays:ManagerHoliday[]}>");
     expect(availability).toContain("const [active,setActive]=useState<string[]>(()=>cachedActive??[])");
